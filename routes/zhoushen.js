@@ -4,6 +4,8 @@ const fs = require('fs')
 const path = require('path');;
 const fsPromises = fs.promises;
 
+const pathToCache = './public/cache';
+
 function _numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -115,7 +117,7 @@ async function writeHtmlFromJson(data) {
                                         padding: 0;
                                         margin: 0;
                                         height: auto;
-                                        /**/
+                                        opacity: 0.78;
                                     }
                                     .list-title{
                                         border-top:1px solid #B2D4FF;
@@ -125,6 +127,8 @@ async function writeHtmlFromJson(data) {
                                     }
                                     .list-li {
                                         list-style: none;
+                                        opacity 0.9;
+                                        background: #fff;
                                         border-bottom: 1px solid #B2D4FF;
                                         line-height: 40px;
                                         font-size: 14px;
@@ -183,7 +187,6 @@ async function writeHtmlFromJson(data) {
                         <p class="ad">灵感来源：<a class="ad" href="https://github.com/jsososo/QQMusicApi">jsososo/QQMusicApi</a></p>
                     </footer>`
     let html = header + body + footer + '</html>';
-    await fsPromises.writeFile(`./public/cache/${data.date}.html`, html, { flag: 'wx' } );
     return html;
 }
 
@@ -297,25 +300,28 @@ function _getReportData({ hitSongs, hitInfo, favInfo, date }) {
 module.exports = {
 
     '/hitsongs': async (req, res) => {
-        const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
-        let html = null;
+        const timestamp = moment().tz('Asia/Shanghai').format();
+        const date = timestamp.substring(0, 10);
+        let json = null;
         try {
-            html = await fsPromises.readFile(`./public/cache/${date}.html`);
+            const archived = await fsPromises.readFile(`${pathToCache}/${date}.json`);
+            json = JSON.parse( archived );
         } catch (err) {
             const hitSongs = await _getHitSongs( req.query );
             const songIdList = hitSongs.singer.data.songlist.map( song => song.id);
             const songMidList = hitSongs.singer.data.songlist.map( song => song.mid);
             const [ hitInfo, favInfo ] = await Promise.all([_getHitInfo(songMidList), _getFavInfo({ v_songId: songIdList })]);
-            const data = _getReportData( { hitSongs, hitInfo, favInfo, date } );
-            if( req.query.format === 'json' ) {
-                return res.send({
-                    data,
-                    result: data.details.length
-                })
-            }
-            html = await writeHtmlFromJson( data );
+            json = _getReportData( { hitSongs, hitInfo, favInfo, date } );
+            await fsPromises.writeFile(`${pathToCache}/${data.date}.json`, JSON.stringify(json), { flag: 'wx' } );
         }
         
+        if( req.query.format === 'json' ) {
+            return res.send({
+                json,
+                result: json.details.length
+            })
+        }
+        html = await writeHtmlFromJson( json );
         res.writeHead(200, {
             'Content-Type': 'text/html'
         });
