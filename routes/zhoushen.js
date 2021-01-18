@@ -47,7 +47,7 @@ async function writeHtmlFromJson(data) {
                                     body {
                                         margin: 0;
                                         padding: 0;
-                                        background: url(../img/11.png);
+                                        background: url(../img/hotpot.png);
                                         background-size: cover;
                                     }
 
