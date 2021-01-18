@@ -1,7 +1,6 @@
 const request  = require('../util/request');
 const moment = require('moment-timezone');
 const fs = require('fs')
-const path = require('path');;
 const fsPromises = fs.promises;
 
 const pathToCache = './public/cache';
@@ -325,14 +324,13 @@ function _getReportData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, upd
         formatted.favCount = favInfo[song.id];
         return formatted;
     }).sort(_sortByFavCount);
-    data = {
+    return{
         timestamp,
         updatedAt,
         totalListenCount: totalListenCount + 'w+',
         fansCount: weeklyListenCountInfo.fansCount,
         details,
     };
-    return data;
 }
 
 function _overTwelveHoursAgo(input) {
@@ -343,7 +341,7 @@ function _overTwelveHoursAgo(input) {
 
 module.exports = {
 
-    '/hitsongs': async (req, res) => {
+    '/': async (req, res) => {
         const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
         let json = null;
         let updateExisting = false;
@@ -355,7 +353,7 @@ module.exports = {
                 throw new Error ('Data needs an update.');
             }
         } catch (err) {
-            const [hitSongs, weeklyListenCountInfo] = await Promise.all([_getHitSongs( req.query ), _getTotalListenCount()]);
+            const [hitSongs, weeklyListenCountInfo] = await Promise.all([_getHitSongs(), _getTotalListenCount()]);
             const songIdList = hitSongs.songList.map( song => song.songInfo.id);
             const songMidList = hitSongs.songList.map( song => song.songInfo.mid);
             const [ hitInfo, favInfo ] = await Promise.all([_getHitInfo(songMidList), _getFavInfo({ v_songId: songIdList })]);
@@ -373,7 +371,7 @@ module.exports = {
                 result: json.details.length
             })
         }
-        html = await writeHtmlFromJson( json );
+        const html = await writeHtmlFromJson( json );
         res.writeHead(200, {
             'Content-Type': 'text/html'
         });
