@@ -10,12 +10,12 @@ function _numberWithCommas(x) {
     try{
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } catch(err) {
-        return '无数据';
+        return '-';
     }
 }
 
 function _getTableBody( data ) {
-    const transformed = data.map( ({title, favCount, timePublic, score='无数据', hitListenCount='无数据',weeklyListenCount }, index) => {
+    const transformed = data.map( ({title, favCount, timePublic, score='-', hitListenCount='-',weeklyListenCount }, index) => {
         return `<li class="list-li">
             <span class="list-span index">${index+1}</span>
             <span class="list-span song">${title}</span>
@@ -29,7 +29,7 @@ function _getTableBody( data ) {
     return transformed.join('\n');
 }
 async function writeHtmlFromJson(data) {
-    const listHeader = `<ul class="list-ul list-title">
+    const listHeader = `<ul class="list-ul list-title" id="list-title">
                             <li class="list-li">
                                 <span class="list-span index">序号</span>
                                 <span class="list-span song">歌曲</span>
@@ -107,14 +107,8 @@ async function writeHtmlFromJson(data) {
                                         color: rgb(102, 146, 228);
                                     }
 
-                                    .table-title {
-                                        font-size: 16px;
-                                        margin: 0 0 0 20px;
-                                        color: rgb(102, 146, 228);
-                                    }
-
                                     .title-tip {
-                                        font-size: 12px;
+                                        font-size: 13px;
                                         color: #a9b3c0;
                                         padding: 0 20px;
                                     }
@@ -125,23 +119,23 @@ async function writeHtmlFromJson(data) {
                                         height: auto;
                                         opacity: 0.7;
                                     }
-                                    .list-title{
-                                        border-top:1px solid #B2D4FF;
+                                    #list-title{
+                                        font-weight: bold;
+                                        font-size: 20rem;
+                                        border:2px solid rgb(102, 146, 228);
                                     }
                                     .list-title .list-span{
-                                        color: rgb(102, 146, 228);
+                                        color: #2C4E6C;
                                     }
                                     .list-li {
                                         list-style: none;
                                         background: #fff;
-                                        border-bottom: 1px solid #B2D4FF;
                                         line-height: 40px;
                                         font-size: 14px;
-                                        color: #5a6a7c;
                                     }
                                     .list-li:nth-child(even){
-                                        color: #fff;
-                                        background:rgb(168 178 198) ;
+                                        color: #333333;
+                                        background: #E5E5E5;
                                     }
                                     .list-li::after {
                                         content: '';
@@ -152,7 +146,6 @@ async function writeHtmlFromJson(data) {
                                     .list-span{
                                         float: left;
                                         display: block;
-                                        border-right: 1px solid #B2D4FF;
                                         padding: 0 10px;
                                         height: 40px;
                                         overflow: hidden;
