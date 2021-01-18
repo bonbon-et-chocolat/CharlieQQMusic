@@ -86,6 +86,10 @@ fs.readdirSync(path.join(__dirname, 'routes')).forEach(file => {
   });
 });
 
+app.use('/zhoushen/hitsongs', (req, res) => {
+  res.redirect( '/hitsongs' );
+});
+
 app.use('/', (req, res) => {
   const router = express.Router()
   router.get('/', (req, res) => require('./routes/index')['/'](req, res))
