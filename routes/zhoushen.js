@@ -170,7 +170,7 @@ async function writeHtmlFromJson(data) {
     const body = `<body class="scroll-skin-light">
                     <div class="content">
                     <div class="title">周深QQ音乐数据（更新于：${data.updatedAt}）</div>
-                    <div class="ad">广告位：<a class="ad" href="https://www.douban.com/group/696317">欢迎加入：豆瓣小组 辣锅纯辣锅🔥</a></div>
+                    <p class="ad">意见反馈：<a class="ad" href="https://www.douban.com/group/topic/208627731/" target="_blank">🔥 豆瓣小组 辣锅纯辣锅 🔥</a></p>
                     <p class="time">每12小时更新一次数据</p>
                     <p class="fans">粉丝总数：${_numberWithCommas(data.fansCount)}</p>
                     <p class="num">过去24小时总收听人数：${data.totalListenCount}</p><br>
@@ -182,7 +182,7 @@ async function writeHtmlFromJson(data) {
                     </ul>
                 </body>`;
     const footer = `<footer>
-                        <p class="ad">灵感来源：<a class="ad" href="https://github.com/jsososo/QQMusicApi">jsososo/QQMusicApi</a></p>
+                        <p class="ad">灵感来源：<a class="ad" href="https://github.com/jsososo/QQMusicApi" target="_blank">jsososo/QQMusicApi</a></p>
                     </footer>`
     let html = header + body + footer + '</html>';
     return html;
