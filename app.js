@@ -60,13 +60,6 @@ fs.readdirSync(path.join(__dirname, 'routes')).forEach(file => {
         ...req.query,
         ...req.body,
       };
-      // qq 登录
-      let uin = (req.cookies.uin || '');
-      // login_type 2 微信登录
-      if (Number(req.cookies.login_type) === 2) {
-        uin = req.cookies.wxuin;
-      }
-      req.cookies.uin = uin.replace(/\D/g, '');
       const func = RouterMap[path];
 
       console.log(`/${filename}${path}`, path, func);

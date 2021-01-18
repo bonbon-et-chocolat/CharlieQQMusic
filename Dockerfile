@@ -1,6 +1,6 @@
 FROM node:12.18.3
 
-LABEL MAINTAINER="zhouchijian"
+LABEL MAINTAINER="bonbon-et-chocolat"
 
 USER root
 

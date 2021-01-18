@@ -1,12 +1,12 @@
 {
-  "name": "qqmusicapi",
+  "name": "qqmusic-data-for-charlie",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build:docker": "docker build -t qqmusic:1.0 .",
-    "rm:docker": "docker container rm qqmusic -f",
-    "start:docker": "docker build -t qqmusic:1.0 . && docker run --name qqmusic -p 8888:80 -d qqmusic:1.0"
+    "build:docker": "docker build -t qqmusic-data-for-charlie:1.0 .",
+    "rm:docker": "docker container rm qqmusic-data-for-charlie -f",
+    "start:docker": "docker build -t qqmusic-data-for-charlie:1.0 . && docker run --name qqmusic-data-for-charlie -p 8888:80 -d qqmusic-data-for-charlie:1.0"
   },
   "engines": {
     "node": "~12.x",
@@ -21,7 +21,6 @@
     "fs": "0.0.1-security",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "js-base64": "^2.5.1",
     "jsonfile": "^5.0.0",
     "moment-timezone": "^0.5.32",
     "morgan": "~1.9.1",
