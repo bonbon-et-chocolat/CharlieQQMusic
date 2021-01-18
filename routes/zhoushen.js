@@ -123,7 +123,7 @@ async function writeHtmlFromJson(data) {
                                         padding: 0;
                                         margin: 0;
                                         height: auto;
-                                        opacity: 0.78;
+                                        opacity: 0.7;
                                     }
                                     .list-title{
                                         border-top:1px solid #B2D4FF;
@@ -133,7 +133,6 @@ async function writeHtmlFromJson(data) {
                                     }
                                     .list-li {
                                         list-style: none;
-                                        opacity 0.9;
                                         background: #fff;
                                         border-bottom: 1px solid #B2D4FF;
                                         line-height: 40px;
@@ -177,9 +176,9 @@ async function writeHtmlFromJson(data) {
                             </head>`;
     const body = `<body class="scroll-skin-light">
                     <div class="content">
-                    <div class="title">Charlie's hit songs on QQ music</div>
+                    <div class="title">周深QQ音乐数据（更新于：${data.updatedAt}）</div>
                     <div class="ad">广告位：<a class="ad" href="https://www.douban.com/group/696317">欢迎加入：豆瓣小组 辣锅纯辣锅🔥</a></div>
-                    <p class="time">更新时间（每日中午12时更新一次）：${data.date}</p>
+                    <p class="time">每12小时更新一次数据</p>
                     <p class="fans">粉丝总数：${_numberWithCommas(data.fansCount)}</p>
                     <p class="num">过去24小时总收听人数：${data.totalListenCount}</p><br>
                     <p class="title-tip">周深歌曲收藏量Top${data.details.length} (巅峰指数、收听人数为过去24小时数据；总收听量统计方法未知，推测为过去7-10天累计; 过去24小时收听人数小于1万人则无收听数据)：</p>
@@ -315,7 +314,7 @@ function _sortByFavCount( {favCount: favA}, {favCount: favB}) {
     if (favA > favB) return -1;
     else return 1;
 }
-function _getReportData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, date }) {
+function _getReportData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp }) {
     let totalListenCount = 0;
     const songlist = hitSongs.songList;
     const details = songlist.map( ( {songInfo:song} ) => {
@@ -334,34 +333,50 @@ function _getReportData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, dat
         return formatted;
     }).sort(_sortByFavCount);
     data = {
-        date,
+        timestamp,
+        updatedAt,
         totalListenCount: totalListenCount + 'w+',
         fansCount: weeklyListenCountInfo.fansCount,
         details,
     };
     return data;
 }
+
+function _overTwelveHoursAgo(input) {
+    const TWELVE_HOURS = 1000 * 60 * 60 * 12;
+    const twelveHoursAgo = Date.now() - TWELVE_HOURS;
+    return input < twelveHoursAgo;
+}
+
 module.exports = {
 
     '/hitsongs': async (req, res) => {
-        const timestamp = moment().tz('Asia/Shanghai').format();
-        const date = timestamp.substring(0, 10);
+        const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
         let json = null;
+        let updateExisting = false;
         try {
             const archived = await fsPromises.readFile(`${pathToCache}/${date}.json`);
             json = JSON.parse( archived );
+            if( _overTwelveHoursAgo(json.timestamp)) {
+                updateExisting = true;
+                throw new Error ('Data needs an update.');
+            }
         } catch (err) {
             const [hitSongs, weeklyListenCountInfo] = await Promise.all([_getHitSongs( req.query ), _getTotalListenCount()]);
             const songIdList = hitSongs.songList.map( song => song.songInfo.id);
             const songMidList = hitSongs.songList.map( song => song.songInfo.mid);
             const [ hitInfo, favInfo ] = await Promise.all([_getHitInfo(songMidList), _getFavInfo({ v_songId: songIdList })]);
-            json = _getReportData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, date } );
-            await fsPromises.writeFile(`${pathToCache}/${data.date}.json`, JSON.stringify(json), { flag: 'wx' } );
+            const updatedAt = moment().tz('Asia/Shanghai').format();
+            const timestamp = Date.now();
+            json = _getReportData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp } );
+            const writeArgs = updateExisting ? {} : { flag: 'wx' };
+            await fsPromises.writeFile(`${pathToCache}/${updatedAt.substring(0, 10)}.json`, JSON.stringify(json), writeArgs );
         }
         
         if( req.query.format === 'json' ) {
             return res.send({
                 json,
+                updatedAt,
                 result: json.details.length
             })
         }
