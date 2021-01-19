@@ -28,6 +28,29 @@ body {
   background-color: #d5e3ff;
 }
 
+.cover {
+  color: inherit;
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin: .625rem 0 2.5rem;
+  position: relative;
+}
+.center {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.cover-pic {
+  height: 300px;
+  border-radius: 5em;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.8;
+}
 .left-aligned {
   padding: 0 20px;
 }

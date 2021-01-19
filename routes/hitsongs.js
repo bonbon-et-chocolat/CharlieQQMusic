@@ -14,29 +14,39 @@ function formatNumberWithCommas(x) {
 }
 
 async function _getHitSongs () {
-    const singerMid='003fA5G40k6hKc', num=100, page=1;
-    const result = await request({
-        url: 'http://u.y.qq.com/cgi-bin/musicu.fcg',
-        data: {
-            data: JSON.stringify({
-            comm: {
-                ct: 24,
-                cv: 0
-            },
-            singer: {
-                method: "GetSingerSongList",
-                module: "musichall.song_list_server",
-                param: {
-                    singerMid,
-                    'begin':  (page - 1) * num,
-                    num,
-                    order: 1
+    const pages = [1,2,3,4];
+
+    const songs = await Promise.all(pages.map(async (page) => {
+        return request({
+            url: 'http://u.y.qq.com/cgi-bin/musicu.fcg',
+            data: {
+                data: JSON.stringify({
+                comm: {
+                    ct: 24,
+                    cv: 0
+                },
+                singer: {
+                    method: "GetSingerSongList",
+                    module: "musichall.song_list_server",
+                    param: {
+                        singerMid: '003fA5G40k6hKc',
+                        'begin':  (page - 1) * 100,
+                        num: 100,
+                        order: 1
+                    }
                 }
+                })
             }
-            })
+        });
+    }));
+
+    let result = [];
+    songs.forEach((cur) => {
+        if(cur && cur.singer) {
+            result = result.concat(cur.singer.data.songList);
         }
     });
-    return result.singer.data;
+    return result;
 }
 
 async function _getTotalListenCount () {
@@ -75,7 +85,6 @@ async function _getTotalListenCount () {
 }
 
 async function _getHitInfo(songMidList) {
-
     const requestCount = songMidList.length/10;
     const lists = [];
     for(let i=0; i<requestCount; i++ ) {
@@ -136,9 +145,8 @@ function _sortByFavCount( {favCount: favA}, {favCount: favB}) {
 
 function _getReportData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp }) {
     let totalListenCount = 0;
-    const songlist = hitSongs.songList;
-    const details = songlist.map( ( {songInfo:song} ) => {
-        const formatted = (({ mid, title }) => ({ mid, title }))(song);
+    const details = hitSongs.map( ( {songInfo:song} ) => {
+        const formatted = (({ id, mid, title }) => ({ id, mid, title }))(song);
         const { record, score, listenCnt } = hitInfo[song.mid] || {};
         formatted.timePublic = song.album.time_public;
         formatted.record = record ? record.data : undefined;
@@ -170,7 +178,8 @@ function _staleData(input) {
 module.exports = {
 
     '/': async (req, res) => {
-        const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
+        const updatedAt = moment().tz('Asia/Shanghai').format();
+        const date = updatedAt.substring(0, 10);
         let json = null;
         try {
             // reuse existing data if last updated less than 12 hours ago
@@ -181,13 +190,12 @@ module.exports = {
             }
         } catch (err) {
             const [hitSongs, weeklyListenCountInfo] = await Promise.all([_getHitSongs(), _getTotalListenCount()]);
-            const songIdList = hitSongs.songList.map( song => song.songInfo.id);
-            const songMidList = hitSongs.songList.map( song => song.songInfo.mid);
+            const songIdList = hitSongs.map( song => song.songInfo.id);
+            const songMidList = hitSongs.map( song => song.songInfo.mid);
             const [ hitInfo, favInfo ] = await Promise.all([_getHitInfo(songMidList), _getFavInfo({ v_songId: songIdList })]);
-            const updatedAt = moment().tz('Asia/Shanghai').format();
-            const timestamp = Date.now();
-            json = _getReportData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp } );
-            await fsPromises.writeFile(`${pathToCache}/${updatedAt.substring(0, 10)}.json`, JSON.stringify(json), { flag: 'w+' } );
+            const time = Date.now();
+            json = _getReportData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, time } );
+            await fsPromises.writeFile(`${pathToCache}/${date}.json`, JSON.stringify(json), { flag: 'w+' } );
         }
         
         if( req.query.format === 'json' ) {

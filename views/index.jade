@@ -1,8 +1,8 @@
 extends layout
 
 block content
-  h1=title
-  p Welcome to #{title}
-  p 可以戳戳下面的链接看看
-  span 1、
-  a(href="https://zhou-shen-music-data.herokuapp.com/zhoushen/hitsongs") 歌曲收藏排行榜
+  div
+    div.center
+      img.cover-pic(src="../img/zhoushen.png")
+      h1.cover 周深QQ音乐数据
+      a(href="https://zhou-shen-music-data.herokuapp.com/zhoushen/hitsongs") 歌曲收藏排行榜
