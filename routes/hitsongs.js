@@ -151,11 +151,11 @@ function _getReportData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, upd
         formatted.timePublic = song.album.time_public;
         formatted.record = record ? record.data : undefined;
         formatted.score = score;
-        formatted.hitListenCount = listenCnt;
         formatted.weeklyListenCount = weeklyListenCountInfo.weeklyListenCount[song.mid];
         if( listenCnt ) {
             let [ count ] = listenCnt.match(/\d+/g);
-            totalListenCount += parseInt( count );
+            formatted.hitListenCount = parseInt( count );
+            totalListenCount += formatted.hitListenCount;
         }
         formatted.favCount = favInfo[song.id];
         return formatted;
@@ -163,15 +163,15 @@ function _getReportData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, upd
     return{
         timestamp,
         updatedAt,
-        totalListenCount: totalListenCount + 'w+',
+        totalListenCount,
         fansCount: weeklyListenCountInfo.fansCount,
         details,
     };
 }
 
 function _staleData(input) {
-    const TWO_HOURS = 1000 * 60 * 60 * 2;
-    const cutoff = Date.now() - TWO_HOURS;
+    const THREASHOLD = 1000 * 60 * 60 * 8; //hours
+    const cutoff = Date.now() - THREASHOLD;
     return input < cutoff;
 }
 
@@ -180,12 +180,12 @@ module.exports = {
     '/': async (req, res) => {
         const updatedAt = moment().tz('Asia/Shanghai').format();
         const date = updatedAt.substring(0, 10);
-        let json = null;
+        let data = null;
         try {
             // reuse existing data if last updated less than 12 hours ago
             const archived = await fsPromises.readFile(`${pathToCache}/${date}.json`);
-            json = JSON.parse( archived );
-            if( _staleData(json.timestamp)) {
+            data = JSON.parse( archived );
+            if( _staleData(data.timestamp)) {
                 throw new Error ('Data needs an update.');
             }
         } catch (err) {
@@ -193,20 +193,19 @@ module.exports = {
             const songIdList = hitSongs.map( song => song.songInfo.id);
             const songMidList = hitSongs.map( song => song.songInfo.mid);
             const [ hitInfo, favInfo ] = await Promise.all([_getHitInfo(songMidList), _getFavInfo({ v_songId: songIdList })]);
-            const time = Date.now();
-            json = _getReportData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, time } );
-            await fsPromises.writeFile(`${pathToCache}/${date}.json`, JSON.stringify(json), { flag: 'w+' } );
+            const timestamp = Date.now();
+            data = _getReportData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp } );
+            await fsPromises.writeFile(`${pathToCache}/${date}.json`, JSON.stringify(data), { flag: 'w+' } );
         }
         
         if( req.query.format === 'json' ) {
             return res.send({
-                json,
-                updatedAt,
-                result: json.details.length
+                data,
+                result: data.details.length
             })
         }
         res.render('hitsongs', {
-            data: json,
+            data,
             util: {
                 formatNumberWithCommas
             }
