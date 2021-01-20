@@ -18,14 +18,18 @@ const listHandle = ({func, type, req, res}) => {
 
 module.exports = {
   '/': async (req, res) => {
-    const now = new Date();
-    let {type = 'ip', startTime = now, endTime = now, condition = '{}'} = req.query;
-    const data = global.dataStatistics.getRecord({startTime, endTime, type, condition});
-
     res.send({
       result: 100,
-      data,
-    })
+      data: '就当成功了吧',
+    });
+    // const now = new Date();
+    // let {type = 'ip', startTime = now, endTime = now, condition = '{}'} = req.query;
+    // const data = global.dataStatistics.getRecord({startTime, endTime, type, condition});
+
+    // res.send({
+    //   result: 100,
+    //   data,
+    // })
   },
 
   '/addWhiteList': (req, res) => listHandle({func: 'addList', req, res, type: 'whiteList'}),

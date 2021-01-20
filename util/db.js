@@ -27,6 +27,24 @@ async function insertOne( client, data, db=DB, collection=COLLECTION  ) {
     .insertOne( data );
 }
 
+async function upsertOne( client, query, data, db=DB, collection=COLLECTION  ) {
+    return client.db(db)
+    .collection(collection)
+    .updateOne(
+        query,
+        {
+            $set: data
+        },
+        {
+            upsert: true
+        }
+    );
+}
+
+async function upsertOneByDate( client, sDate, data, db=DB, collection=COLLECTION ) {
+    return upsertOne( client, {updatedAt: new RegExp(sDate)}, data, db, collection );
+}
+
 async function updateOneById( client, _id, data, db=DB, collection=COLLECTION  ) {
     return client.db(db)
     .collection(collection)
@@ -35,7 +53,9 @@ async function updateOneById( client, _id, data, db=DB, collection=COLLECTION  )
 
 module.exports = {
     connect,
-    findByDate,
     insertOne,
-    updateOneById
+    upsertOne,
+    updateOneById,
+    findByDate,
+    upsertOneByDate
 };
