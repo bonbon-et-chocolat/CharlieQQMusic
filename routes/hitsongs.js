@@ -1,5 +1,8 @@
 const db = require("../util/db");
 const Songs = require("../controllers/Songs");
+const fs = require('fs')
+const fsPromises = fs.promises;
+const cachedDataPath = './public/cache/data.json';
 
 function formatNumberWithCommas(x) {
     try{
@@ -9,13 +12,29 @@ function formatNumberWithCommas(x) {
     }
 }
 
+async function _getData( req ) {
+    let date = req.query.date;
+    let data = null;
+    if( !date ) {
+        try{
+            const archived = await fsPromises.readFile(cachedDataPath);
+            data = JSON.parse( archived );
+        } catch( err ) {
+            data = await Songs.updateReportData();
+        }
+        
+    } else {
+        const client = await db.connect();
+        data = await Songs.getExistingData( client, req.query  );
+        await client.close();
+    }
+    return data;
+}
+
 module.exports = {
     '/': async (req, res) => {
-        let data = null;
-        let client = null;
         try {
-            client = await db.connect();
-            data = await Songs.getExistingData( client, req.query  );
+            let data = await _getData(req);
             if( req.query.format === 'json' ) {
                 res.send({
                     data,
@@ -34,10 +53,6 @@ module.exports = {
                 message: "找不到数据",
                 error: err
             });
-        } finally {
-            if( client ) {
-                await client.close();
-            }
         }
     }
 }

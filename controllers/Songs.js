@@ -2,6 +2,9 @@
 const request  = require('../util/request');
 const moment = require('moment-timezone');
 const db = require("../util/db");
+const fs = require('fs')
+const fsPromises = fs.promises;
+const cachedDataPath = './public/cache/data.json';
 
 const MID = '003fA5G40k6hKc';
 const PAGES = [1,2,3,4];
@@ -180,10 +183,23 @@ async function getLiveData( query={} ) {
     return _getLiveData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp: Date.now() } );
 }
 
-async function updateReportData( client ) {
-    const data = await getLiveData();
-    const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
-    await db.upsertOneByDate( client, date, data );
+async function updateReportData() {
+    let client = null;
+    try{
+        client = await db.connect();
+        const data = await getLiveData();
+        const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
+        await db.upsertOneByDate( client, date, data );
+        await fsPromises.writeFile(cachedDataPath, JSON.stringify(data), { flag: 'w+' } );
+        console.log( `Updated data for ${date}` );
+        return data;
+    } catch( err ) {
+        console.log( err.stack );
+    } finally {
+        if( client ) {
+            await client.close();
+        }
+    }
 }
 module.exports = {
     getLiveData,

@@ -8,6 +8,8 @@ var app = require('../app');
 var debug = require('debug')('qqmusicapi:server');
 var http = require('http');
 var config = require('./config');
+const cron = require('node-cron');
+const Songs = require('../controllers/Songs');
 
 /**
  * Get port from environment and store in Express.
@@ -91,4 +93,11 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
   console.log(`Listening on \n http://localhost:${addr.port} \n http://127.0.0.1:${addr.port}`);
+  
+  // start cron job for fetching live data
+  cron.schedule( '1 3,10,12,23 * * *', async () => {
+    Songs.updateReportData();
+  }, {
+    timezone: "Asia/Shanghai"
+  }).start();
 }
