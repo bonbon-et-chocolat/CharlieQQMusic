@@ -4,7 +4,9 @@ const fs = require('fs')
 const fsPromises = fs.promises;
 
 const pathToCache = './public/cache';
-
+const MID = '003fA5G40k6hKc';
+const PAGES = [1,2,3,4];
+const NUM = 100;
 function formatNumberWithCommas(x) {
     try{
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -13,10 +15,8 @@ function formatNumberWithCommas(x) {
     }
 }
 
-async function _getHitSongs () {
-    const pages = [1,2,3,4];
-
-    const songs = await Promise.all(pages.map(async (page) => {
+async function _getHitSongs ({mid=MID}) {
+    const songs = await Promise.all(PAGES.map(async (page) => {
         return request({
             url: 'http://u.y.qq.com/cgi-bin/musicu.fcg',
             data: {
@@ -29,9 +29,9 @@ async function _getHitSongs () {
                     method: "GetSingerSongList",
                     module: "musichall.song_list_server",
                     param: {
-                        singerMid: '003fA5G40k6hKc',
-                        'begin':  (page - 1) * 100,
-                        num: 100,
+                        singerMid: mid,
+                        'begin':  (page - 1) * NUM,
+                        num: NUM,
                         order: 1
                     }
                 }
@@ -49,8 +49,8 @@ async function _getHitSongs () {
     return result;
 }
 
-async function _getTotalListenCount () {
-    const singermid='003fA5G40k6hKc', num=100, page=1;
+async function _getTotalListenCount ({mid=MID}) {
+    const singermid=mid, num=NUM, page=1;
     const result = await request({
         url: 'http://u.y.qq.com/cgi-bin/musicu.fcg',
         data: {
@@ -189,7 +189,7 @@ module.exports = {
                 throw new Error ('Data needs an update.');
             }
         } catch (err) {
-            const [hitSongs, weeklyListenCountInfo] = await Promise.all([_getHitSongs(), _getTotalListenCount()]);
+            const [hitSongs, weeklyListenCountInfo] = await Promise.all([_getHitSongs(req.query), _getTotalListenCount(req.query)]);
             const songIdList = hitSongs.map( song => song.songInfo.id);
             const songMidList = hitSongs.map( song => song.songInfo.mid);
             const [ hitInfo, favInfo ] = await Promise.all([_getHitInfo(songMidList), _getFavInfo({ v_songId: songIdList })]);
