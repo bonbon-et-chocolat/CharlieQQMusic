@@ -1,12 +1,15 @@
 const request  = require('../util/request');
 const moment = require('moment-timezone');
 const fs = require('fs')
+const db = require("../util/db");
+
 const fsPromises = fs.promises;
 
 const pathToCache = './public/cache';
 const MID = '003fA5G40k6hKc';
 const PAGES = [1,2,3,4];
 const NUM = 100;
+
 function formatNumberWithCommas(x) {
     try{
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -118,6 +121,7 @@ async function _getHitInfo(songMidList) {
         }
     },{});
 }
+
 async function _getFavInfo(param) {
     const result = await request({
         url: 'http://u.y.qq.com/cgi-bin/musicu.fcg',
@@ -175,6 +179,24 @@ function _staleData(input) {
     return input < cutoff;
 }
 
+async function _getExistingData( req, client ) {
+    const date = req.query.date ? req.query.date : moment().tz('Asia/Shanghai').format().substring(0, 10);
+    const result = await db.findByDate( client, date );
+    if( !result ) {
+        throw new Error ('not_found');
+    } else {
+        return result;
+    }
+}
+
+async function _getResponseData( req ) {
+    const updatedAt = moment().tz('Asia/Shanghai').format();
+    const [hitSongs, weeklyListenCountInfo] = await Promise.all([_getHitSongs(req.query), _getTotalListenCount(req.query)]);
+    const songIdList = hitSongs.map( song => song.songInfo.id);
+    const songMidList = hitSongs.map( song => song.songInfo.mid);
+    const [ hitInfo, favInfo ] = await Promise.all([_getHitInfo(songMidList), _getFavInfo({ v_songId: songIdList })]);
+    return _getReportData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp: Date.now() } );
+}
 module.exports = {
 
     '/': async (req, res) => {
@@ -196,6 +218,48 @@ module.exports = {
             const timestamp = Date.now();
             data = _getReportData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp } );
             await fsPromises.writeFile(`${pathToCache}/${date}.json`, JSON.stringify(data), { flag: 'w+' } );
+        }
+        
+        if( req.query.format === 'json' ) {
+            return res.send({
+                data,
+                result: data.details.length
+            })
+        }
+        res.render('hitsongs', {
+            data,
+            util: {
+                formatNumberWithCommas
+            }
+        });
+    },
+
+    '/new': async (req, res) => {
+        let data = null;
+        let client = null;
+        let _id = null;
+        try {
+            client = await db.connect();
+            data = await _getExistingData( req, client );
+            if(!req.query.date && _staleData(data.timestamp)) {
+                _id = data._id;
+                throw new Error( 'stale_data' );
+            }
+        } catch (err) {
+            if( err.message === 'not_found' && req.query.date ) {
+                await client.close();
+                return res.status(404).send({error: 'Not Found'});
+            }
+            data = await _getResponseData( req );
+            if(_id) {
+                await db.updateOneById( client, _id, data );
+            } else {
+                await db.insertOne( client, data );
+            }
+        } finally {
+            if( client ) {
+                await client.close();
+            }
         }
         
         if( req.query.format === 'json' ) {
