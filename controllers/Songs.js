@@ -185,12 +185,13 @@ async function getLiveData( query={} ) {
 
 async function updateReportData() {
     let client = null;
+    const {cache} = global;
     try{
         client = await db.connect();
         const data = await getLiveData();
         const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
         await db.upsertOneByDate( client, date, data );
-        await fsPromises.writeFile(cachedDataPath, JSON.stringify(data), { flag: 'w+' } );
+        cache.set( 'Songs', data );
         console.log( `Updated data for ${date}` );
         return data;
     } catch( err ) {
