@@ -2,9 +2,6 @@
 const request  = require('../util/request');
 const moment = require('moment-timezone');
 const db = require("../util/db");
-const fs = require('fs')
-const fsPromises = fs.promises;
-const cachedDataPath = './public/cache/data.json';
 
 const MID = '003fA5G40k6hKc';
 const PAGES = [1,2,3,4];
@@ -38,7 +35,7 @@ async function _getHitSongs ({mid=MID}) {
     let result = [];
     songs.forEach((cur) => {
         if(cur && cur.singer) {
-            result = result.concat(cur.singer.data.songList);
+            result = result.concat(cur.singer.data.songList.filter( (song)=> { return song.songInfo.title.indexOf('伴奏')===-1; }));
         }
     });
     return result;
@@ -141,10 +138,12 @@ function _sortByFavCount( {favCount: favA}, {favCount: favB}) {
 
 function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp }) {
     let totalListenCount = 0;
-    const details = hitSongs.map( ( {songInfo:song} ) => {
+    const details =
+    hitSongs
+    .map( ( {songInfo:song} ) => {
         const formatted = (({ id, mid, title }) => ({ id, mid, title }))(song);
         const { record, score, listenCnt } = hitInfo[song.mid] || {};
-        formatted.timePublic = song.album.time_public;
+        formatted.timePublic = song.album.time_public !== '1990-01-01' ? song.album.time_public : undefined;
         formatted.record = record ? record.data : undefined;
         formatted.score = score;
         formatted.weeklyListenCount = weeklyListenCountInfo.weeklyListenCount[song.mid];
@@ -155,7 +154,8 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
         }
         formatted.favCount = favInfo[song.id];
         return formatted;
-    }).sort(_sortByFavCount);
+    })
+    .sort(_sortByFavCount);
     return{
         timestamp,
         updatedAt,
