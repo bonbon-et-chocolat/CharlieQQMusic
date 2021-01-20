@@ -1,8 +1,5 @@
 const db = require("../util/db");
 const Songs = require("../controllers/Songs");
-const fs = require('fs')
-const fsPromises = fs.promises;
-const cachedDataPath = './public/cache/data.json';
 
 function formatNumberWithCommas(x) {
     try{
@@ -16,13 +13,8 @@ async function _getData( req ) {
     let date = req.query.date;
     let data = null;
     if( !date ) {
-        try{
-            const archived = await fsPromises.readFile(cachedDataPath);
-            data = JSON.parse( archived );
-        } catch( err ) {
-            data = await Songs.updateReportData();
-        }
-        
+        const {cache} = global;
+        data = cache.get( 'Songs' ) || await Songs.updateReportData();
     } else {
         const client = await db.connect();
         data = await Songs.getExistingData( client, req.query  );
