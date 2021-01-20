@@ -199,7 +199,7 @@ async function _getResponseData( req ) {
 }
 module.exports = {
 
-    '/': async (req, res) => {
+    '/cache': async (req, res) => {
         const updatedAt = moment().tz('Asia/Shanghai').format();
         const date = updatedAt.substring(0, 10);
         let data = null;
@@ -234,7 +234,7 @@ module.exports = {
         });
     },
 
-    '/new': async (req, res) => {
+    '/': async (req, res) => {
         let data = null;
         let client = null;
         let _id = null;
