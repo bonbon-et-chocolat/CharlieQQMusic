@@ -1,6 +1,8 @@
 <mvc:View
 	controllerName="charlie.data.controller.Worklist"
 	xmlns:m="sap.m"
+	xmlns:f="sap.f"
+	xmlns:card="sap.f.cards"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.uxap"
 	xmlns:layout="sap.ui.layout">
@@ -40,8 +42,7 @@
 			</m:FlexBox>
 		</headerContent>
 		<sections>
-
-			<ObjectPageSection titleUppercase="false" class="section" id="hotSection" title="Personal" importance="High">
+			<ObjectPageSection titleUppercase="false" class="section" id="hotSection" title="热歌榜" importance="High">
 				<subSections>
 					<ObjectPageSubSection id="hit-rank" title="热歌榜" titleUppercase="false">
 						<blocks>
@@ -99,6 +100,48 @@
 									</m:ColumnListItem>
 								</m:items>
 							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+
+			<ObjectPageSection titleUppercase="false" class="section" id="newSection" title="榜单成绩" importance="High">
+				<subSections>
+					<ObjectPageSubSection id="new-rank" title="榜单成绩" titleUppercase="false">
+						<blocks>
+							<f:GridContainer
+								id="grd"
+								class="sapUiSmallMargin"
+								items="{
+										path: 'dataModel>/data/details',
+										filters: [{path: 'score', operator: 'GT', value1: '0'}],
+										sorter: {
+											path: 'score',
+											descending: true
+										}
+									}">
+								<f:layout>
+									<f:GridContainerSettings rowSize="84px" columnSize="84px" gap="8px" />
+								</f:layout>
+								<f:layoutXS>
+									<f:GridContainerSettings rowSize="70px" columnSize="70px" gap="8px" />
+								</f:layoutXS>
+								<f:Card>
+									<f:layoutData>
+										<f:GridContainerItemLayoutData columns="4" />
+									</f:layoutData>
+									<f:header>
+										<card:Header title="{dataModel>title}" subtitle="发行于：{dataModel>timePublic}" />
+									</f:header>
+									<f:content>
+										<m:VBox class="sapUiSmallMargin" 
+											items="{
+												path: 'dataModel>record',
+												factory: '.createRecordContent'
+											}"></m:VBox>
+									</f:content>
+								</f:Card>
+							</f:GridContainer>
 						</blocks>
 					</ObjectPageSubSection>
 				</subSections>
