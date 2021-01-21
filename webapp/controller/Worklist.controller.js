@@ -1,0 +1,51 @@
+sap.ui.define([
+	'./BaseController',
+	'../util/ServiceDAO',
+	'sap/ui/model/json/JSONModel',
+	'../model/formatter',
+	'sap/m/library',
+	"sap/ui/model/Filter",
+	"sap/ui/model/FilterOperator"
+], function (BaseController, ServiceDAO, JSONModel, formatter, mobileLibrary, Filter, FilterOperator) {
+	"use strict";
+
+	return BaseController.extend("charlie.data.controller.Worklist", {
+
+		formatter: formatter,
+		/**
+		 * Called when the worklist controller is instantiated.
+		 * @public
+		 */
+		onInit: async function () {
+			const [ response ] = await ServiceDAO.getSongs();
+			// Model used to manipulate control states
+			const oModel = new JSONModel(response);
+			this.setModel(oModel, "dataModel");
+		},
+
+		/**
+		 * Triggered by the SearchFields's 'search' event
+		 * @param {sap.ui.base.Event} oEvent SearchFields's search event
+		 * @public
+		 */
+		onFilterSongs: function (oEvent, tableId='table') {
+
+			// build filter array
+			var aFilter = [];
+			var sQuery = oEvent.getParameter("query");
+			if (sQuery) {
+				aFilter.push(new Filter("title", FilterOperator.Contains, sQuery));
+			}
+
+			// filter binding
+			var oTable = this.byId(tableId);
+			var oBinding = oTable.getBinding("items");
+			oBinding.filter(aFilter);
+		},
+		openAd: function() {
+			this.openURL( 'https://www.douban.com/group/topic/208627731/' );
+		}
+
+	});
+
+});
