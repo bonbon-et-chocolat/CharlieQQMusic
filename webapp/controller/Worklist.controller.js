@@ -3,10 +3,9 @@ sap.ui.define([
 	'../util/ServiceDAO',
 	'sap/ui/model/json/JSONModel',
 	'../model/formatter',
-	'sap/m/library',
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator"
-], function (BaseController, ServiceDAO, JSONModel, formatter, mobileLibrary, Filter, FilterOperator) {
+], function (BaseController, ServiceDAO, JSONModel, formatter, Filter, FilterOperator) {
 	"use strict";
 
 	return BaseController.extend("charlie.data.controller.Worklist", {
@@ -46,10 +45,14 @@ sap.ui.define([
 			var oBinding = oTable.getBinding("items");
 			oBinding.filter(aFilter);
 		},
+
 		openAd: function() {
 			this.openURL( 'https://www.douban.com/group/topic/208627731/' );
-		}
+		},
 
+		createRecordContent: function(sId, oContext) {
+			return new sap.m.Text( { text: oContext.getProperty()});
+		}
 	});
 
 });
