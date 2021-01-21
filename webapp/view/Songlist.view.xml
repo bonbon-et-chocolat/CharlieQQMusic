@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="charlie.data.controller.Worklist"
+	controllerName="charlie.data.controller.Songlist"
 	xmlns:m="sap.m"
 	xmlns:f="sap.f"
 	xmlns:card="sap.f.cards"

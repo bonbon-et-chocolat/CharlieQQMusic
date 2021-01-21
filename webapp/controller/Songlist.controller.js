@@ -8,11 +8,11 @@ sap.ui.define([
 ], function (BaseController, ServiceDAO, JSONModel, formatter, Filter, FilterOperator) {
 	"use strict";
 
-	return BaseController.extend("charlie.data.controller.Worklist", {
+	return BaseController.extend("charlie.data.controller.Songlist", {
 
 		formatter: formatter,
 		/**
-		 * Called when the worklist controller is instantiated.
+		 * Called when the Songlist controller is instantiated.
 		 * @public
 		 */
 		onInit: function () {

@@ -69,8 +69,8 @@
 			"routes": [
 				{
 					"pattern": "",
-					"name": "worklist",
-					"target": "worklist"
+					"name": "songlist",
+					"target": "songlist"
 				},
 				{
 					"pattern": "Post/{postId}",
@@ -80,9 +80,9 @@
 
 			],
 			"targets": {
-				"worklist": {
-					"viewName": "Worklist",
-					"viewId": "worklist",
+				"songlist": {
+					"viewName": "Songlist",
+					"viewId": "songlist",
 					"viewLevel": 1
 				},
 				"post": {

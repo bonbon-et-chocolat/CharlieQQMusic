@@ -1,8 +1,6 @@
 sap.ui.define([
-	'sap/ui/core/UIComponent',
-	'sap/ui/model/resource/ResourceModel',
-	'./model/models'
-], function (UIComponent, ResourceModel, models) {
+	'sap/ui/core/UIComponent'
+], function (UIComponent) {
 	"use strict";
 
 	return UIComponent.extend("charlie.data.Component", {
