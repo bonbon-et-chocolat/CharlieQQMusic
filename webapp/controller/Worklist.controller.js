@@ -15,17 +15,43 @@ sap.ui.define([
 		 * Called when the worklist controller is instantiated.
 		 * @public
 		 */
-		onInit: async function () {
-			this.byId('fav-table').setBusy(true);
-			this.byId('hit-table').setBusy(true);
-			const [ response ] = await ServiceDAO.getSongs();
-			// Model used to manipulate control states
-			const oModel = new JSONModel(response);
-			this.setModel(oModel, "dataModel");
-			this.byId('fav-table').setBusy(false);
-			this.byId('hit-table').setBusy(false);
+		onInit: function () {
+			const oModel = new JSONModel({
+				songsLoading: true,
+				yobangLoading: true
+			});
+			this.setModel(oModel, "viewModel");
+			this._loadTableData();
+			this._loadYoBang();
 		},
 
+		_loadTableData: async function() {
+			try{
+				const [ response ] = await ServiceDAO.getSongs();
+				const oModel = new JSONModel(response);
+				this.setModel(oModel, "dataModel");
+			} catch(error) {
+				//
+			} finally{
+				this.getView().getModel( 'viewModel' ).setProperty( '/songsLoading', false);
+			}
+		},
+
+		_loadYoBang: async function() {
+			try{
+				const [ response ] = await ServiceDAO.getYobang();
+				const oModel = new JSONModel({
+					updatedAt: response.data.updateTime,
+					data: response.data.chartsList.filter( song => song.singerId==='199509')
+				});
+				this.setModel(oModel, "yobangModel");
+			} catch(error) {
+				//
+			} finally {
+				this.getView().getModel( 'viewModel' ).setProperty( '/yobangLoading', false);
+			}
+			
+		},
 		/**
 		 * Triggered by the SearchFields's 'search' event
 		 * @param {sap.ui.base.Event} oEvent SearchFields's search event

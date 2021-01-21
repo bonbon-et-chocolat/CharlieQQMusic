@@ -59,6 +59,7 @@
 											descending: true
 										}
 									}"
+								busy="{viewModel>/songsLoading}"
 								busyIndicatorDelay="0">
 								<m:headerToolbar>
 									<m:Toolbar>
@@ -107,19 +108,21 @@
 
 			<ObjectPageSection titleUppercase="false" class="section" id="newSection" title="榜单成绩" importance="High">
 				<subSections>
-					<ObjectPageSubSection id="new-rank" title="榜单成绩" titleUppercase="false">
+					<ObjectPageSubSection id="new-rank" title="排行榜（过去24小时）" titleUppercase="false">
 						<blocks>
 							<f:GridContainer
-								id="grd"
+								id="ranking-grid"
 								class="sapUiSmallMargin"
+								busy="{viewModel>/songsLoading}"
+								busyIndicatorDelay="0"
 								items="{
-										path: 'dataModel>/data/details',
-										filters: [{path: 'score', operator: 'GT', value1: '0'}],
-										sorter: {
-											path: 'score',
-											descending: true
-										}
-									}">
+									path: 'dataModel>/data/details',
+									filters: [{path: 'score', operator: 'GT', value1: '0'}],
+									sorter: {
+										path: 'score',
+										descending: true
+									}
+								}">
 								<f:layout>
 									<f:GridContainerSettings rowSize="84px" columnSize="84px" gap="8px" />
 								</f:layout>
@@ -144,6 +147,54 @@
 							</f:GridContainer>
 						</blocks>
 					</ObjectPageSubSection>
+					<ObjectPageSubSection id="yobang" title="由你音乐榜 ({yobangModel>/updatedAt}）" titleUppercase="false">
+						<blocks>
+							<m:Table
+								id="yobang-table"
+								width="auto"
+								class="sapUiResponsiveMargin"
+								growing="true"
+								items="{
+										path: 'yobangModel>/data',
+										sorter: {
+											path: 'rank',
+											descending: false
+										}
+									}"
+								busy="{viewModel>/yobangLoading}"
+								busyIndicatorDelay="0">
+
+								<m:columns>
+									<m:Column id="yo-title">
+										<m:Text text="歌曲"/>
+									</m:Column>
+									<m:Column id="yo-rank">
+										<m:Text text="排名"/>
+									</m:Column>
+									<m:Column id="yo-index">
+										<m:Text text="指数"/>
+									</m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem
+										vAlign="Middle"
+										press=".onPress">
+										<m:cells>
+											<m:ObjectIdentifier
+												title="{yobangModel>songName}"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'yobangModel>rank'
+												}"/>
+											<m:Text
+												text="{yobangModel>uniIndex}"/>
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
 				</subSections>
 			</ObjectPageSection>
 
@@ -163,6 +214,7 @@
 											descending: true
 										}
 									}"
+								busy="{viewModel>/songsLoading}"
 								busyIndicatorDelay="0">
 								<m:headerToolbar>
 									<m:Toolbar>

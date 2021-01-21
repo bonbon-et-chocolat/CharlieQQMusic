@@ -2,7 +2,13 @@
 
 sap.ui.define( [], function() {
 
-    async function genericRequest( url, options = {}) {
+    const defaultOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    async function genericRequest( url, options = defaultOptions ) {
         const oResponse = await fetch( url, options );
         let oData = {};
         try {
@@ -20,13 +26,12 @@ sap.ui.define( [], function() {
     return{
         async getSongs() {
             const sUrl = '/songs?format=json';
-            const oOptions = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-            return genericRequest( sUrl, oOptions );
+            return genericRequest( sUrl, defaultOptions );
+        },
+
+        async getYobang() {
+            const sUrl = 'https://yobang.tencentmusic.com/unichartsapi/v1/songs/charts/dynamic?platform=qqyin&offset=0&limit=100';
+            return genericRequest( sUrl, defaultOptions );
         }
     };
 });
