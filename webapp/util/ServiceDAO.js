@@ -19,7 +19,7 @@ sap.ui.define( [], function() {
 
     return{
         async getSongs() {
-            const sUrl = '/hitsongs?format=json';
+            const sUrl = '/songs?format=json';
             const oOptions = {
                 method: 'GET',
                 headers: {
