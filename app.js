@@ -81,7 +81,10 @@ fs.readdirSync(path.join(__dirname, 'routes')).forEach(file => {
 });
 
 app.use('/zhoushen/hitsongs', (req, res) => {
-  res.redirect( '/hitsongs' );
+  res.redirect( '/webapp/index.html' );
+});
+app.use('/hitsongs', (req, res) => {
+  res.redirect( '/webapp/index.html' );
 });
 
 app.use('/', (req, res) => {

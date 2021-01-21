@@ -5,11 +5,12 @@
 	xmlns="sap.uxap"
 	xmlns:layout="sap.ui.layout">
 	<ObjectPageLayout
-		id="page">
+		id="page"
+		showFooter="true">
 		<headerTitle>
 			<ObjectPageDynamicHeaderTitle>
 				<expandedHeading>
-						<m:Title text="周深QQ音乐音源数据" wrapping="true"/>
+					<m:Title text="周深QQ音乐音源数据" wrapping="true"/>
 				</expandedHeading>
 
 				<expandedContent>
@@ -34,17 +35,81 @@
 				<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
 					<m:Label text="QQ音乐粉丝总数： {dataModel>/data/fansCount}"/>
 					<m:Label text="过去24小时收听总人数： {dataModel>/data/totalListenCount}万+"/>
-					<m:Label text="数据非实时。每日更新。"/>
+					<m:Label text="数据非实时。每日更新两次。"/>
 				</layout:VerticalLayout>
 			</m:FlexBox>
 		</headerContent>
 		<sections>
-			<ObjectPageSection titleUppercase="false" class="section" id="favSection" title="Personal" importance="Medium">
+
+			<ObjectPageSection titleUppercase="false" class="section" id="hotSection" title="Personal" importance="High">
+				<subSections>
+					<ObjectPageSubSection id="hit-rank" title="热歌榜" titleUppercase="false">
+						<blocks>
+							<m:Table
+								id="hit-table"
+								width="auto"
+								class="sapUiResponsiveMargin"
+								growing="true"
+								items="{
+										path: 'dataModel>/data/details',
+										filters: [{path: 'score', operator: 'GT', value1: '0'}],
+										sorter: {
+											path: 'score',
+											descending: true
+										}
+									}"
+								busyIndicatorDelay="0">
+								<m:headerToolbar>
+									<m:Toolbar>
+										<m:Label text="过去24小时收听数据：" class="sapUiResponsiveMargin"/>
+									</m:Toolbar>
+								</m:headerToolbar>
+								<m:columns>
+									<m:Column>
+										<m:Text text="歌曲"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="巅峰指数"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="收听人数"/>
+									</m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem
+										vAlign="Middle"
+										press=".onPress">
+										<m:cells>
+											<m:ObjectIdentifier
+												title="{dataModel>title}"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'dataModel>score',
+													formatter: '.formatter.formatNumberWithCommas'
+												}"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												numberUnit="w+"
+												number="{
+													path: 'dataModel>hitListenCount',
+													formatter: '.formatter.formatNumberWithCommas'
+												}"/>
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+
+			<ObjectPageSection titleUppercase="false" class="section" id="favSection" title="收藏榜" importance="High">
 				<subSections>
 					<ObjectPageSubSection id="favRank" title="收藏Top{dataModel>/result}" titleUppercase="false">
 						<blocks>
 							<m:Table
-								id="table"
+								id="fav-table"
 								width="auto"
 								class="sapUiResponsiveMargin"
 								growing="true"
@@ -82,6 +147,7 @@
 											<m:ObjectIdentifier
 												title="{dataModel>title}"/>
 											<m:ObjectNumber
+												textAlign="Right"
 												number="{
 													path: 'dataModel>favCount',
 													formatter: '.formatter.formatNumberWithCommas'
@@ -96,68 +162,15 @@
 					</ObjectPageSubSection>
 				</subSections>
 			</ObjectPageSection>
-
-			<ObjectPageSection titleUppercase="false" class="section" id="hotSection" title="Personal" importance="Medium">
-				<subSections>
-					<ObjectPageSubSection id="hit-rank" title="热歌榜" titleUppercase="false">
-						<blocks>
-							<m:Table
-								id="hit-table"
-								width="auto"
-								class="sapUiResponsiveMargin"
-								growing="true"
-								items="{
-										path: 'dataModel>/data/details',
-										filters: [{path: 'score', operator: 'GT', value1: '0'}],
-										sorter: {
-											path: 'score',
-											descending: true
-										}
-									}"
-								busyIndicatorDelay="0">
-								<m:headerToolbar>
-									<m:Toolbar>
-										<m:Label text=""/>
-										<m:ToolbarSpacer />
-										<m:SearchField id="search-hit" width="auto" search=".onFilterSongs($event, 'hit-table')" />
-									</m:Toolbar>
-								</m:headerToolbar>
-								<m:columns>
-									<m:Column>
-										<m:Text text="歌曲"/>
-									</m:Column>
-									<m:Column>
-										<m:Text text="巅峰指数"/>
-									</m:Column>
-									<m:Column>
-										<m:Text text="收听人数（万+）"/>
-									</m:Column>
-								</m:columns>
-								<m:items>
-									<m:ColumnListItem
-										vAlign="Middle"
-										press=".onPress">
-										<m:cells>
-											<m:ObjectIdentifier
-												title="{dataModel>title}"/>
-											<m:ObjectNumber
-												number="{
-													path: 'dataModel>score',
-													formatter: '.formatter.formatNumberWithCommas'
-												}"/>
-											<m:ObjectNumber
-												number="{
-													path: 'dataModel>hitListenCount',
-													formatter: '.formatter.formatNumberWithCommas'
-												}"/>
-										</m:cells>
-									</m:ColumnListItem>
-								</m:items>
-							</m:Table>
-						</blocks>
-					</ObjectPageSubSection>
-				</subSections>
-			</ObjectPageSection>
 		</sections>
+		<footer>
+			<m:FlexBox
+				alignItems="Center"
+				justifyContent="Center">
+			<m:items>
+				<m:Text text="辣锅纯辣锅出品"/>
+			</m:items>
+			</m:FlexBox>
+		</footer>
 	</ObjectPageLayout>
 </mvc:View>

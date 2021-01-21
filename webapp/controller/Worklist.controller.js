@@ -17,10 +17,14 @@ sap.ui.define([
 		 * @public
 		 */
 		onInit: async function () {
+			this.byId('fav-table').setBusy(true);
+			this.byId('hit-table').setBusy(true);
 			const [ response ] = await ServiceDAO.getSongs();
 			// Model used to manipulate control states
 			const oModel = new JSONModel(response);
 			this.setModel(oModel, "dataModel");
+			this.byId('fav-table').setBusy(false);
+			this.byId('hit-table').setBusy(false);
 		},
 
 		/**
@@ -28,7 +32,7 @@ sap.ui.define([
 		 * @param {sap.ui.base.Event} oEvent SearchFields's search event
 		 * @public
 		 */
-		onFilterSongs: function (oEvent, tableId='table') {
+		onFilterSongs: function (oEvent, tableId='fav-table') {
 
 			// build filter array
 			var aFilter = [];
