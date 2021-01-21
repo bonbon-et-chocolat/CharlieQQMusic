@@ -11,6 +11,7 @@ const Cache = require('./util/cache');
 const config = require('./bin/config');
 
 const app = express();
+app.use(express.static(__dirname));
 const dataHandle = new DataStatistics();
 global.dataStatistics = dataHandle;
 global.feedback = new Feedback();

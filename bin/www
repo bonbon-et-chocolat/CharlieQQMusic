@@ -95,7 +95,7 @@ function onListening() {
   console.log(`Listening on \n http://localhost:${addr.port} \n http://127.0.0.1:${addr.port}`);
   
   // start cron job for fetching live data
-  cron.schedule( '1 7,11,23 * * *', async () => {
+  cron.schedule( '1 11,23 * * *', async () => {
     Songs.updateReportData();
   }, {
     timezone: "Asia/Shanghai"
