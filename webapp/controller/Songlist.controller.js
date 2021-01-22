@@ -42,7 +42,7 @@ sap.ui.define([
 				const [ response ] = await ServiceDAO.getYobang();
 				const oModel = new JSONModel({
 					updatedAt: response.data.updateTime,
-					data: response.data.chartsList.filter( song => song.singerId==='199509')
+					data: response.data.chartsList.filter( song => song.singerId.match(/,*199509,*/))
 				});
 				this.setModel(oModel, "yobangModel");
 			} catch(error) {

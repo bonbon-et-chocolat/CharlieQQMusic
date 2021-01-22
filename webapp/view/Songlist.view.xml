@@ -42,9 +42,9 @@
 			</m:FlexBox>
 		</headerContent>
 		<sections>
-			<ObjectPageSection titleUppercase="false" class="section" id="hotSection" title="热歌榜" importance="High">
+			<ObjectPageSection titleUppercase="false" class="section" id="hotSection" title="巅峰指数" importance="High">
 				<subSections>
-					<ObjectPageSubSection id="hit-rank" title="热歌榜" titleUppercase="false">
+					<ObjectPageSubSection id="hit-rank" title="巅峰指数" titleUppercase="false">
 						<blocks>
 							<m:Table
 								id="hit-table"
@@ -61,11 +61,6 @@
 									}"
 								busy="{viewModel>/songsLoading}"
 								busyIndicatorDelay="0">
-								<m:headerToolbar>
-									<m:Toolbar>
-										<m:Label text="过去24小时收听数据：" class="sapUiResponsiveMargin"/>
-									</m:Toolbar>
-								</m:headerToolbar>
 								<m:columns>
 									<m:Column>
 										<m:Text text="歌曲"/>
