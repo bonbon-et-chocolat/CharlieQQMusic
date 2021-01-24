@@ -35,7 +35,11 @@ async function _getHitSongs ({mid=MID}) {
     let result = [];
     songs.forEach((cur) => {
         if(cur && cur.singer) {
-            result = result.concat(cur.singer.data.songList.filter( (song)=> { return song.songInfo.title.indexOf('伴奏')===-1; }));
+            result = result.concat(cur.singer.data.songList.filter( (song)=> {
+                return song.songInfo.title.indexOf('伴奏')===-1
+                && (song.songInfo.fnote===4001 || song.songInfo.fnote===4009)
+                && song.songInfo.album.time_public
+                && song.songInfo.album.time_public !== '1990-01-01'; }));
         }
     });
     return result;
@@ -143,7 +147,7 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
     .map( ( {songInfo:song} ) => {
         const formatted = (({ id, mid, title }) => ({ id, mid, title }))(song);
         const { record, score, listenCnt } = hitInfo[song.mid] || {};
-        formatted.timePublic = song.album.time_public !== '1990-01-01' ? song.album.time_public : undefined;
+        formatted.timePublic = song.album.time_public;
         formatted.record = record ? record.data : undefined;
         formatted.score = score;
         formatted.weeklyListenCount = weeklyListenCountInfo.weeklyListenCount[song.mid];
@@ -202,6 +206,7 @@ async function updateReportData() {
         }
     }
 }
+
 module.exports = {
     getLiveData,
     getExistingData,
