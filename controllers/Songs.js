@@ -194,21 +194,19 @@ async function updateReportData() {
     try{
         client = await db.connect();
         data = await getExistingData( client );
-        if(!data) {
-            data = await getLiveData();
-            const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
-            await db.upsertOneByDate( client, date, data );
-        }
-        cache.set( 'Songs', data );
-        console.log( `Updated data for ${new Date()}` );
-        return data;
     } catch( err ) {
+        data = await getLiveData();
+        const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
+        await db.upsertOneByDate( client, date, data );
         console.log( err.stack );
     } finally {
         if( client ) {
             await client.close();
         }
     }
+    cache.set( 'Songs', data );
+    console.log( `Updated data for ${new Date()}` );
+    return data;
 }
 
 module.exports = {
