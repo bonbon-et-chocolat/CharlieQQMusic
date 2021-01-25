@@ -252,15 +252,15 @@
 					</ObjectPageSubSection>
 				</subSections>
 			</ObjectPageSection>
+
 		</sections>
 		<footer>
-			<m:FlexBox
-				alignItems="Center"
-				justifyContent="Center">
-			<m:items>
+			<m:OverflowToolbar>
 				<m:Text text="辣锅纯辣锅出品"/>
-			</m:items>
-			</m:FlexBox>
+				<m:ToolbarSpacer/>
+				<m:Button icon="sap-icon://history" text="历史数据" press=".openHistory"/>
+				<m:Button icon="sap-icon://business-objects-experience" text="总结图表" press=".openViz"/>
+			</m:OverflowToolbar>
 		</footer>
 	</ObjectPageLayout>
 </mvc:View>

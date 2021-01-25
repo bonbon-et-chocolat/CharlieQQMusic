@@ -76,6 +76,14 @@ sap.ui.define([
 			this.openURL( 'https://www.douban.com/group/topic/208627731/' );
 		},
 
+		openHistory: function() {
+			this.openURL( 'https://charts.mongodb.com/charts-prod-sihwb/public/dashboards/f4cd6ee1-ca04-4e1e-a5b3-80357f30dfaf' );
+		},
+
+		openViz: function() {
+			this.openURL( 'https://charts.mongodb.com/charts-prod-sihwb/public/dashboards/600cdfd3-228b-4a07-8a14-c03fa7c0c957' );
+		},
+
 		createRecordContent: function(sId, oContext) {
 			return new sap.m.Text( { text: oContext.getProperty()});
 		}
