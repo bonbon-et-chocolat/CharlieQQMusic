@@ -189,14 +189,18 @@ async function getLiveData( query={} ) {
 
 async function updateReportData() {
     let client = null;
+    let data = null;
     const {cache} = global;
     try{
         client = await db.connect();
-        const data = await getLiveData();
-        const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
-        await db.upsertOneByDate( client, date, data );
+        data = await getExistingData( client );
+        if(!data) {
+            data = await getLiveData();
+            const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
+            await db.upsertOneByDate( client, date, data );
+        }
         cache.set( 'Songs', data );
-        console.log( `Updated data for ${date}` );
+        console.log( `Updated data for ${new Date()}` );
         return data;
     } catch( err ) {
         console.log( err.stack );
