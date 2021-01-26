@@ -37,7 +37,7 @@
 				<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
 					<m:Label text="QQ音乐粉丝总数： {dataModel>/data/fansCount}"/>
 					<m:Label text="过去24小时收听总人数： {dataModel>/data/totalListenCount}万+"/>
-					<m:Label text="数据非实时。每日上午11点更新。"/>
+					<m:Label text="数据非实时。每日上午10点更新。"/>
 				</layout:VerticalLayout>
 			</m:FlexBox>
 		</headerContent>

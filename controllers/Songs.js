@@ -193,11 +193,10 @@ async function updateReportData() {
     const {cache} = global;
     try{
         client = await db.connect();
-        data = await getExistingData( client );
-    } catch( err ) {
         data = await getLiveData();
         const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
         await db.upsertOneByDate( client, date, data );
+    } catch( err ) {
         console.log( err.stack );
     } finally {
         if( client ) {
