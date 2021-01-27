@@ -22,12 +22,12 @@ class Cache {
   }
 
   get(key) {
-    //this.clear();
+    this.clear();
     return this.map[key];
   }
 
-  set(key, value, time = 90) {
-    //this.clear();
+  set(key, value, time = 24*60 ) {
+    this.clear();
     const timeKye = moment().add(time, 'minutes').format('YYMMDDHHmm');
     this.map[key] = value;
     this.timeMap[timeKye] = this.timeMap[timeKye] || [];
