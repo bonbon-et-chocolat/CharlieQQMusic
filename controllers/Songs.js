@@ -84,7 +84,7 @@ async function _getHitInfo(songMidList) {
     const requestCount = songMidList.length/10;
     const lists = [];
     for(let i=0; i<requestCount; i++ ) {
-        lists.push(songMidList.slice(i*10, i*10+9));
+        lists.push(songMidList.slice(i*10, i*10+10));
     }
 
     const results = await Promise.all(lists.map(async (list) => {
