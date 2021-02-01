@@ -190,7 +190,6 @@ async function getLiveData( query={} ) {
 async function updateReportData() {
     let client = null;
     let data = null;
-    const {cache} = global;
     try{
         client = await db.connect();
         data = await getLiveData();
@@ -203,7 +202,7 @@ async function updateReportData() {
             await client.close();
         }
     }
-    cache.set( 'Songs', data );
+    global.reportData = data;
     console.log( `Updated data for ${new Date()}` );
     return data;
 }

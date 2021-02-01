@@ -16,6 +16,7 @@ const dataHandle = new DataStatistics();
 global.dataStatistics = dataHandle;
 global.feedback = new Feedback();
 global.cache = new Cache();
+global.reportData = null;
 
 jsonFile.readFile('data/allCookies.json')
   .then((res) => {

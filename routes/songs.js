@@ -13,8 +13,8 @@ async function _getData( req ) {
     let date = req.query.date;
     let data = null;
     if( !date ) {
-        const {cache} = global;
-        data = cache.get( 'Songs' ) || await Songs.updateReportData();
+        const {reportData} = global;
+        data = reportData || await Songs.updateReportData();
     } else {
         const client = await db.connect();
         data = await Songs.getExistingData( client, req.query  );
