@@ -37,7 +37,7 @@ async function _getHitSongs ({mid=MID}) {
         if(cur && cur.singer) {
             result = result.concat(cur.singer.data.songList.filter( (song)=> {
                 return song.songInfo.title.indexOf('伴奏')===-1
-                && (song.songInfo.fnote===4001 || song.songInfo.fnote===4009)
+                && (song.songInfo.fnote===4001 || song.songInfo.fnote===4009 || song.songInfo.id===127040195)
                 && song.songInfo.album.time_public
                 && song.songInfo.album.time_public !== '1990-01-01'; }));
         }
