@@ -4,8 +4,10 @@ sap.ui.define([
 	'sap/ui/model/json/JSONModel',
 	'../model/formatter',
 	"sap/ui/model/Filter",
-	"sap/ui/model/FilterOperator"
-], function (BaseController, ServiceDAO, JSONModel, formatter, Filter, FilterOperator) {
+	"sap/ui/model/FilterOperator",
+	'sap/ui/model/Sorter',
+	'sap/ui/core/Fragment'
+], function (BaseController, ServiceDAO, JSONModel, formatter, Filter, FilterOperator, Sorter, Fragment) {
 	"use strict";
 
 	return BaseController.extend("charlie.data.controller.Songlist", {
@@ -16,6 +18,7 @@ sap.ui.define([
 		 * @public
 		 */
 		onInit: function () {
+			this._mViewSettingsDialogs = {};
 			const oModel = new JSONModel({
 				songsLoading: true,
 				yobangLoading: true
@@ -86,6 +89,43 @@ sap.ui.define([
 
 		createRecordContent: function(sId, oContext) {
 			return new sap.m.Text( { text: oContext.getProperty()});
+		},
+
+		getViewSettingsDialog: function (sDialogFragmentName) {
+			var pDialog = this._mViewSettingsDialogs[sDialogFragmentName];
+
+			if (!pDialog) {
+				pDialog = Fragment.load({
+					id: this.getView().getId(),
+					name: sDialogFragmentName,
+					controller: this
+				});
+				this._mViewSettingsDialogs[sDialogFragmentName] = pDialog;
+			}
+			return pDialog;
+		},
+
+		handleSortButtonPressed: function () {
+			this.getViewSettingsDialog("charlie.data.util.SortDialog")
+				.then(function (oViewSettingsDialog) {
+					oViewSettingsDialog.open();
+				});
+		},
+
+		handleSortDialogConfirm: function (oEvent) {
+			var oTable = this.byId("fav-table"),
+				mParams = oEvent.getParameters(),
+				oBinding = oTable.getBinding("items"),
+				sPath,
+				bDescending,
+				aSorters = [];
+
+			sPath = mParams.sortItem.getKey();
+			bDescending = mParams.sortDescending;
+			aSorters.push(new Sorter(sPath, bDescending));
+
+			// apply the selected sort and group settings
+			oBinding.sort(aSorters);
 		}
 	});
 

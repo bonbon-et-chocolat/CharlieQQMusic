@@ -215,6 +215,10 @@
 									<m:Toolbar>
 										<m:Label id="tableHeader" text=""/>
 										<m:ToolbarSpacer />
+										<m:Button
+											tooltip="排序"
+											icon="sap-icon://sort"
+											press="handleSortButtonPressed" />
 										<m:SearchField id="searchField" width="auto" search=".onFilterSongs" />
 									</m:Toolbar>
 								</m:headerToolbar>
