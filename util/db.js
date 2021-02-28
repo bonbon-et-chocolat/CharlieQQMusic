@@ -51,6 +51,18 @@ async function upsertOneByDate( client, sDate, data, db=DB, collection=COLLECTIO
     return upsertOne( client, {updatedAt: new RegExp(sDate)}, data, db, collection );
 }
 
+async function updateYesterdayFavData( client, data ) {
+    return upsertOne( client, {tag: 'yesterday'}, data, DB, 'lastUpdate' );
+}
+
+async function findYesterdayFavData( client ) {
+    return client.db(DB)
+    .collection('lastUpdate')
+    .findOne({
+        tag: 'yesterday'
+    });
+}
+
 async function updateOneById( client, _id, data, db=DB, collection=COLLECTION  ) {
     return client.db(db)
     .collection(collection)
@@ -64,5 +76,7 @@ module.exports = {
     upsertOne,
     updateOneById,
     findByDate,
-    upsertOneByDate
+    upsertOneByDate,
+    updateYesterdayFavData,
+    findYesterdayFavData
 };

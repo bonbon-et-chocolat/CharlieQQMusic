@@ -4,7 +4,7 @@ const moment = require('moment-timezone');
 const db = require("../util/db");
 
 const MID = '003fA5G40k6hKc';
-const PAGES = [1,2,3,4];
+const PAGES = [1,2,3,4,5];
 const NUM = 100;
 
 async function _getHitSongs ({mid=MID}) {
@@ -196,14 +196,53 @@ async function getLiveData( query={} ) {
     return _getLiveData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp: Date.now() } );
 }
 
+async function getYesterday( client ) {
+    return db.findYesterdayFavData( client );
+}
+
+async function updateYesterday() {
+    let client = null;
+    const date = moment().tz('Asia/Shanghai').subtract(1, 'days').format().substring(0, 10);
+    try{
+        client = await db.connect();
+        const {details} = await getExistingData( client, { date: date }  );
+        const data = {};
+        details.forEach( ({id, favCount}) => {
+            data[id] = favCount;
+        });
+        await db.updateYesterdayFavData( client, {
+            tag: 'yesterday',
+            date,
+            data
+        } );
+    } catch( err ) {
+        console.log( err.stack );
+    } finally {
+        if( client ) {
+            await client.close();
+        }
+    }
+}
+
+function _combine( today, yesterday ){
+    today.details.forEach( song => {
+        let oldData = yesterday.data[song.id] || 0;
+        song.increase = song.favCount - oldData;
+    });
+    return today;
+}
+
 async function updateReportData() {
     let client = null;
     let data = null;
+    const curDate = moment().tz('Asia/Shanghai');
     try{
         client = await db.connect();
-        data = await getLiveData();
-        const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
-        await db.upsertOneByDate( client, date, data );
+        const today = await getLiveData();
+        const date = curDate.format().substring(0, 10);
+        await db.upsertOneByDate( client, date, today );
+        const yesterday = await getYesterday( client );
+        data = _combine(today, yesterday); 
     } catch( err ) {
         console.log( err.stack );
     } finally {
@@ -219,5 +258,6 @@ async function updateReportData() {
 module.exports = {
     getLiveData,
     getExistingData,
-    updateReportData
+    updateReportData,
+    updateYesterday
 }
