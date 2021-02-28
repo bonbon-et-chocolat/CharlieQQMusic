@@ -21,6 +21,12 @@ async function findByDate( client, sDate ) {
     return _find( client, {updatedAt: new RegExp(sDate)});
 }
 
+async function findAll( client, db=DB, collection=COLLECTION ) {
+    return client.db(db)
+    .collection(collection)
+    .find({}).toArray();
+}
+
 async function insertOne( client, data, db=DB, collection=COLLECTION  ) {
     return client.db(db)
     .collection(collection)
@@ -53,6 +59,7 @@ async function updateOneById( client, _id, data, db=DB, collection=COLLECTION  )
 
 module.exports = {
     connect,
+    findAll,
     insertOne,
     upsertOne,
     updateOneById,
