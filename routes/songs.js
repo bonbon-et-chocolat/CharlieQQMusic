@@ -10,15 +10,21 @@ function formatNumberWithCommas(x) {
 }
 
 async function _getData( req ) {
-    let date = req.query.date;
+    let bToday = !!req.query.date;
     let data = null;
-    if( !date ) {
-        const {reportData} = global;
-        data = reportData || await Songs.updateReportData();
-    } else {
+    if( bToday ) {
+        data = global.reportData;
+    }
+    if( !data ) {
         const client = await db.connect();
         data = await Songs.getExistingData( client, req.query  );
         await client.close();
+        if( bToday ) {
+            if( !data ) {
+                data = await Songs.updateReportData();
+            }
+            global.reportData = data;
+        }
     }
     return data;
 }
