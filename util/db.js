@@ -55,6 +55,10 @@ async function updateYesterdayFavData( client, data ) {
     return upsertOne( client, {tag: 'yesterday'}, data, DB, 'lastUpdate' );
 }
 
+async function updateSummary( client, data ) {
+    return upsertOne( client, {tag: 'summary'}, data, DB, 'summary' );
+}
+
 async function findYesterdayFavData( client ) {
     return client.db(DB)
     .collection('lastUpdate')
@@ -78,5 +82,6 @@ module.exports = {
     findByDate,
     upsertOneByDate,
     updateYesterdayFavData,
-    findYesterdayFavData
+    findYesterdayFavData,
+    updateSummary
 };

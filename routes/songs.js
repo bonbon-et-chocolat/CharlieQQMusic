@@ -52,5 +52,54 @@ module.exports = {
                 error: err
             });
         }
+    },
+    '/fav/report': async (req, res) => {
+        try {
+            const start = '2021-02-01';
+            const end = '2021-02-28';
+            const client = await db.connect();
+            let data1 = await Songs.getExistingData( client,  {date: start});
+            let data2 = await Songs.getExistingData( client,  {date: end});
+
+            let dict = {};
+            data1.details.forEach( x=> {
+                dict[x.mid] = {
+                    favCount: x.favCount
+                }
+            });
+
+            const data = data2.details.map( ({mid, title, timePublic, favCount }) => {
+                let formatted = {
+                    mid,
+                    title,
+                    timePublic,
+                    favCount
+                };
+                formatted.favCountMin = dict[mid] ? dict[mid].favCount : 0;
+                if(mid === '003zysEj2zeF4I') {
+                    formatted.favCountMin = 1830000
+                } else if (timePublic<start && formatted.favCountMin === 0 ) {
+                    formatted.favCountMin = formatted.favCount;
+                }
+                formatted.diff = formatted.favCount - formatted.favCountMin;
+                return formatted;
+            }).sort(({diff:diff1}, {diff:diff2}) => {
+                if (diff1 > diff2) return -1;
+                else return 1;
+            });
+            db.updateSummary(client, {
+                tag: 'summary',
+                data
+            });
+            res.send({
+                data,
+                result: data.details.length
+            })
+        } catch (err) {
+            res.render('error', {
+                message: "找不到数据",
+                error: err
+            });
+        }
     }
 }
