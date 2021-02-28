@@ -229,11 +229,11 @@
 									<m:Column id="fav">
 										<m:Text text="收藏"/>
 									</m:Column>
-									<m:Column id="time">
-										<m:Text text="发行时间"/>
-									</m:Column>
 									<m:Column id="inc">
 										<m:Text text="收藏较昨日增长"/>
+									</m:Column>
+									<m:Column id="time">
+										<m:Text text="发行时间"/>
 									</m:Column>
 								</m:columns>
 								<m:items>
@@ -249,14 +249,14 @@
 													path: 'dataModel>favCount',
 													formatter: '.formatter.formatNumberWithCommas'
 												}"/>
-											<m:Text
-												text="{dataModel>timePublic}"/>
 											<m:ObjectNumber
 												textAlign="Right"
 												number="{
 													path: 'dataModel>increase',
 													formatter: '.formatter.formatNumberWithCommas'
 												}"/>
+											<m:Text
+												text="{dataModel>timePublic}"/>
 										</m:cells>
 									</m:ColumnListItem>
 								</m:items>

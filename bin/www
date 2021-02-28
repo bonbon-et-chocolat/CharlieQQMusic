@@ -100,4 +100,10 @@ function onListening() {
   }, {
     timezone: "Asia/Shanghai"
   }).start();
+
+  cron.schedule( '0 0 * * *', async () => {
+    Songs.updateYesterday();
+  }, {
+    timezone: "Asia/Shanghai"
+  }).start();
 }

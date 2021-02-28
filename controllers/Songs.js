@@ -240,9 +240,9 @@ async function updateReportData() {
         client = await db.connect();
         const today = await getLiveData();
         const date = curDate.format().substring(0, 10);
-        await db.upsertOneByDate( client, date, today );
         const yesterday = await getYesterday( client );
-        data = _combine(today, yesterday); 
+        data = _combine(today, yesterday);
+        await db.upsertOneByDate( client, date, data );
     } catch( err ) {
         console.log( err.stack );
     } finally {

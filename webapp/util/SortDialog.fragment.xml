@@ -6,8 +6,8 @@
 		confirm="handleSortDialogConfirm">
 		<sortItems>
 			<ViewSettingsItem text="收藏量" key="favCount" selected="true" />
-			<ViewSettingsItem text="发行时间" key="timePublic" />
 			<ViewSettingsItem text="收藏昨日增长" key="increase" />
+			<ViewSettingsItem text="发行时间" key="timePublic" />
 		</sortItems>
 	</ViewSettingsDialog>
 </core:FragmentDefinition>
