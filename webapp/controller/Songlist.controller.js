@@ -101,6 +101,10 @@ sap.ui.define([
 			this.openURL( 'https://charts.mongodb.com/charts-prod-sihwb/public/dashboards/600cdfd3-228b-4a07-8a14-c03fa7c0c957' );
 		},
 
+		openUni: function() {
+			this.openURL( 'https://y.qq.com/m/client/toplist/uni.html?ADTAG=cbshare')
+		},
+
 		createRecordContent: function(sId, oContext) {
 			return new sap.m.Text( { text: oContext.getProperty()});
 		},
@@ -140,6 +144,37 @@ sap.ui.define([
 
 			// apply the selected sort and group settings
 			oBinding.sort(aSorters);
+		},
+
+		_handlePopoverPress: function( oButton, text ) {
+			// create popover
+			if( !this._oPopover ) {
+				this._oPopoverMessage = new sap.m.FormattedText({
+					id: this.getView().createId( 'popover-message' )
+				});
+				this._oPopover = new sap.m.ResponsivePopover({
+					showHeader: false,
+					horizontalScrolling: false,
+					resizable: true,
+					content: this._oPopoverMessage,
+					contentWidth: '40%'
+				});
+				this.getView().addDependent( this._oPopover );
+			}
+			this._oPopoverMessage.setHtmlText( text ).addStyleClass( 'sapUiSmallMargin' );
+			this._oPopover.openBy( oButton );
+		},
+
+		handleChartPopoverPress: function( oEvent ) {
+			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const text = oButton.getBindingContext('rankModel').getProperty('intro');
+			this._handlePopoverPress( oButton, text );
+		},
+
+		handleHitInfoPress: function( oEvent ) {
+			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const text = oButton.getBindingContext('dataModel').getProperty('record').join('<br><br>');
+			this._handlePopoverPress( oButton, text );
 		}
 	});
 

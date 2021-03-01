@@ -77,8 +77,12 @@
 										vAlign="Middle"
 										press=".onPress">
 										<m:cells>
-											<m:ObjectIdentifier
-												title="{dataModel>title}"/>
+											<m:HBox>
+												<m:Link
+													text="{dataModel>title}"
+													press=".handleHitInfoPress"
+													enabled="{=${dataModel>record}.length>0}"/>
+											</m:HBox>
 											<m:ObjectNumber
 												textAlign="Right"
 												number="{
@@ -127,9 +131,11 @@
 									<m:ColumnListItem
 										vAlign="Middle">
 										<m:cells>
-											<m:ObjectIdentifier
-												title="{rankModel>title}"/>
-
+											<m:HBox align='Center'>
+												<m:Link
+													text="{rankModel>title}"
+													press=".handleChartPopoverPress"/>
+											</m:HBox>
 										 	<m:VBox items="{rankModel>song}">
 												<m:Text text="第{rankModel>rank}名：{rankModel>title}"/>
 											</m:VBox>
@@ -140,47 +146,9 @@
 							</m:Table>
 						</blocks>
 					</ObjectPageSubSection>
-					<ObjectPageSubSection id="new-rank" title="排行榜（过去24小时）" titleUppercase="false">
-						<blocks>
-							<f:GridContainer
-								id="ranking-grid"
-								class="sapUiSmallMargin"
-								busy="{viewModel>/songsLoading}"
-								busyIndicatorDelay="0"
-								items="{
-									path: 'dataModel>/data/details',
-									filters: [{path: 'score', operator: 'GT', value1: '0'}],
-									sorter: {
-										path: 'score',
-										descending: true
-									}
-								}">
-								<f:layout>
-									<f:GridContainerSettings rowSize="84px" columnSize="84px" gap="8px" />
-								</f:layout>
-								<f:layoutXS>
-									<f:GridContainerSettings rowSize="70px" columnSize="70px" gap="8px" />
-								</f:layoutXS>
-								<f:Card visible="{=${dataModel>record}.length>0}">
-									<f:layoutData>
-										<f:GridContainerItemLayoutData columns="4" />
-									</f:layoutData>
-									<f:header>
-										<card:Header title="{dataModel>title}" subtitle="发行于：{dataModel>timePublic}" />
-									</f:header>
-									<f:content>
-										<m:VBox class="sapUiSmallMargin" 
-											items="{
-												path: 'dataModel>record',
-												factory: '.createRecordContent'
-											}"></m:VBox>
-									</f:content>
-								</f:Card>
-							</f:GridContainer>
-						</blocks>
-					</ObjectPageSubSection>
 					<ObjectPageSubSection id="yobang" title="由你音乐榜 ({yobangModel>/updatedAt}）" titleUppercase="false">
 						<blocks>
+							
 							<m:Table
 								id="yobang-table"
 								width="auto"
@@ -195,7 +163,15 @@
 									}"
 								busy="{viewModel>/yobangLoading}"
 								busyIndicatorDelay="0">
-
+								<m:headerToolbar>
+									<m:Toolbar>
+										<m:ToolbarSpacer />
+										<m:Button
+											text="去点赞"
+											icon="sap-icon://thumb-up"
+											press="openUni" />
+									</m:Toolbar>
+								</m:headerToolbar>
 								<m:columns>
 									<m:Column id="yo-title">
 										<m:Text text="歌曲"/>
