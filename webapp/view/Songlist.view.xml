@@ -125,7 +125,7 @@
 										<m:ToolbarSpacer />
 										<m:Button
 											text="去人气榜打榜/送灯"
-											icon="sap-icon://thumb-up"
+											icon="sap-icon://lightbulb"
 											press="openDaBang" />
 									</m:Toolbar>
 								</m:headerToolbar>
@@ -295,8 +295,20 @@
 			<m:OverflowToolbar>
 				<m:Text text="辣锅纯辣锅出品"/>
 				<m:ToolbarSpacer/>
-				<m:Button icon="sap-icon://history" text="历史数据" press=".openHistory"/>
-				<m:Button icon="sap-icon://business-objects-experience" text="总结图表" press=".openViz"/>
+				<m:MenuButton
+					text="更多功能">
+					<m:Menu>
+						<m:items>
+							<m:MenuItem startsSection="true" icon="sap-icon://education" text="单曲购买教程" press=".openBuyTutorial"/>
+
+							<m:MenuItem startsSection="true" icon="sap-icon://lightbulb" text="人气榜打榜送灯" press=".openDaBang"/>
+							<m:MenuItem text="由你榜点赞" icon="sap-icon://thumb-up" press=".openUni"/>
+
+							<m:MenuItem startsSection="true" icon="sap-icon://history" text="历史数据" press=".openHistory"/>
+							<m:MenuItem text="总结图表" icon="sap-icon://business-objects-experience" press=".openViz"/>
+						</m:items>
+					</m:Menu>
+				</m:MenuButton>
 			</m:OverflowToolbar>
 		</footer>
 	</ObjectPageLayout>

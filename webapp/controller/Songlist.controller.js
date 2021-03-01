@@ -102,11 +102,15 @@ sap.ui.define([
 		},
 
 		openUni: function() {
-			this.openURL( 'https://y.qq.com/m/client/toplist/uni.html?ADTAG=cbshare')
+			this.openURL( 'https://y.qq.com/m/client/toplist/uni.html?ADTAG=cbshare');
 		},
 
 		openDaBang: function() {
-			this.openURL( 'https://c.y.qq.com/base/fcgi-bin/u?__=l8SVZzB')
+			this.openURL( 'https://c.y.qq.com/base/fcgi-bin/u?__=l8SVZzB');
+		},
+
+		openBuyTutorial: function() {
+			this.openURL( 'https://www.douban.com/group/topic/209067429/')
 		},
 
 		createRecordContent: function(sId, oContext) {
