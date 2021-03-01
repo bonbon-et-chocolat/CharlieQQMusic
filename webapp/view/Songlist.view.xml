@@ -103,6 +103,43 @@
 
 			<ObjectPageSection titleUppercase="false" class="section" id="newSection" title="榜单成绩" importance="High">
 				<subSections>
+					<ObjectPageSubSection id="chartsRank" title="巅峰榜Top100 ({rankModel>/data/updatedAt})" titleUppercase="false">
+						<blocks>
+							<m:Table
+								id="charts-table"
+								width="auto"
+								class="sapUiResponsiveMargin"
+								growing="true"
+								items="{
+										path: 'rankModel>/data/data'
+									}"
+								busy="{viewModel>/ranksLoading}"
+								busyIndicatorDelay="0">
+								<m:columns>
+									<m:Column>
+										<m:Text text="榜单"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="上榜歌曲"/>
+									</m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem
+										vAlign="Middle">
+										<m:cells>
+											<m:ObjectIdentifier
+												title="{rankModel>title}"/>
+
+										 	<m:VBox items="{rankModel>song}">
+												<m:Text text="第{rankModel>rank}名：{rankModel>title}"/>
+											</m:VBox>
+											
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
 					<ObjectPageSubSection id="new-rank" title="排行榜（过去24小时）" titleUppercase="false">
 						<blocks>
 							<f:GridContainer
@@ -124,7 +161,7 @@
 								<f:layoutXS>
 									<f:GridContainerSettings rowSize="70px" columnSize="70px" gap="8px" />
 								</f:layoutXS>
-								<f:Card>
+								<f:Card visible="{=${dataModel>record}.length>0}">
 									<f:layoutData>
 										<f:GridContainerItemLayoutData columns="4" />
 									</f:layoutData>

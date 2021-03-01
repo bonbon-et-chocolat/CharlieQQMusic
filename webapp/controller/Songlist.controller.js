@@ -21,10 +21,12 @@ sap.ui.define([
 			this._mViewSettingsDialogs = {};
 			const oModel = new JSONModel({
 				songsLoading: true,
+				ranksLoading: true,
 				yobangLoading: true
 			});
 			this.setModel(oModel, "viewModel");
 			this._loadTableData();
+			this._loadRankData();
 			this._loadYoBang();
 		},
 
@@ -37,6 +39,18 @@ sap.ui.define([
 				//
 			} finally{
 				this.getView().getModel( 'viewModel' ).setProperty( '/songsLoading', false);
+			}
+		},
+
+		_loadRankData: async function() {
+			try{
+				const [ response ] = await ServiceDAO.getRanks();
+				const oRankModel = new JSONModel(response);
+				this.setModel(oRankModel, "rankModel");
+			} catch(error) {
+				//
+			} finally{
+				this.getView().getModel( 'viewModel' ).setProperty( '/ranksLoading', false);
 			}
 		},
 

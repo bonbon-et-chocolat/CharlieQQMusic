@@ -1,10 +1,10 @@
-const db = require("../util/db");
 const Ranks = require("../controllers/Ranks");
 
 module.exports = {
     '/': async (req, res) => {
         try {
             let data = global.rankData || await Ranks.getExistingChartData();
+            global.rankData = data;
             res.send({
                 data
             })

@@ -153,9 +153,10 @@ async function _getChart({id = 4, pageNo = 1, pageSize = 100, period, time}) {
 }
 
 async function getCharts( chartIds = dayCharts.concat(weekCharts), time = moment().tz('Asia/Shanghai').format('YYYY-MM-DD') ) {
-    const results = await Promise.all(chartIds.map(async (id) => {
+    let results = await Promise.all(chartIds.map(async (id) => {
         return _getChart({ id });
     }));
+    results = results.filter( chart => chart.song.length > 0 );
     return{
         updatedAt: time,
         data: results

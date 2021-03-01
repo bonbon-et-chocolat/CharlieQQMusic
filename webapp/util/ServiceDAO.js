@@ -29,6 +29,11 @@ sap.ui.define( [], function() {
             return genericRequest( sUrl, defaultOptions );
         },
 
+        async getRanks() {
+            const sUrl = '/ranks';
+            return genericRequest( sUrl, defaultOptions );
+        },
+
         async getYobang() {
             const sUrl = 'https://yobang.tencentmusic.com/unichartsapi/v1/songs/charts/dynamic?platform=qqyin&offset=0&limit=100';
             return genericRequest( sUrl, defaultOptions );
