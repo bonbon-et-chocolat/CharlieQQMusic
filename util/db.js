@@ -21,6 +21,10 @@ async function findByDate( client, sDate ) {
     return _find( client, {updatedAt: new RegExp(sDate)});
 }
 
+async function findOneChart( client ) {
+    return _find( client, {tag: 'charts'}, DB, 'ranks' );
+}
+
 async function findAll( client, db=DB, collection=COLLECTION ) {
     return client.db(db)
     .collection(collection)
@@ -59,6 +63,10 @@ async function updateSummary( client, data ) {
     return upsertOne( client, {tag: 'summary'}, data, DB, 'summary' );
 }
 
+async function updateCharts( client, data ) {
+    return upsertOne( client, {tag: 'charts'}, data, DB, 'ranks' );
+}
+
 async function findYesterdayFavData( client ) {
     return client.db(DB)
     .collection('lastUpdate')
@@ -80,8 +88,10 @@ module.exports = {
     upsertOne,
     updateOneById,
     findByDate,
+    findOneChart,
     upsertOneByDate,
     updateYesterdayFavData,
     findYesterdayFavData,
-    updateSummary
+    updateSummary,
+    updateCharts
 };

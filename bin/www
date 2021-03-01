@@ -10,6 +10,7 @@ var http = require('http');
 var config = require('./config');
 const cron = require('node-cron');
 const Songs = require('../controllers/Songs');
+const Ranks = require('../controllers/Ranks');
 
 /**
  * Get port from environment and store in Express.
@@ -96,6 +97,7 @@ function onListening() {
   
   // start cron job for fetching live data
   cron.schedule( '1 0,10,11 * * *', async () => {
+    Ranks.updateCharts();
     Songs.updateReportData();
   }, {
     timezone: "Asia/Shanghai"
