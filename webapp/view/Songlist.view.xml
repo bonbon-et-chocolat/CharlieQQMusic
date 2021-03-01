@@ -81,6 +81,7 @@
 												<m:Link
 													text="{dataModel>title}"
 													press=".handleHitInfoPress"
+													wrapping="true"
 													enabled="{=${dataModel>record}.length>0}"/>
 											</m:HBox>
 											<m:ObjectNumber
@@ -119,6 +120,15 @@
 									}"
 								busy="{viewModel>/ranksLoading}"
 								busyIndicatorDelay="0">
+								<m:headerToolbar>
+									<m:Toolbar>
+										<m:ToolbarSpacer />
+										<m:Button
+											text="去人气榜打榜/送灯"
+											icon="sap-icon://thumb-up"
+											press="openDaBang" />
+									</m:Toolbar>
+								</m:headerToolbar>
 								<m:columns>
 									<m:Column>
 										<m:Text text="榜单"/>
@@ -134,6 +144,7 @@
 											<m:HBox align='Center'>
 												<m:Link
 													text="{rankModel>title}"
+													wrapping="true"
 													press=".handleChartPopoverPress"/>
 											</m:HBox>
 										 	<m:VBox items="{rankModel>song}">
@@ -167,7 +178,7 @@
 									<m:Toolbar>
 										<m:ToolbarSpacer />
 										<m:Button
-											text="去点赞"
+											text="去由你榜点赞"
 											icon="sap-icon://thumb-up"
 											press="openUni" />
 									</m:Toolbar>

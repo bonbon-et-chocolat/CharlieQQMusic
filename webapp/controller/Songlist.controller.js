@@ -105,6 +105,10 @@ sap.ui.define([
 			this.openURL( 'https://y.qq.com/m/client/toplist/uni.html?ADTAG=cbshare')
 		},
 
+		openDaBang: function() {
+			this.openURL( 'https://c.y.qq.com/base/fcgi-bin/u?__=l8SVZzB')
+		},
+
 		createRecordContent: function(sId, oContext) {
 			return new sap.m.Text( { text: oContext.getProperty()});
 		},
