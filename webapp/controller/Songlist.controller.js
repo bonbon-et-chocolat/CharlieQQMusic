@@ -154,35 +154,37 @@ sap.ui.define([
 			oBinding.sort(aSorters);
 		},
 
-		_handlePopoverPress: function( oButton, text ) {
+		_handlePopoverPress: function( oButton, title, text ) {
 			// create popover
 			if( !this._oPopover ) {
 				this._oPopoverMessage = new sap.m.FormattedText({
 					id: this.getView().createId( 'popover-message' )
 				});
+				
 				this._oPopover = new sap.m.ResponsivePopover({
-					showHeader: false,
 					horizontalScrolling: false,
 					resizable: true,
 					content: this._oPopoverMessage,
-					contentWidth: '40%'
+					contentWidth: '30%'
 				});
 				this.getView().addDependent( this._oPopover );
 			}
 			this._oPopoverMessage.setHtmlText( text ).addStyleClass( 'sapUiSmallMargin' );
-			this._oPopover.openBy( oButton );
+			this._oPopover.setTitle(title).openBy( oButton );
 		},
 
 		handleChartPopoverPress: function( oEvent ) {
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const title = oButton.getBindingContext('rankModel').getProperty('title');
 			const text = oButton.getBindingContext('rankModel').getProperty('intro');
-			this._handlePopoverPress( oButton, text );
+			this._handlePopoverPress( oButton, title, text );
 		},
 
 		handleHitInfoPress: function( oEvent ) {
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const title = oButton.getBindingContext('dataModel').getProperty('title');
 			const text = oButton.getBindingContext('dataModel').getProperty('record').join('<br><br>');
-			this._handlePopoverPress( oButton, text );
+			this._handlePopoverPress( oButton, title, text );
 		}
 	});
 
