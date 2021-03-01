@@ -42,6 +42,8 @@ async function _getHitSongs ({mid=MID}) {
                 }
                 return song.songInfo.title.indexOf('伴奏')===-1
                 && (song.songInfo.fnote===4001 || song.songInfo.fnote===4009 || song.songInfo.mid === '003zysEj2zeF4I')
+                && song.songInfo.action
+                && song.songInfo.action.msgdown!==3
                 && song.songInfo.album.time_public
                 && song.songInfo.album.time_public !== '1990-01-01'; }));
         }

@@ -10,7 +10,7 @@ function formatNumberWithCommas(x) {
 }
 
 async function _getData( req ) {
-    let bToday = !!req.query.date;
+    let bToday = !req.query.date;
     let data = null;
     if( bToday ) {
         data = global.reportData;
