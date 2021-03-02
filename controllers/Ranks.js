@@ -176,6 +176,7 @@ async function updateCharts( chartIds, time ) {
     const data = await getCharts( chartIds, time );
     let client = await db.connect();
     await db.updateCharts(client, data);
+    global.rankData = data;
     if( client ) {
         await client.close();
     }
