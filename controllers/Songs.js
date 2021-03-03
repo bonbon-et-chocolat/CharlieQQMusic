@@ -148,13 +148,13 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
     hitSongs
     .map( ( {songInfo:song} ) => {
         const formatted = (({ id, mid, title }) => ({ id, mid, title }))(song);
-        const { record, score, listenCnt } = hitInfo[song.mid] || {};
+        let { record, score, listenCnt } = hitInfo[song.mid] || {};
         formatted.timePublic = song.album.time_public;
         formatted.record = record ? record.data : undefined;
         formatted.score = score;
-        if( id === 106484214 && !score ) {
+        if( formatted.mid === '004OQ5Mt0EmEzv' && !score ) {
             formatted.score = 239037;
-            formatted.hitListenCount = 30;
+            listenCnt = 30;
             formatted.record = [];
         }
         if( listenCnt ) {
