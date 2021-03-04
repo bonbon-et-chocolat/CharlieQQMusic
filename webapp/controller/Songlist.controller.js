@@ -116,7 +116,11 @@ sap.ui.define([
 		openSong: function( oEvent ) {
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
 			const mid = oButton.getBindingContext('dataModel').getProperty('mid');
-			this.openURL( `https://y.qq.com/n/yqq/song/${mid}.html`);			
+			if (mid === '004AkQIa1JTR6p') {
+				this.openURL( 'https://i.y.qq.com/n2/m/share/details/taoge.html?hosteuin=oK6kowEAoK4z7Kn5NKoFoecA7z**&id=7854751705');
+			} else {
+				this.openURL( `https://y.qq.com/n/yqq/song/${mid}.html`);			
+			}
 		},
 
 		createRecordContent: function(sId, oContext) {

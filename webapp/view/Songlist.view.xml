@@ -237,7 +237,7 @@
 								busyIndicatorDelay="0">
 								<m:headerToolbar>
 									<m:Toolbar>
-										<m:Label id="tableHeader" text=""/>
+										<m:Label id="tableHeader" text="点击歌曲跳转qq音乐"/>
 										<m:ToolbarSpacer />
 										<m:Button
 											tooltip="排序"
