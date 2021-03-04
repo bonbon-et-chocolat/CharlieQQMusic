@@ -6,7 +6,8 @@ const db = require("../util/db");
 const MID = '003fA5G40k6hKc';
 const PAGES = [1,2,3,4,5];
 const NUM = 100;
-
+const LVREN = '003zysEj2zeF4I';
+const JINGYU = 101806738;
 async function _getHitSongs ({mid=MID}) {
     const songs = await Promise.all(PAGES.map(async (page) => {
         return request({
@@ -33,17 +34,30 @@ async function _getHitSongs ({mid=MID}) {
     }));
 
     let result = [];
+    let found = false;
+
     songs.forEach((cur) => {
         if(cur && cur.singer) {
             result = result.concat(cur.singer.data.songList.filter( (song)=> {
+                if(song.songInfo.id===JINGYU){
+                    found = true;
+                }
+
                 return song.songInfo.title.indexOf('伴奏')===-1
-                && (song.songInfo.fnote===4001 || song.songInfo.fnote===4009 || song.songInfo.mid === '003zysEj2zeF4I')
+                && (song.songInfo.fnote===4001 || song.songInfo.fnote===4009 || song.songInfo.mid === LVREN || song.songInfo.id === JINGYU )
                 && song.songInfo.action
                 && song.songInfo.action.msgdown!==3
                 && song.songInfo.album.time_public
                 && song.songInfo.album.time_public !== '1990-01-01'; }));
         }
     });
+
+    if(!found) {
+        result.push({
+            songInfo: {"id":JINGYU,"type":0,"mid":"004AkQIa1JTR6p","name":"化身孤岛的鲸","title":"化身孤岛的鲸","subtitle":"化身孤岛的鲸","singer":[{"id":199509,"mid":"003fA5G40k6hKc","name":"周深","title":"周深","type":0,"uin":0,"pmid":""}],"album":{"id":1137013,"mid":"0042uUzs3DnbSF","name":"化身孤岛的鲸 周深翻唱精选Vol. 1","title":"化身孤岛的鲸 周深翻唱精选Vol. 1","subtitle":"化身孤岛的鲸 周深翻唱精选Vol. 1","time_public":"2014-04-23","pmid":"001vLwvq0xltN3_1"},"mv":{"id":0,"vid":"","name":"","title":"","vt":0},"interval":234,"isonly":1,"language":0,"genre":0,"index_cd":0,"index_album":1,"time_public":"2014-04-23","status":0,"fnote":4009,"file":{"media_mid":"000qUMkO3ukMC2","size_24aac":0,"size_48aac":1414660,"size_96aac":2855672,"size_192ogg":4981553,"size_192aac":5625508,"size_128mp3":3758899,"size_320mp3":9396959,"size_ape":0,"size_flac":25411006,"size_dts":0,"size_try":960887,"try_begin":0,"try_end":0,"url":"","size_hires":0,"hires_sample":0,"hires_bitdepth":0,"b_30s":0,"e_30s":60000,"size_96ogg":2579798},"pay":{"pay_month":0,"price_track":0,"price_album":0,"pay_play":0,"pay_down":0,"pay_status":0,"time_free":0},"action":{"switch":1,"msgid":23,"alert":24,"icons":9977724,"msgshare":0,"msgfav":0,"msgdown":0,"msgpay":0},"ksong":{"id":16695069,"mid":"0000jrm43kvAdx"},"volume":{"gain":-8.239,"peak":0.99,"lra":12.65},"label":"0","url":"","bpm":0,"version":0,"trace":"","data_type":0,"modify_stamp":0,"pingpong":"","aid":0,"ppurl":"","tid":0,"ov":0,"sa":0,"es":""}
+        });
+    }
+
     return result;
 }
 
