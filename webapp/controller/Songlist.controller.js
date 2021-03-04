@@ -113,6 +113,12 @@ sap.ui.define([
 			this.openURL( 'https://www.douban.com/group/topic/209067429/')
 		},
 
+		openSong: function( oEvent ) {
+			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const mid = oButton.getBindingContext('dataModel').getProperty('mid');
+			this.openURL( `https://y.qq.com/n/yqq/song/${mid}.html`);			
+		},
+
 		createRecordContent: function(sId, oContext) {
 			return new sap.m.Text( { text: oContext.getProperty()});
 		},

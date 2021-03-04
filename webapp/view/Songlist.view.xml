@@ -265,8 +265,10 @@
 										vAlign="Middle"
 										press=".onPress">
 										<m:cells>
-											<m:ObjectIdentifier
-												title="{dataModel>title}"/>
+											<m:Link
+												text="{dataModel>title}"
+												wrapping="true"
+												press=".openSong"/>
 											<m:ObjectNumber
 												textAlign="Right"
 												number="{
