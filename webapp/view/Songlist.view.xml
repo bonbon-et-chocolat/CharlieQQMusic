@@ -305,6 +305,8 @@
 
 							<m:MenuItem startsSection="true" icon="sap-icon://lightbulb" text="人气榜打榜送灯" press=".openDaBang"/>
 							<m:MenuItem text="由你榜点赞" icon="sap-icon://thumb-up" press=".openUni"/>
+							<m:MenuItem text="网易云人气榜" icon="sap-icon://thumb-up" press=".openNeteaseList"/>
+
 							<m:MenuItem startsSection="true" icon="sap-icon://history" text="历史数据" press=".openHistory"/>
 							<m:MenuItem text="总结图表" icon="sap-icon://business-objects-experience" press=".openViz"/>
 						</m:items>

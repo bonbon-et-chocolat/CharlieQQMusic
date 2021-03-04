@@ -113,6 +113,10 @@ sap.ui.define([
 			this.openURL( 'https://www.douban.com/group/topic/209067429/')
 		},
 
+		openNeteaseList: function() {
+			this.openURL( 'https://mp.music.163.com/5c9c3a0ec91fac1390052994/pages/index/index.html');
+		},
+
 		openSong: function( oEvent ) {
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
 			const mid = oButton.getBindingContext('dataModel').getProperty('mid');
