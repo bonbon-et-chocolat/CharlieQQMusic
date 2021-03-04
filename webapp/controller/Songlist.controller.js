@@ -101,8 +101,12 @@ sap.ui.define([
 			this.openURL( 'https://charts.mongodb.com/charts-prod-sihwb/public/dashboards/600cdfd3-228b-4a07-8a14-c03fa7c0c957' );
 		},
 
-		openUni: function() {
+		openUniExtra: function() {
 			this.openURL( 'https://y.qq.com/m/client/toplist/uni.html?ADTAG=cbshare');
+		},
+
+		openUni: function() {
+			this.openURL( 'https://c.y.qq.com/base/fcgi-bin/u?__=dMkHzxs' );
 		},
 
 		openDaBang: function() {

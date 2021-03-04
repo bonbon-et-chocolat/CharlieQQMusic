@@ -181,6 +181,9 @@
 											text="去由你榜点赞"
 											icon="sap-icon://thumb-up"
 											press="openUni" />
+										<m:Button
+											text="会员额外15赞"
+											press="openUniExtra" />
 									</m:Toolbar>
 								</m:headerToolbar>
 								<m:columns>
@@ -304,8 +307,8 @@
 							<m:MenuItem startsSection="true" icon="sap-icon://education" text="单曲购买教程" press=".openBuyTutorial"/>
 
 							<m:MenuItem startsSection="true" icon="sap-icon://lightbulb" text="人气榜打榜送灯" press=".openDaBang"/>
-							<m:MenuItem text="由你榜点赞" icon="sap-icon://thumb-up" press=".openUni"/>
-
+							<m:MenuItem text="由你榜基础点赞" icon="sap-icon://thumb-up" press=".openUni"/>
+							<m:MenuItem text="由你榜额外15赞" icon="sap-icon://thumb-up" press=".openUniExtra"/>
 							<m:MenuItem startsSection="true" icon="sap-icon://history" text="历史数据" press=".openHistory"/>
 							<m:MenuItem text="总结图表" icon="sap-icon://business-objects-experience" press=".openViz"/>
 						</m:items>
