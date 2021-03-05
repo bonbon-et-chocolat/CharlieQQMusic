@@ -1,6 +1,7 @@
 'use strict';
 const request  = require('../util/request');
 const moment = require('moment-timezone');
+const db = require("../util/db");
 
 async function _getChannel() { 
     return request({
@@ -42,7 +43,41 @@ async function getUploaded() {
     };
 }
 
+async function updateChannel( client, date ) {
+    const {data:channel} = await getChannel();
+    let result = {};
+    channel.forEach( ({bvid, view_count}) => {
+        result[bvid] = view_count;
+    });
+    await db.updateBiliChannelData( client, date, { updatedAt: date, "data": result });
+}
+
+async function updateUploaded( client, date ) {
+    const {data:uploaded} = await getUploaded();
+    let result = {};
+    uploaded.forEach( ({bvid, view_count}) => {
+        result[bvid] = view_count;
+    });
+    await db.updateBiliVideoData( client, date, { updatedAt: date, "data": result });
+}
+async function updateYesterday() {
+    let client = null;
+    const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
+    try{
+        client = await db.connect();
+        await updateChannel(client, date);
+        await updateUploaded(client, date);
+    } catch( err ) {
+        console.log( err.stack );
+    } finally {
+        if( client ) {
+            await client.close();
+        }
+    }
+}
+
 module.exports = {
     getChannel,
-    getUploaded
+    getUploaded,
+    updateYesterday
 }

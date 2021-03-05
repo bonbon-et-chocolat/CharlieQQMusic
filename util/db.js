@@ -59,6 +59,15 @@ async function updateYesterdayFavData( client, data ) {
     return upsertOne( client, {tag: 'yesterday'}, data, DB, 'lastUpdate' );
 }
 
+async function updateBiliVideoData( client, sDate, data ) {
+    return upsertOneByDate( client, {updatedAt: new RegExp(sDate)}, data, 'bilibili', 'videos' );
+}
+
+
+async function updateBiliChannelData( client, sDate, data ) {
+    return upsertOneByDate( client, {updatedAt: new RegExp(sDate)}, data, 'bilibili', 'channel' );
+}
+
 async function updateSummary( client, data ) {
     return upsertOne( client, {tag: 'summary'}, data, DB, 'summary' );
 }
@@ -93,5 +102,7 @@ module.exports = {
     updateYesterdayFavData,
     findYesterdayFavData,
     updateSummary,
-    updateCharts
+    updateCharts,
+    updateBiliVideoData,
+    updateBiliChannelData
 };

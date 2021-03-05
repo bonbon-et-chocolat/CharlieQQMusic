@@ -6,7 +6,7 @@ function expired(data) {
     }
     const lastUpdate = data.updatedAt;
     const now = Date.now();
-    const bExpired = (now - lastUpdate) > 60*60;
+    const bExpired = (now - lastUpdate) > 60*60*5;
     return bExpired;
 }
 module.exports = {
@@ -38,6 +38,17 @@ module.exports = {
             res.send({
                 data
             })
+        } catch (err) {
+            res.render('error', {
+                message: "找不到数据",
+                error: err
+            });
+        }
+    },
+    '/updateYesterday': async(req, res)=> {
+        try {
+            await Bili.updateYesterday();
+            res.send({});
         } catch (err) {
             res.render('error', {
                 message: "找不到数据",

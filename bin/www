@@ -11,6 +11,7 @@ var config = require('./config');
 const cron = require('node-cron');
 const Songs = require('../controllers/Songs');
 const Ranks = require('../controllers/Ranks');
+const Bili = require('../controllers/Bili');
 
 /**
  * Get port from environment and store in Express.
@@ -106,6 +107,7 @@ function onListening() {
   // start cron job for updating yesterday data
   cron.schedule( '0 0 * * *', async () => {
     Songs.updateYesterday();
+    Bili.updateYesterday();
   }, {
     timezone: "Asia/Shanghai"
   }).start();
