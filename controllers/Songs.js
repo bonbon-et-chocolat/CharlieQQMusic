@@ -167,12 +167,12 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
         formatted.record = record ? record.data : undefined;
         formatted.score = score;
         if( formatted.mid === '004OQ5Mt0EmEzv' && !score ) {
-            formatted.score = 237342;
+            formatted.score = 241416;
             listenCnt = '30w+';
             formatted.record = [];
         }
         if( formatted.mid === '003akgwo0qN5bE' && !score ) {
-            formatted.score = 127218;
+            formatted.score = 123888;
             listenCnt = '1w+';
             formatted.record = [];
         }
