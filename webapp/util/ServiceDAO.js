@@ -37,6 +37,11 @@ sap.ui.define( [], function() {
         async getYobang() {
             const sUrl = 'https://yobang.tencentmusic.com/unichartsapi/v1/songs/charts/dynamic?platform=qqyin&offset=0&limit=100';
             return genericRequest( sUrl, defaultOptions );
+        },
+
+        async getBilibiliChannel() {
+            const sUrl = 'https://api.bilibili.com/x/web-interface/web/channel/featured/list?channel_id=751970&filter_type=0&page_size=100';
+            return genericRequest( sUrl, defaultOptions );
         }
     };
 });
