@@ -6,8 +6,9 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	'sap/ui/model/Sorter',
-	'sap/ui/core/Fragment'
-], function (BaseController, ServiceDAO, JSONModel, formatter, Filter, FilterOperator, Sorter, Fragment) {
+	'sap/ui/core/Fragment',
+	"sap/ui/Device"
+], function (BaseController, ServiceDAO, JSONModel, formatter, Filter, FilterOperator, Sorter, Fragment, Device) {
 	"use strict";
 
 	return BaseController.extend("charlie.data.controller.Songlist", {
@@ -22,12 +23,47 @@ sap.ui.define([
 			const oModel = new JSONModel({
 				songsLoading: true,
 				ranksLoading: true,
-				yobangLoading: true
+				yobangLoading: true,
+				channelLoading: true
 			});
+			this._initProductSwitcher();
 			this.setModel(oModel, "viewModel");
 			this._loadTableData();
 			this._loadRankData();
 			this._loadYoBang();
+			this._loadBiliChannel();
+		},
+
+		_initProductSwitcher: function() {
+			const oView = this.getView();
+			var oModel = new JSONModel({
+				"items": [
+					{
+						"src": "sap-icon://business-objects-experience",
+						"title": "QQ音乐",
+						"subTitle": "榜单成绩、收藏统计"
+					},
+					{
+						"src": "sap-icon://business-objects-experience",
+						"title": "Bilibili",
+						"subTitle": "频道播放"
+					}
+				]
+			});
+			oView.setModel(oModel);
+			if (!this._pPopover) {
+				this._pPopover = Fragment.load({
+					id: oView.getId(),
+					name: "charlie.data.fragment.ProductSwitchPopover",
+					controller: this
+				}).then(function(oPopover){
+					oView.addDependent(oPopover);
+					if (Device.system.phone) {
+						oPopover.setEndButton(new sap.m.Button({text: "Close", type: "Emphasized", press: this.handleProductSwitcherClose.bind(this)}));
+					}
+					return oPopover;
+				}.bind(this));
+			}
 		},
 
 		_loadTableData: async function() {
@@ -66,6 +102,21 @@ sap.ui.define([
 				//
 			} finally {
 				this.getView().getModel( 'viewModel' ).setProperty( '/yobangLoading', false);
+			}
+			
+		},
+
+		_loadBiliChannel: async function() {
+			try{
+				const [ response ] = await ServiceDAO.getBilibiliChannel();
+				const oModel = new JSONModel({
+					data: response.data
+				});
+				this.setModel(oModel, "channelModel");
+			} catch(error) {
+				//
+			} finally {
+				this.getView().getModel( 'viewModel' ).setProperty( '/channelLoading', false);
 			}
 			
 		},
@@ -125,6 +176,12 @@ sap.ui.define([
 			} else {
 				this.openURL( `https://y.qq.com/n/yqq/song/${mid}.html`);			
 			}
+		},
+
+		openBiliVideo: function( oEvent ) {
+			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const bvid = oButton.getBindingContext('channelModel').getProperty('bvid');
+			this.openURL(`https://www.bilibili.com/video/${bvid}`);
 		},
 
 		createRecordContent: function(sId, oContext) {
@@ -199,6 +256,19 @@ sap.ui.define([
 			const title = oButton.getBindingContext('dataModel').getProperty('title');
 			const text = oButton.getBindingContext('dataModel').getProperty('record').join('<br><br>');
 			this._handlePopoverPress( oButton, title, text );
+		},
+
+		handleProductSwitcher: function (oEvent) {
+			var oButton = oEvent.getSource();
+			this._pPopover.then(function(oPopover){
+				oPopover.openBy(oButton);
+			});
+		},
+
+		handleProductSwitcherClose: function () {
+			this._pPopover.then(function(oPopover){
+				oPopover.close();
+			});
 		}
 	});
 

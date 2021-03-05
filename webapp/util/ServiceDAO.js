@@ -40,7 +40,7 @@ sap.ui.define( [], function() {
         },
 
         async getBilibiliChannel() {
-            const sUrl = 'https://api.bilibili.com/x/web-interface/web/channel/featured/list?channel_id=751970&filter_type=0&page_size=100';
+            const sUrl = '/bili/channel';
             return genericRequest( sUrl, defaultOptions );
         }
     };

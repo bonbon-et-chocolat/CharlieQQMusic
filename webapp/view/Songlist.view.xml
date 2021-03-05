@@ -2,6 +2,7 @@
 	controllerName="charlie.data.controller.Songlist"
 	xmlns:m="sap.m"
 	xmlns:f="sap.f"
+	xmlns:core="sap.ui.core"
 	xmlns:card="sap.f.cards"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.uxap"
@@ -12,7 +13,7 @@
 		<headerTitle>
 			<ObjectPageDynamicHeaderTitle>
 				<expandedHeading>
-					<m:Title text="周深QQ音乐音源数据" wrapping="true"/>
+					<m:Title text="周深音乐数据" wrapping="true"/>
 				</expandedHeading>
 
 				<expandedContent>
@@ -20,14 +21,14 @@
 				</expandedContent>
 
 				<snappedContent>
-					<m:Text text="周深QQ音乐音源数据"/>
+					<m:Text text="周深音乐数据 {dataModel>/data/updatedAt}"/>
 				</snappedContent>
 
 				<snappedTitleOnMobile>
-					<m:Title text="周深QQ音乐音源数据 {dataModel>/data/updatedAt}"/>
+					<m:Title text="周深音乐数据 {dataModel>/data/updatedAt}"/>
 				</snappedTitleOnMobile>
 				<actions>
-					<m:Button icon="sap-icon://feedback" text="辣锅纯辣锅" type="Transparent" press=".openAd"/>
+					<m:Button icon="sap-icon://menu" type="Transparent" press=".handleProductSwitcher" visible="false"/>
 				</actions>
 			</ObjectPageDynamicHeaderTitle>
 		</headerTitle>
@@ -37,12 +38,11 @@
 				<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
 					<m:Label text="QQ音乐粉丝总数： {dataModel>/data/fansCount}"/>
 					<m:Label text="过去24小时收听总人数： {dataModel>/data/totalListenCount}万+"/>
-					<m:Label text="数据非实时。每日上午10点更新。"/>
 				</layout:VerticalLayout>
 			</m:FlexBox>
 		</headerContent>
 		<sections>
-			<ObjectPageSection titleUppercase="false" class="section" id="hotSection" title="巅峰指数" importance="High">
+			<ObjectPageSection titleUppercase="false" class="section" id="newSection" title="榜单成绩" importance="High">
 				<subSections>
 					<ObjectPageSubSection id="hit-rank" title="巅峰指数" titleUppercase="false">
 						<blocks>
@@ -103,11 +103,6 @@
 							</m:Table>
 						</blocks>
 					</ObjectPageSubSection>
-				</subSections>
-			</ObjectPageSection>
-
-			<ObjectPageSection titleUppercase="false" class="section" id="newSection" title="榜单成绩" importance="High">
-				<subSections>
 					<ObjectPageSubSection id="chartsRank" title="巅峰榜Top100 ({rankModel>/data/updatedAt})" titleUppercase="false">
 						<blocks>
 							<m:Table
@@ -237,7 +232,6 @@
 								busyIndicatorDelay="0">
 								<m:headerToolbar>
 									<m:Toolbar>
-										<m:Label id="tableHeader" text="点击歌曲跳转qq音乐"/>
 										<m:ToolbarSpacer />
 										<m:Button
 											tooltip="排序"
@@ -292,27 +286,66 @@
 				</subSections>
 			</ObjectPageSection>
 
+			<ObjectPageSection titleUppercase="false" class="section" id="channel-section" title="B站" importance="High">
+				<subSections>
+					<ObjectPageSubSection id="channel-table-section" title="B站频道播放Top30" titleUppercase="false">
+						<blocks>
+							<m:Table
+								id="channel-table"
+								width="auto"
+								class="sapUiResponsiveMargin"
+								growing="true"
+								items="{
+										path: 'channelModel>/data/data'
+									}"
+								busy="{viewModel>/channelLoading}"
+								busyIndicatorDelay="0">
+								<m:headerToolbar>
+									<m:Toolbar>
+										<m:ToolbarSpacer />
+										<m:SearchField width="auto" search=".onFilterSongs($event, 'channel-table')" />
+									</m:Toolbar>
+								</m:headerToolbar>
+								<m:columns>
+									<m:Column>
+										<m:Text text="标题"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="播放量"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="点赞量"/>
+									</m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem
+										vAlign="Middle">
+										<m:cells>
+											<m:Link
+												text="{channelModel>title}"
+												wrapping="true"
+												press=".openBiliVideo"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'channelModel>view_count'
+												}"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'channelModel>like_count'
+												}"/>
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
 		</sections>
 		<footer>
-			<m:OverflowToolbar>
-				<m:Text text="辣锅纯辣锅出品"/>
-				<m:ToolbarSpacer/>
-				<m:MenuButton
-					text="更多功能">
-					<m:Menu>
-						<m:items>
-							<m:MenuItem startsSection="true" icon="sap-icon://education" text="单曲购买教程" press=".openBuyTutorial"/>
-
-							<m:MenuItem startsSection="true" icon="sap-icon://lightbulb" text="人气榜打榜送灯" press=".openDaBang"/>
-							<m:MenuItem text="由你榜点赞" icon="sap-icon://thumb-up" press=".openUni"/>
-							<m:MenuItem text="网易云人气榜" icon="sap-icon://thumb-up" press=".openNeteaseList"/>
-
-							<m:MenuItem startsSection="true" icon="sap-icon://history" text="历史数据" press=".openHistory"/>
-							<m:MenuItem text="总结图表" icon="sap-icon://business-objects-experience" press=".openViz"/>
-						</m:items>
-					</m:Menu>
-				</m:MenuButton>
-			</m:OverflowToolbar>
+			<core:Fragment fragmentName="charlie.data.fragment.FooterToolbar" type="XML"/>
 		</footer>
 	</ObjectPageLayout>
 </mvc:View>
