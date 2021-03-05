@@ -288,7 +288,7 @@
 
 			<ObjectPageSection titleUppercase="false" class="section" id="channel-section" title="B站" importance="High">
 				<subSections>
-					<ObjectPageSubSection id="channel-table-section" title="B站频道播放Top30" titleUppercase="false">
+					<ObjectPageSubSection id="channel-table-section" title="频道播放Top30" titleUppercase="false">
 						<blocks>
 							<m:Table
 								id="channel-table"
@@ -334,6 +334,61 @@
 												textAlign="Right"
 												number="{
 													path: 'channelModel>like_count'
+												}"/>
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
+					<ObjectPageSubSection id="bili-up-table-section" title="周深投稿" titleUppercase="false">
+						<blocks>
+							<m:Table
+								id="bili-up-table"
+								width="auto"
+								class="sapUiResponsiveMargin"
+								growing="true"
+								items="{
+										path: 'biliUpModel>/data/data'
+									}"
+								busy="{viewModel>/biliUpLoading}"
+								busyIndicatorDelay="0">
+								<m:headerToolbar>
+									<m:Toolbar>
+										<m:ToolbarSpacer />
+										<m:SearchField width="auto" search=".onFilterSongs($event, 'bili-up-table')" />
+									</m:Toolbar>
+								</m:headerToolbar>
+								<m:columns>
+									<m:Column>
+										<m:Text text="标题"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="播放量"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="评论量"/>
+									</m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem
+										vAlign="Middle">
+										<m:cells>
+											<m:Link
+												text="{biliUpModel>title}"
+												wrapping="true"
+												press=".openBiliVideo($event, 'biliUpModel')"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'biliUpModel>view_count',
+													formatter: '.formatter.formatNumberWithCommas'
+												}"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'biliUpModel>comment_count',
+													formatter: '.formatter.formatNumberWithCommas'
 												}"/>
 										</m:cells>
 									</m:ColumnListItem>

@@ -24,7 +24,8 @@ sap.ui.define([
 				songsLoading: true,
 				ranksLoading: true,
 				yobangLoading: true,
-				channelLoading: true
+				channelLoading: true,
+				biliUpLoading: true
 			});
 			this._initProductSwitcher();
 			this.setModel(oModel, "viewModel");
@@ -32,6 +33,7 @@ sap.ui.define([
 			this._loadRankData();
 			this._loadYoBang();
 			this._loadBiliChannel();
+			this._loadBiliUploaded();
 		},
 
 		_initProductSwitcher: function() {
@@ -120,6 +122,21 @@ sap.ui.define([
 			}
 			
 		},
+
+		_loadBiliUploaded: async function() {
+			try{
+				const [ response ] = await ServiceDAO.getBilibiliUploaded();
+				const oModel = new JSONModel({
+					data: response.data
+				});
+				this.setModel(oModel, "biliUpModel");
+			} catch(error) {
+				//
+			} finally {
+				this.getView().getModel( 'viewModel' ).setProperty( '/biliUpLoading', false);
+			}
+			
+		},
 		/**
 		 * Triggered by the SearchFields's 'search' event
 		 * @param {sap.ui.base.Event} oEvent SearchFields's search event
@@ -178,9 +195,9 @@ sap.ui.define([
 			}
 		},
 
-		openBiliVideo: function( oEvent ) {
+		openBiliVideo: function( oEvent, context='channelModel' ) {
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
-			const bvid = oButton.getBindingContext('channelModel').getProperty('bvid');
+			const bvid = oButton.getBindingContext(context).getProperty('bvid');
 			this.openURL(`https://www.bilibili.com/video/${bvid}`);
 		},
 

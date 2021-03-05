@@ -12,7 +12,7 @@ async function _getChannel() {
 async function getChannel() {
     const results = await _getChannel();
     return{
-        updatedAt: moment().tz('Asia/Shanghai'),
+        updatedAt: Date.now(),
         data: results.data.list.map( ({name, view_count, like_count, bvid }) => {
             return{
                 title: name,
@@ -24,6 +24,25 @@ async function getChannel() {
     };
 }
 
+async function getUploaded() {
+    const results = await request({
+        url: 'https://api.bilibili.com/x/space/arc/search?mid=3404595&ps=30&tid=0&pn=1&keyword=&order=click&jsonp=jsonp',
+        data: {}
+    });
+    return{
+        updatedAt: Date.now(),
+        data: results.data.list.vlist.map( ({title, play, comment, bvid }) => {
+            return{
+                title,
+                view_count: play,
+                comment_count: comment,
+                bvid
+            }
+        })
+    };
+}
+
 module.exports = {
-    getChannel
+    getChannel,
+    getUploaded
 }
