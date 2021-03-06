@@ -17,7 +17,7 @@
 				</expandedHeading>
 
 				<expandedContent>
-					<m:Text text="上次更新：{dataModel>/data/updatedAt}"/>
+					<m:Text text="Q音数据上次更新：{dataModel>/data/updatedAt}"/>
 				</expandedContent>
 
 				<snappedContent>
@@ -38,11 +38,14 @@
 				<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
 					<m:Label text="QQ音乐粉丝总数： {dataModel>/data/fansCount}"/>
 					<m:Label text="过去24小时收听总人数： {dataModel>/data/totalListenCount}万+"/>
+					<m:Label text="B站粉丝总数： {biliModel>/data/upstats/followers} (+{biliModel>/data/upstats/increase})"/>
+					<m:Label text="B站频道播放量： {biliModel>/data/channelMeta/view_count}亿"/>
+					<m:Label text="B站频道订阅人数： {biliModel>/data/channelMeta/subscribed_count}（+{biliModel>/data/channelMeta/subscribed_increase}）"/>
 				</layout:VerticalLayout>
 			</m:FlexBox>
 		</headerContent>
 		<sections>
-			<ObjectPageSection titleUppercase="false" class="section" id="newSection" title="榜单成绩" importance="High">
+			<ObjectPageSection titleUppercase="false" class="section" id="newSection" title="QQ音乐" importance="High">
 				<subSections>
 					<ObjectPageSubSection id="hit-rank" title="巅峰指数" titleUppercase="false">
 						<blocks>
@@ -209,11 +212,6 @@
 							</m:Table>
 						</blocks>
 					</ObjectPageSubSection>
-				</subSections>
-			</ObjectPageSection>
-
-			<ObjectPageSection titleUppercase="false" class="section" id="favSection" title="收藏榜" importance="High">
-				<subSections>
 					<ObjectPageSubSection id="favRank" title="收藏Top{dataModel>/result}" titleUppercase="false">
 						<blocks>
 							<m:Table
@@ -296,13 +294,17 @@
 								class="sapUiResponsiveMargin"
 								growing="true"
 								items="{
-										path: 'channelModel>/data/data'
+										path: 'biliModel>/data/featured'
 									}"
-								busy="{viewModel>/channelLoading}"
+								busy="{viewModel>/biliLoading}"
 								busyIndicatorDelay="0">
 								<m:headerToolbar>
 									<m:Toolbar>
 										<m:ToolbarSpacer />
+										<m:Button
+											tooltip="排序"
+											icon="sap-icon://sort"
+											press="handleSortButtonPressed('BiliSortDialog')" />
 										<m:SearchField width="auto" search=".onFilterSongs($event, 'channel-table')" />
 									</m:Toolbar>
 								</m:headerToolbar>
@@ -314,7 +316,7 @@
 										<m:Text text="播放量"/>
 									</m:Column>
 									<m:Column>
-										<m:Text text="点赞量"/>
+										<m:Text text="今日增长"/>
 									</m:Column>
 								</m:columns>
 								<m:items>
@@ -322,18 +324,20 @@
 										vAlign="Middle">
 										<m:cells>
 											<m:Link
-												text="{channelModel>title}"
+												text="{biliModel>title}"
 												wrapping="true"
 												press=".openBiliVideo"/>
 											<m:ObjectNumber
 												textAlign="Right"
 												number="{
-													path: 'channelModel>view_count'
+													path: 'biliModel>view_count',
+													formatter: '.formatter.formatNumberWithWan'
 												}"/>
 											<m:ObjectNumber
 												textAlign="Right"
 												number="{
-													path: 'channelModel>like_count'
+													path: 'biliModel>increase',
+													formatter: '.formatter.formatNumberWithWan'
 												}"/>
 										</m:cells>
 									</m:ColumnListItem>
@@ -349,13 +353,17 @@
 								class="sapUiResponsiveMargin"
 								growing="true"
 								items="{
-										path: 'biliUpModel>/data/data'
+										path: 'biliModel>/data/uploaded'
 									}"
-								busy="{viewModel>/biliUpLoading}"
+								busy="{viewModel>/biliLoading}"
 								busyIndicatorDelay="0">
 								<m:headerToolbar>
 									<m:Toolbar>
 										<m:ToolbarSpacer />
+										<m:Button
+											tooltip="排序"
+											icon="sap-icon://sort"
+											press="handleSortButtonPressed('BiliUploadSortDialog')" />
 										<m:SearchField width="auto" search=".onFilterSongs($event, 'bili-up-table')" />
 									</m:Toolbar>
 								</m:headerToolbar>
@@ -367,7 +375,7 @@
 										<m:Text text="播放量"/>
 									</m:Column>
 									<m:Column>
-										<m:Text text="评论量"/>
+										<m:Text text="今日增长"/>
 									</m:Column>
 								</m:columns>
 								<m:items>
@@ -375,19 +383,19 @@
 										vAlign="Middle">
 										<m:cells>
 											<m:Link
-												text="{biliUpModel>title}"
+												text="{biliModel>title}"
 												wrapping="true"
-												press=".openBiliVideo($event, 'biliUpModel')"/>
+												press=".openBiliVideo($event, 'biliModel')"/>
 											<m:ObjectNumber
 												textAlign="Right"
 												number="{
-													path: 'biliUpModel>view_count',
+													path: 'biliModel>view_count',
 													formatter: '.formatter.formatNumberWithCommas'
 												}"/>
 											<m:ObjectNumber
 												textAlign="Right"
 												number="{
-													path: 'biliUpModel>comment_count',
+													path: 'biliModel>increase',
 													formatter: '.formatter.formatNumberWithCommas'
 												}"/>
 										</m:cells>

@@ -39,13 +39,8 @@ sap.ui.define( [], function() {
             return genericRequest( sUrl, defaultOptions );
         },
 
-        async getBilibiliChannel() {
-            const sUrl = '/bili/channel';
-            return genericRequest( sUrl, defaultOptions );
-        },
-
-        async getBilibiliUploaded() {
-            const sUrl = '/bili/uploaded';
+        async getBilibiliReport() {
+            const sUrl = '/bili/report';
             return genericRequest( sUrl, defaultOptions );
         }
     };

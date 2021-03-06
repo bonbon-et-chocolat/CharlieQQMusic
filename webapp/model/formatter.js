@@ -55,6 +55,14 @@ sap.ui.define([
 			} catch(err) {
 				return '-';
 			}
+		},
+
+		formatNumberWithWan: function(x) {
+			if(x===0) {
+				return '-'
+			} else {
+				return x.toFixed(1)+'万';
+			}
 		}
 	};
 

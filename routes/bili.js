@@ -10,12 +10,12 @@ function expired(data) {
     return bExpired;
 }
 module.exports = {
-    '/channel': async (req, res) => {
+    '/report' : async (req, res) => {
         try {
-            let data = global.channelData;
+            let data = global.biliCache;
             if(expired(data)) {
-                data = await Bili.getChannel();
-                global.channelData = data;
+                data = await Bili.getReportData();
+                global.biliCache = data;
             }
             
             res.send({
@@ -28,27 +28,10 @@ module.exports = {
             });
         }
     },
-    '/uploaded': async (req, res) => {
-        try {
-            let data = global.uploadedData;
-            if(expired(data)) {
-                data = await Bili.getUploaded();
-                global.uploadedData = data;
-            }
-            res.send({
-                data
-            })
-        } catch (err) {
-            res.render('error', {
-                message: "找不到数据",
-                error: err
-            });
-        }
-    },
     '/updateYesterday': async(req, res)=> {
         try {
-            await Bili.updateYesterday();
-            res.send({});
+            const data = await Bili.updateBili();
+            res.send(data);
         } catch (err) {
             res.render('error', {
                 message: "找不到数据",

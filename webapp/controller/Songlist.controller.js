@@ -24,16 +24,14 @@ sap.ui.define([
 				songsLoading: true,
 				ranksLoading: true,
 				yobangLoading: true,
-				channelLoading: true,
-				biliUpLoading: true
+				biliLoading: true
 			});
 			this._initProductSwitcher();
 			this.setModel(oModel, "viewModel");
 			this._loadTableData();
 			this._loadRankData();
 			this._loadYoBang();
-			this._loadBiliChannel();
-			this._loadBiliUploaded();
+			this._loadBili();
 		},
 
 		_initProductSwitcher: function() {
@@ -108,32 +106,17 @@ sap.ui.define([
 			
 		},
 
-		_loadBiliChannel: async function() {
+		_loadBili: async function() {
 			try{
-				const [ response ] = await ServiceDAO.getBilibiliChannel();
+				const [ response ] = await ServiceDAO.getBilibiliReport();
 				const oModel = new JSONModel({
 					data: response.data
 				});
-				this.setModel(oModel, "channelModel");
+				this.setModel(oModel, "biliModel");
 			} catch(error) {
 				//
 			} finally {
-				this.getView().getModel( 'viewModel' ).setProperty( '/channelLoading', false);
-			}
-			
-		},
-
-		_loadBiliUploaded: async function() {
-			try{
-				const [ response ] = await ServiceDAO.getBilibiliUploaded();
-				const oModel = new JSONModel({
-					data: response.data
-				});
-				this.setModel(oModel, "biliUpModel");
-			} catch(error) {
-				//
-			} finally {
-				this.getView().getModel( 'viewModel' ).setProperty( '/biliUpLoading', false);
+				this.getView().getModel( 'viewModel' ).setProperty( '/biliLoading', false);
 			}
 			
 		},
@@ -195,7 +178,7 @@ sap.ui.define([
 			}
 		},
 
-		openBiliVideo: function( oEvent, context='channelModel' ) {
+		openBiliVideo: function( oEvent, context='biliModel' ) {
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
 			const bvid = oButton.getBindingContext(context).getProperty('bvid');
 			this.openURL(`https://www.bilibili.com/video/${bvid}`);
@@ -219,15 +202,14 @@ sap.ui.define([
 			return pDialog;
 		},
 
-		handleSortButtonPressed: function () {
-			this.getViewSettingsDialog("charlie.data.util.SortDialog")
+		handleSortButtonPressed: function (dialogName='SortDialog') {
+			this.getViewSettingsDialog("charlie.data.util."+dialogName)
 				.then(function (oViewSettingsDialog) {
 					oViewSettingsDialog.open();
 				});
 		},
-
-		handleSortDialogConfirm: function (oEvent) {
-			var oTable = this.byId("fav-table"),
+		handleSortDialogConfirm: function (oEvent, tableName="fav-table") {
+			var oTable = this.byId(tableName),
 				mParams = oEvent.getParameters(),
 				oBinding = oTable.getBinding("items"),
 				sPath,

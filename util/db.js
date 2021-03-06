@@ -17,8 +17,20 @@ async function _find( client, query, db=DB, collection=COLLECTION ) {
     .findOne(query);
 }
 
-async function findByDate( client, sDate ) {
-    return _find( client, {updatedAt: new RegExp(sDate)});
+async function findByDate( client, sDate, db=DB, collection=COLLECTION ) {
+    return _find( client, {updatedAt: new RegExp(sDate)}, db, collection);
+}
+
+async function findBiliVideoData( client, sDate ) {
+    return findByDate( client, sDate, 'bilibili', 'videos' );
+}
+
+async function findBiliChannelData( client, sDate ) {
+    return findByDate( client, sDate, 'bilibili', 'channel' );
+}
+
+async function findBiliHistoryData( client, sDate ) {
+    return findByDate( client, sDate, 'bilibili', 'history' );
 }
 
 async function findOneChart( client ) {
@@ -67,6 +79,9 @@ async function updateBiliVideoData( client, sDate, data ) {
 async function updateBiliChannelData( client, sDate, data ) {
     return upsertOneByDate( client, {updatedAt: new RegExp(sDate)}, data, 'bilibili', 'channel' );
 }
+async function updateBiliHistoryData( client, sDate, data ) {
+    return upsertOneByDate( client, {updatedAt: new RegExp(sDate)}, data, 'bilibili', 'history' );
+}
 
 async function updateSummary( client, data ) {
     return upsertOne( client, {tag: 'summary'}, data, DB, 'summary' );
@@ -98,6 +113,10 @@ module.exports = {
     updateOneById,
     findByDate,
     findOneChart,
+    findBiliHistoryData,
+    findBiliVideoData,
+    findBiliChannelData,
+    updateBiliHistoryData,
     upsertOneByDate,
     updateYesterdayFavData,
     findYesterdayFavData,
