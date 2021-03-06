@@ -234,7 +234,7 @@
 										<m:Button
 											tooltip="排序"
 											icon="sap-icon://sort"
-											press="handleSortButtonPressed" />
+											press="handleSortButtonPressed('SortDialog')" />
 										<m:SearchField id="searchField" width="auto" search=".onFilterSongs" />
 									</m:Toolbar>
 								</m:headerToolbar>

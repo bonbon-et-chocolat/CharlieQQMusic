@@ -53,6 +53,19 @@ module.exports = {
             });
         }
     },
+    '/forceupdatecache': async (req, res) => {
+        try {
+            const client = await db.connect();
+            let data = await Songs.getExistingData( client, req.query  );
+            await client.close();
+            global.reportData = data;
+        } catch (err) {
+            res.render('error', {
+                message: "找不到数据",
+                error: err
+            });
+        }
+    },
     '/fav/report': async (req, res) => {
         try {
             const start = '2021-02-01';
