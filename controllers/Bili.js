@@ -12,7 +12,14 @@ async function _get( url ){
         data: {}
     });
 }
-async function getOldViewCounts( client, date= moment().tz('Asia/Shanghai').format().substring(0, 10) ) {
+
+function _getToday() {
+    return moment().tz('Asia/Shanghai').format().substring(0, 10);
+}
+function _getYesterday() {
+    return moment().tz('Asia/Shanghai').subtract(1, 'days').format().substring(0, 10);
+}
+async function getOldViewCounts( client, date=_getToday() ) {
     const cachekey = date+'bilihistory';
     let cached = global[ cachekey ];
     if(cached) {
@@ -48,13 +55,18 @@ function _getDiff( n, yesterday ) {
     if( !yesterday ) {
         return 0;
     }
-    if( Number(n) === n && n % 1 !== 0 ) {
+    console.log(`${n} - ${yesterday}`);
+    if(typeof yesterday === 'object' ) {
+        yesterday = yesterday.data;
+        console.log(`object: ${n} - ${yesterday}`);
+    }
+    if( n % 1 !== 0 || yesterday%1 !==0) {
         return Number((n-yesterday).toFixed(1));
     }
     return n - yesterday;
 }
 
-async function getReportData( date= moment().tz('Asia/Shanghai').format().substring(0, 10) ) {
+async function getReportData( date=_getToday()) {
     const client = await db.connect();
     const [ history, current ] = await Promise.all([
         getOldViewCounts( client, date ),
@@ -64,7 +76,18 @@ async function getReportData( date= moment().tz('Asia/Shanghai').format().substr
     return data;
 }
 
-function formatFeatured(results, history) {
+function formatFeatured(results, history, bPersist ) {
+    if(bPersist) {
+        let result = {};
+        results.data.list.forEach( ({view_count, bvid }) => {
+            let data = Number(view_count.match(/\d+\.*\d+/g));
+            result[bvid] = {
+                data: data,
+                increase: _getDiff( data, history.featured[bvid] )
+            };
+        });
+        return result;
+    }
     return results.data.list.map( ({name, view_count, like_count, bvid }) => {
         view_count = Number(view_count.match(/\d+\.*\d+/g));
         return{
@@ -77,7 +100,17 @@ function formatFeatured(results, history) {
     });
 }
 
-function formatUploaded(results, history) {
+function formatUploaded(results, history, bPersist) {
+    if(bPersist) {
+        let result = {};
+        results.data.list.vlist.forEach( ({bvid, play}) => {
+            result[bvid] = {
+                data: play,
+                increase: _getDiff( play, history.uploaded[bvid] )
+            };
+        });
+        return result;
+    }
     return results.data.list.vlist.map( ({title, play, comment, bvid }) => {
         return{
             title,
@@ -109,40 +142,28 @@ function formatUpStats( followers, history ) {
     }
 }
 
-function _formatData( history, {channelMeta, featured, uploaded, followers}) {
+function _formatData( history, {channelMeta, featured, uploaded, followers}, bPersist ) {
     return{
-        updatedAt: Date.now(),
+        timestamp: Date.now(),
         channelMeta: formatChannelMeta( channelMeta, history ),
-        featured: formatFeatured( featured, history ),
-        uploaded: formatUploaded( uploaded, history ),
+        featured: formatFeatured( featured, history, bPersist ),
+        uploaded: formatUploaded( uploaded, history, bPersist ),
         upstats: formatUpStats( followers, history )
     }
 }
-
-async function updateChannel( client, date ) {
-    const {data:channel} = await getChannel();
-    let result = {};
-    channel.forEach( ({bvid, view_count}) => {
-        result[bvid] = view_count;
-    });
-    await db.updateBiliChannelData( client, date, { updatedAt: date, "data": result });
-}
-
-async function updateUploaded( client, date ) {
-    const {data:uploaded} = await getUploaded();
-    let result = {};
-    uploaded.forEach( ({bvid, view_count}) => {
-        result[bvid] = view_count;
-    });
-    await db.updateBiliVideoData( client, date, { updatedAt: date, "data": result });
-}
 async function updateYesterday() {
     let client = null;
-    const date = moment().tz('Asia/Shanghai').format().substring(0, 10);
+    const date = _getToday();
     try{
         client = await db.connect();
-        await updateChannel(client, date);
-        await updateUploaded(client, date);
+        const [ history, current ] = await Promise.all([
+            getOldViewCounts( client, _getYesterday() ),
+            _getData()
+        ]);
+        const data = _formatData( history, current, true );
+        data.date = date;
+        return data;
+        //await db.updateBiliHistoryData(client, date, data);
     } catch( err ) {
         console.log( err.stack );
     } finally {

@@ -30,7 +30,7 @@ module.exports = {
     },
     '/updateYesterday': async(req, res)=> {
         try {
-            const data = await Bili.updateBili();
+            const data = await Bili.updateYesterday();
             res.send(data);
         } catch (err) {
             res.render('error', {
