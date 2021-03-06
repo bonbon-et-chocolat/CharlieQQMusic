@@ -19,14 +19,16 @@ function _getToday() {
 function _getYesterday() {
     return moment().tz('Asia/Shanghai').subtract(1, 'days').format().substring(0, 10);
 }
-async function getOldViewCounts( client, date=_getToday() ) {
+async function getOldViewCounts( client, date=_getToday(), bReadCache=true ) {
     const cachekey = date+'bilihistory';
     let cached = global[ cachekey ];
-    if(cached) {
+    if( bReadCache && cached) {
         return cached;
     }
     const result = await db.findBiliHistoryData(client, date);
-    global[ cachekey ] = result;
+    if( bReadCache ) {
+        global[ cachekey ] = result;
+    }
     return result;
 }
 
@@ -154,15 +156,18 @@ function _formatData( history, {channelMeta, featured, uploaded, followers}, bPe
 async function updateYesterday() {
     let client = null;
     const date = _getToday();
+    const cachekey = date+'bilihistory';
+
     try{
         client = await db.connect();
         const [ history, current ] = await Promise.all([
-            getOldViewCounts( client, _getYesterday() ),
+            getOldViewCounts( client, _getYesterday(), false ),
             _getData()
         ]);
         const data = _formatData( history, current, true );
-        data.date = date;
+        data.updatedAt = date;
         await db.updateBiliHistoryData(client, date, data);
+        global[ cachekey ] = data;
     } catch( err ) {
         console.log( err.stack );
     } finally {
