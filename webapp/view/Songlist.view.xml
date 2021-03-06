@@ -318,6 +318,9 @@
 									<m:Column>
 										<m:Text text="今日增长"/>
 									</m:Column>
+									<m:Column>
+										<m:Text text="昨日增长"/>
+									</m:Column>
 								</m:columns>
 								<m:items>
 									<m:ColumnListItem
@@ -337,6 +340,12 @@
 												textAlign="Right"
 												number="{
 													path: 'biliModel>increase',
+													formatter: '.formatter.formatNumberWithWan'
+												}"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'biliModel>previous_increase',
 													formatter: '.formatter.formatNumberWithWan'
 												}"/>
 										</m:cells>
@@ -377,6 +386,9 @@
 									<m:Column>
 										<m:Text text="今日增长"/>
 									</m:Column>
+									<m:Column>
+										<m:Text text="昨日增长"/>
+									</m:Column>
 								</m:columns>
 								<m:items>
 									<m:ColumnListItem
@@ -396,6 +408,12 @@
 												textAlign="Right"
 												number="{
 													path: 'biliModel>increase',
+													formatter: '.formatter.formatNumberWithCommas'
+												}"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'biliModel>previous_increase',
 													formatter: '.formatter.formatNumberWithCommas'
 												}"/>
 										</m:cells>

@@ -55,10 +55,8 @@ function _getDiff( n, yesterday ) {
     if( !yesterday ) {
         return 0;
     }
-    console.log(`${n} - ${yesterday}`);
     if(typeof yesterday === 'object' ) {
         yesterday = yesterday.data;
-        console.log(`object: ${n} - ${yesterday}`);
     }
     if( n % 1 !== 0 || yesterday%1 !==0) {
         return Number((n-yesterday).toFixed(1));
@@ -95,7 +93,8 @@ function formatFeatured(results, history, bPersist ) {
             view_count,
             like_count,
             bvid,
-            increase: _getDiff( view_count, history.featured[bvid] )
+            increase: _getDiff( view_count, history.featured[bvid] ),
+            previous_increase: history.featured[bvid] ? history.featured[bvid].increase : 0
         }
     });
 }
@@ -117,7 +116,8 @@ function formatUploaded(results, history, bPersist) {
             view_count: play,
             comment_count: comment,
             bvid,
-            increase: _getDiff( play, history.uploaded[bvid] )
+            increase: _getDiff( play, history.uploaded[bvid] ),
+            previous_increase: history.uploaded[bvid] ? history.uploaded[bvid].increase : 0
         }
     })
 }
@@ -162,8 +162,7 @@ async function updateYesterday() {
         ]);
         const data = _formatData( history, current, true );
         data.date = date;
-        return data;
-        //await db.updateBiliHistoryData(client, date, data);
+        await db.updateBiliHistoryData(client, date, data);
     } catch( err ) {
         console.log( err.stack );
     } finally {

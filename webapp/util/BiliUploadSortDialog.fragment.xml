@@ -6,7 +6,8 @@
 		confirm="handleSortDialogConfirm($event, 'bili-up-table')">
 		<sortItems>
 			<ViewSettingsItem text="播放量" key="view_count" selected="true" />
-			<ViewSettingsItem text="今日增长播放量" key="increase" />
+			<ViewSettingsItem text="今日增长" key="increase" />
+			<ViewSettingsItem text="昨日增长" key="previous_increase" />
 		</sortItems>
 	</ViewSettingsDialog>
 </core:FragmentDefinition>
