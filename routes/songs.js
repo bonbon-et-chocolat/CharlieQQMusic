@@ -17,7 +17,7 @@ async function _getData( req ) {
     }
     if( !data ) {
         const client = await db.connect();
-        data = await Songs.getExistingData( client, req.query  );
+        data = await Songs.getExistingData( client, req.query, true  );
         await client.close();
         if( bToday ) {
             if( !data ) {

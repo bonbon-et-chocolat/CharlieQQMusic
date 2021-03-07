@@ -25,7 +25,10 @@ async function getOldViewCounts( client, date=_getToday(), bReadCache=true ) {
     if( bReadCache && cached) {
         return cached;
     }
-    const result = await db.findBiliHistoryData(client, date);
+    let result = await db.findBiliHistoryData(client, date);
+    if(!result) {
+        result = await updateYesterday();
+    }
     if( bReadCache ) {
         global[ cachekey ] = result;
     }

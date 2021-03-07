@@ -195,10 +195,10 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
     };
 }
 
-async function getExistingData( client, query={} ) {
+async function getExistingData( client, query={},suppressError=false ) {
     const date = query.date ? query.date : moment().tz('Asia/Shanghai').format().substring(0, 10);
     const result = await db.findByDate( client, date );
-    if( !result ) {
+    if( !result && !suppressError) {
         throw new Error ('Not found.');
     }
     return result;
