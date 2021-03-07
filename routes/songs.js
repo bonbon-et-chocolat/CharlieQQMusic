@@ -59,6 +59,7 @@ module.exports = {
             let data = await Songs.getExistingData( client, req.query  );
             await client.close();
             global.reportData = data;
+            res.send({});
         } catch (err) {
             res.render('error', {
                 message: "找不到数据",
