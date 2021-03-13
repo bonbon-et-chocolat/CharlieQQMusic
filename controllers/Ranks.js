@@ -59,7 +59,9 @@ const ChartConfig = {
     // 台湾KKBOX榜
     KKBOX_CHART: 127,
     // Youtube音乐排行榜
-    YOUTUBE_CHART: 128
+    YOUTUBE_CHART: 128,
+    // 听歌识曲榜
+    IDENTIFY_CHART: 67
 };
 
 const dayCharts = [
@@ -67,6 +69,7 @@ const dayCharts = [
     ChartConfig.UP_CHART,
     ChartConfig.NEW_CHART,
     ChartConfig.POP_CHART,
+    ChartConfig.IDENTIFY_CHART
 ];
 
 const weekCharts = [
