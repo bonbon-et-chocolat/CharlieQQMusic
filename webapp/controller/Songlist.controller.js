@@ -32,6 +32,8 @@ sap.ui.define([
 			this._loadRankData();
 			this._loadYoBang();
 			this._loadBili();
+			this._loadNeteaseRanks();
+			this._loadNeteaseSongs();
 		},
 
 		_initProductSwitcher: function() {
@@ -120,6 +122,34 @@ sap.ui.define([
 			}
 			
 		},
+
+		_loadNeteaseRanks: async function () {
+			try{
+				const [ response ] = await ServiceDAO.getNeteaseRanks();
+				const oModel = new JSONModel({
+					data: response.data
+				});
+				this.setModel(oModel, "neteaseRankModel");
+			} catch(error) {
+				//
+			} finally {
+				this.getView().getModel( 'viewModel' ).setProperty( '/neteaseRanksLoading', false);
+			}
+		},
+
+		_loadNeteaseSongs: async function() {
+			try{
+				const [ response ] = await ServiceDAO.getNeteaseSongs();
+				const oModel = new JSONModel({
+					data: response.data
+				});
+				this.setModel(oModel, "neteaseSongModel");
+			} catch(error) {
+				//
+			} finally {
+				this.getView().getModel( 'viewModel' ).setProperty( '/neteaseSongsLoading', false);
+			}
+		},
 		/**
 		 * Triggered by the SearchFields's 'search' event
 		 * @param {sap.ui.base.Event} oEvent SearchFields's search event
@@ -176,6 +206,18 @@ sap.ui.define([
 			} else {
 				this.openURL( `https://y.qq.com/n/yqq/song/${mid}.html`);			
 			}
+		},
+
+		openNeteaseSong: function(oEvent, context='neteaseRankModel') {
+			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const id = oButton.getBindingContext(context).getProperty('id');
+			this.openURL( `https://music.163.com/#/song?id=${id}`);
+		},
+
+		openNeteaseMV: function(oEvent, context='neteaseSongModel') {
+			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const id = oButton.getBindingContext(context).getProperty('mv');
+			this.openURL( `https://music.163.com/#/mv?id=${id}`);
 		},
 
 		openBiliVideo: function( oEvent, context='biliModel' ) {
@@ -243,10 +285,10 @@ sap.ui.define([
 			this._oPopover.setTitle(title).openBy( oButton );
 		},
 
-		handleChartPopoverPress: function( oEvent ) {
+		handleChartPopoverPress: function( oEvent, context='rankModel' ) {
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
-			const title = oButton.getBindingContext('rankModel').getProperty('title');
-			const text = oButton.getBindingContext('rankModel').getProperty('intro');
+			const title = oButton.getBindingContext(context).getProperty('title');
+			const text = oButton.getBindingContext(context).getProperty('intro');
 			this._handlePopoverPress( oButton, title, text );
 		},
 

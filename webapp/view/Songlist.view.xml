@@ -17,7 +17,7 @@
 				</expandedHeading>
 
 				<expandedContent>
-					<m:Text text="Q音数据上次更新：{dataModel>/data/updatedAt}"/>
+					<m:Text text="榜单数据上次更新：{dataModel>/data/updatedAt}"/>
 				</expandedContent>
 
 				<snappedContent>
@@ -235,7 +235,7 @@
 											tooltip="排序"
 											icon="sap-icon://sort"
 											press="handleSortButtonPressed('SortDialog')" />
-										<m:SearchField id="searchField" width="auto" search=".onFilterSongs" />
+										<m:SearchField width="auto" search=".onFilterSongs" />
 									</m:Toolbar>
 								</m:headerToolbar>
 								<m:columns>
@@ -275,6 +275,118 @@
 												}"/>
 											<m:Text
 												text="{dataModel>timePublic}"/>
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+
+			<ObjectPageSection titleUppercase="false" class="section" id="netease-section" title="网易云音乐" importance="High">
+				<subSections>
+					<ObjectPageSubSection id="netease-charts-rank" title="榜单Top100 ({neteaseRankModel>/data/updatedAt})" titleUppercase="false">
+						<blocks>
+							<m:Table
+								id="netease-charts-table"
+								width="auto"
+								class="sapUiResponsiveMargin"
+								growing="true"
+								items="{
+										path: 'neteaseRankModel>/data/data'
+									}"
+								busy="{viewModel>/neteaseRanksLoading}"
+								busyIndicatorDelay="0">
+								<m:headerToolbar>
+									<m:Toolbar>
+										<m:ToolbarSpacer />
+										<m:Button
+											text="去人气榜打榜"
+											icon="sap-icon://lightbulb"
+											press="openNeteaseList" />
+									</m:Toolbar>
+								</m:headerToolbar>
+								<m:columns>
+									<m:Column>
+										<m:Text text="榜单"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="上榜歌曲"/>
+									</m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem
+										vAlign="Middle">
+										<m:cells>
+											<m:HBox align='Center'>
+												<m:Link
+													text="{neteaseRankModel>title}"
+													wrapping="true"
+													press=".handleChartPopoverPress($event, 'neteaseRankModel')"/>
+											</m:HBox>
+										 	<m:VBox items="{neteaseRankModel>song}">
+											 	<m:Link
+													text="第{neteaseRankModel>rank}名：{neteaseRankModel>name}"
+													wrapping="true"
+													press=".openNeteaseSong"/>
+											</m:VBox>
+											
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
+
+					<ObjectPageSubSection id="netease-hot-songs" title="热歌Top50" titleUppercase="false">
+						<blocks>
+							<m:Table
+								id="netease-song-table"
+								width="auto"
+								class="sapUiResponsiveMargin"
+								growing="true"
+								items="{
+										path: 'neteaseSongModel>/data'
+									}"
+								busy="{viewModel>/neteaseSongsLoading}"
+								busyIndicatorDelay="0">
+								<m:headerToolbar>
+									<m:Toolbar>
+										<m:ToolbarSpacer />
+										<m:SearchField width="auto" search=".onFilterSongs($event, 'netease-song-table')" />
+									</m:Toolbar>
+								</m:headerToolbar>
+								<m:columns>
+									<m:Column>
+										<m:Text text="排名"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="歌曲"/>
+									</m:Column>
+									<m:Column>
+										<m:Text text="MV"/>
+									</m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem
+										vAlign="Middle"
+										press=".onPress">
+										<m:cells>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'neteaseSongModel>rank'
+												}"/>
+											<m:Link
+												text="{neteaseSongModel>title}"
+												wrapping="true"
+												press=".openNeteaseSong($event, 'neteaseSongModel')"/>
+											<m:Link
+												text="有"
+												wrapping="true"
+												visible="{=${neteaseSongModel>mv}>0}"
+												press=".openNeteaseMV"/>
 										</m:cells>
 									</m:ColumnListItem>
 								</m:items>

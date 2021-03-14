@@ -42,6 +42,16 @@ sap.ui.define( [], function() {
         async getBilibiliReport() {
             const sUrl = '/bili/report';
             return genericRequest( sUrl, defaultOptions );
-        }
+        },
+
+        async getNeteaseRanks() {
+            const sUrl = '/netease/ranks';
+            return genericRequest( sUrl, defaultOptions );
+        },
+
+        async getNeteaseSongs() {
+            const sUrl = '/netease/songs';
+            return genericRequest( sUrl, defaultOptions );
+        }        
     };
 });

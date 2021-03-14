@@ -11,6 +11,7 @@ var config = require('./config');
 const cron = require('node-cron');
 const Songs = require('../controllers/Songs');
 const Ranks = require('../controllers/Ranks');
+const Netease = require('../controllers/Netease');
 const Bili = require('../controllers/Bili');
 
 /**
@@ -99,6 +100,7 @@ function onListening() {
   // start cron job for fetching live data
   cron.schedule( '1 0,10,11,12 * * *', async () => {
     Ranks.updateCharts();
+    Netease.updateCharts();
     Songs.updateReportData();
   }, {
     timezone: "Asia/Shanghai"
