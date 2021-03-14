@@ -143,6 +143,7 @@ async function _getChart({id = 4, pageNo = 1, pageSize = 100, period, time}) {
     const data = result.detail.data.data;
     if(data) {
         return {
+            listID: Number(id),
             title: data.title,
             intro: data.intro,
             song: data.song.filter( s => s.singerName.includes('周深')).map( s=> {

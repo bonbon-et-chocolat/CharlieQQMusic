@@ -208,10 +208,22 @@ sap.ui.define([
 			}
 		},
 
+		openQQPlaylist: function(oEvent, context='rankModel') {
+			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const id = oButton.getBindingContext(context).getProperty('listID');
+			this.openURL( `https://y.qq.com/n/yqq/toplist/${id}.html`);
+		},
+
 		openNeteaseSong: function(oEvent, context='neteaseRankModel') {
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
 			const id = oButton.getBindingContext(context).getProperty('id');
 			this.openURL( `https://music.163.com/#/song?id=${id}`);
+		},
+
+		openNeteasePlaylist: function(oEvent, context='neteaseRankModel') {
+			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const id = oButton.getBindingContext(context).getProperty('listID');
+			this.openURL( `https://music.163.com/#/playlist?id=${id}`);
 		},
 
 		openNeteaseMV: function(oEvent, context='neteaseSongModel') {

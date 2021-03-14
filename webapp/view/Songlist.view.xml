@@ -143,7 +143,7 @@
 												<m:Link
 													text="{rankModel>title}"
 													wrapping="true"
-													press=".handleChartPopoverPress"/>
+													press=".openQQPlaylist"/>
 											</m:HBox>
 										 	<m:VBox items="{rankModel>song}">
 												<m:Text text="第{rankModel>rank}名：{rankModel>title}"/>
@@ -323,7 +323,7 @@
 												<m:Link
 													text="{neteaseRankModel>title}"
 													wrapping="true"
-													press=".handleChartPopoverPress($event, 'neteaseRankModel')"/>
+													press=".openNeteasePlaylist($event, 'neteaseRankModel')"/>
 											</m:HBox>
 										 	<m:VBox items="{neteaseRankModel>song}">
 											 	<m:Link
