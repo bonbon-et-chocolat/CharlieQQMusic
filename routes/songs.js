@@ -67,6 +67,20 @@ module.exports = {
             });
         }
     },
+    '/inc': async(req, res)=>{
+        const client = await db.connect();
+        let data = await db.findAll(client);
+        data = data.map( d => {
+           let details = d.details.filter( s=> s.id===290045025);
+           return {
+               updatedAt: d.updatedAt.substring(0,10),
+               inc: details[0] ? details[0].increase : 0,
+               hitListenCount: details[0] ? details[0].hitListenCount : 0,
+               score: details[0] ? details[0].score : 0,
+           }
+        } ).filter( d=> d.inc );
+        res.send({data}); 
+    },
     '/fav/report': async (req, res) => {
         try {
             const start = '2021-02-01';
