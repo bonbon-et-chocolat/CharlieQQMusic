@@ -8,8 +8,42 @@ const PAGES = [1,2,3,4,5];
 const NUM = 100;
 const LVREN = '003zysEj2zeF4I';
 const JINGYU = 101806738;
+async function search(req){
+    let {
+      pageNo = 1,
+      pageSize = 20,
+      key,
+      t = 9 // 0：单曲，2：歌单，7：歌词，8：专辑，9：歌手，12：mv
+    } = req.query;
+    const url = 'http://c.y.qq.com/soso/fcgi-bin/client_search_cp';
+
+    let data = {
+      format: 'json', // 返回json格式
+      n: pageSize, // 一页显示多少条信息
+      p: pageNo, // 第几页
+      w: key, // 搜索关键词
+      cr: 1, // 不知道这个参数什么意思，但是加上这个参数你会对搜索结果更满意的
+      g_tk: 5381,
+      t,
+    };
+
+    const result = await request({
+      url,
+      method: 'get',
+      data,
+      headers: {
+        Referer: 'https://y.qq.com'
+      }
+    });
+    return result.data.singer.list[0].singerMID;
+}
 async function _getHitSongs ({mid=MID}) {
-    const songs = await Promise.all(PAGES.map(async (page) => {
+
+    let pages = PAGES;
+    if(mid!==MID) {
+        pages = [1];
+    }
+    const songs = await Promise.all(pages.map(async (page) => {
         return request({
             url: 'http://u.y.qq.com/cgi-bin/musicu.fcg',
             data: {
@@ -276,5 +310,6 @@ module.exports = {
     getLiveData,
     getExistingData,
     updateReportData,
-    updateYesterday
+    updateYesterday,
+    search
 }

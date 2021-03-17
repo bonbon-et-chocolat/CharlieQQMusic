@@ -4,7 +4,7 @@ body.scroll-skin-light
   block content
     .content
       //-page header
-      .title.left-aligned 周深歌曲收藏量Top #{data.details.length} (数据时间：#{data.updatedAt})
+      .title.left-aligned 歌曲收藏量Top #{data.details.length} (数据时间：#{data.updatedAt})
       p.ad.left-aligned 意见反馈:
         a.header-attr(href="https://www.douban.com/group/topic/208627731/",target="_blank") 🔥 豆瓣小组 辣锅纯辣锅 🔥
       p.header-attr.right-aligned QQ音乐粉丝总数：#{util.formatNumberWithCommas(data.fansCount)}
@@ -17,10 +17,7 @@ body.scroll-skin-light
             span.list-span.index 序号
             span.list-span.song 歌曲
             span.list-span.song 收藏
-            span.list-span.song 总收听量
-            span.list-span.song 巅峰指数
             span.list-span.song 收听人数 (万+)
-            span.list-span.last 发行日期
       //-list content
       ul.list-ul
         each song, index in data.details
@@ -28,7 +25,4 @@ body.scroll-skin-light
             span.list-span.index #{index+1}
             span.list-span.song #{song.title}
             span.list-span.song #{util.formatNumberWithCommas(song.favCount)}
-            span.list-span.song #{util.formatNumberWithCommas(song.weeklyListenCount)}
-            span.list-span.song #{util.formatNumberWithCommas(song.score)}
             span.list-span.song #{song.hitListenCount || '-'}
-            span.list-span.last #{song.timePublic}

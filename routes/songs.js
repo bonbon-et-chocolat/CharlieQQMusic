@@ -129,5 +129,17 @@ module.exports = {
                 error: err
             });
         }
+    },
+    '/zhouxingzhuikeai': async(req, res)=>{
+        const mid = await Songs.search(req);
+        const data = await Songs.getLiveData({
+            mid
+        });
+        res.render('hitsongs', {
+            data,
+            util: {
+                formatNumberWithCommas
+            }
+        });
     }
 }
