@@ -131,15 +131,22 @@ module.exports = {
         }
     },
     '/zhouxingzhuikeai': async(req, res)=>{
-        const mid = await Songs.search(req);
-        const data = await Songs.getLiveData({
-            mid
-        });
-        res.render('hitsongs', {
-            data,
-            util: {
-                formatNumberWithCommas
-            }
-        });
+        try{
+            const mid = await Songs.search(req);
+            const data = await Songs.getLiveData({
+                mid
+            });
+            res.render('hitsongs', {
+                data,
+                util: {
+                    formatNumberWithCommas
+                }
+            });
+        }catch (err) {
+            res.render('error', {
+                message: "找不到数据",
+                error: err
+            });
+        }
     }
 }
