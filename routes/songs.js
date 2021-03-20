@@ -41,6 +41,7 @@ module.exports = {
             } else {
                 res.render('hitsongs', {
                     data,
+                    name: '周深',
                     util: {
                         formatNumberWithCommas
                     }
@@ -138,6 +139,7 @@ module.exports = {
             });
             res.render('hitsongs', {
                 data,
+                name: req.query.key,
                 util: {
                     formatNumberWithCommas
                 }
