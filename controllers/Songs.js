@@ -256,7 +256,7 @@ async function updateYesterday() {
     const date = moment().tz('Asia/Shanghai').subtract(1, 'days').format().substring(0, 10);
     try{
         client = await db.connect();
-        const {details} = await getExistingData( client, { date: date }  );
+        const {details} = await getLiveData();
         const data = {};
         details.forEach( ({id, favCount}) => {
             data[id] = favCount;
