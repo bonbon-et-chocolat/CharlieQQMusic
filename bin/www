@@ -105,7 +105,7 @@ function onListening() {
   }).start();
 
   // start cron job for fetching live data
-  cron.schedule( '1 8-14 * * *', async () => {
+  cron.schedule( '0 0,8-14 * * *', async () => {
     Ranks.updateCharts();
     Netease.updateCharts();
   }, {
