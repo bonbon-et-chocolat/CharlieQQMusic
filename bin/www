@@ -104,6 +104,12 @@ function onListening() {
     timezone: "Asia/Shanghai"
   }).start();
 
+  cron.schedule( '40 10 * * *', async () => {
+    Songs.updateReportData();
+  }, {
+    timezone: "Asia/Shanghai"
+  }).start();
+
   // start cron job for fetching live data
   cron.schedule( '0 0,8-14 * * *', async () => {
     Ranks.updateCharts();
