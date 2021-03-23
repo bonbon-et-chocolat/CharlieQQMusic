@@ -294,9 +294,11 @@ async function updateYesterday() {
                 inc: favCount - history.data[id].favCount
             };
         });
-        data.updatedAt = date;
-        data.timestamp = Date.now();
-        await db.updateQQHistoryData(client, date, data);
+        await db.updateQQHistoryData(client, date, {
+            updatedAt: date,
+            timestamp: Date.now(),
+            data
+        });
         global[ cachekey ] = data;
     } catch( err ) {
         console.log( err.stack );

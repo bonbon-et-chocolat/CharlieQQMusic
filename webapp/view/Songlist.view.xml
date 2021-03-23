@@ -242,25 +242,27 @@
 									<m:Column id="title">
 										<m:Text text="歌曲"/>
 									</m:Column>
-									<m:Column id="fav">
+									<m:Column id="fav" width="30%">
 										<m:Text text="收藏"/>
 									</m:Column>
-									<m:Column id="inc">
+									<m:Column id="inc" width="30%">
 										<m:Text text="增长(今/昨)"/>
 									</m:Column>
-									<m:Column id="time">
-										<m:Text text="发行时间"/>
-									</m:Column>
+									
 								</m:columns>
 								<m:items>
 									<m:ColumnListItem
 										vAlign="Middle"
 										press=".onPress">
 										<m:cells>
-											<m:Link
-												text="{dataModel>title}"
-												wrapping="true"
-												press=".openSong"/>
+											<m:VBox>
+												<m:Link
+													text="{dataModel>title}"
+													wrapping="true"
+													press=".openSong"/>
+												<m:Text
+													text="{dataModel>timePublic}"/>
+											</m:VBox>
 											<m:ObjectNumber
 												textAlign="Right"
 												number="{
@@ -283,8 +285,7 @@
 													}"/>
 											</m:VBox>
 											
-											<m:Text
-												text="{dataModel>timePublic}"/>
+											
 										</m:cells>
 									</m:ColumnListItem>
 								</m:items>
@@ -434,14 +435,11 @@
 									<m:Column>
 										<m:Text text="标题"/>
 									</m:Column>
-									<m:Column>
+									<m:Column width="30%">
 										<m:Text text="播放量"/>
 									</m:Column>
-									<m:Column>
-										<m:Text text="今日增长"/>
-									</m:Column>
-									<m:Column>
-										<m:Text text="昨日增长"/>
+									<m:Column width="30%">
+										<m:Text text="增长(今/昨)"/>
 									</m:Column>
 								</m:columns>
 								<m:items>
@@ -458,18 +456,21 @@
 													path: 'biliModel>view_count',
 													formatter: '.formatter.formatNumberWithWan'
 												}"/>
-											<m:ObjectNumber
-												textAlign="Right"
-												number="{
-													path: 'biliModel>increase',
-													formatter: '.formatter.formatNumberWithWan'
-												}"/>
-											<m:ObjectNumber
-												textAlign="Right"
-												number="{
-													path: 'biliModel>previous_increase',
-													formatter: '.formatter.formatNumberWithWan'
-												}"/>
+											<m:VBox>
+												<m:ObjectNumber
+													textAlign="Right"
+													number="{
+														path: 'biliModel>increase',
+														formatter: '.formatter.formatNumberWithWan'
+													}"/>
+												<m:ObjectNumber
+													class="sapUiTinyMarginTop"
+													textAlign="Right"
+													number="{
+														path: 'biliModel>previous_increase',
+														formatter: '.formatter.formatNumberWithWan'
+													}"/>
+											</m:VBox>
 										</m:cells>
 									</m:ColumnListItem>
 								</m:items>
@@ -502,14 +503,11 @@
 									<m:Column>
 										<m:Text text="标题"/>
 									</m:Column>
-									<m:Column>
+									<m:Column width="30%">
 										<m:Text text="播放量"/>
 									</m:Column>
-									<m:Column>
-										<m:Text text="今日增长"/>
-									</m:Column>
-									<m:Column>
-										<m:Text text="昨日增长"/>
+									<m:Column width="30%">
+										<m:Text text="增长(今/昨)"/>
 									</m:Column>
 								</m:columns>
 								<m:items>
@@ -526,18 +524,23 @@
 													path: 'biliModel>view_count',
 													formatter: '.formatter.formatNumberWithCommas'
 												}"/>
-											<m:ObjectNumber
-												textAlign="Right"
-												number="{
-													path: 'biliModel>increase',
-													formatter: '.formatter.formatNumberWithCommas'
-												}"/>
-											<m:ObjectNumber
-												textAlign="Right"
-												number="{
-													path: 'biliModel>previous_increase',
-													formatter: '.formatter.formatNumberWithCommas'
-												}"/>
+
+											<m:VBox>
+												<m:ObjectNumber
+													textAlign="Right"
+													number="{
+														path: 'biliModel>increase',
+														formatter: '.formatter.formatNumberWithCommas'
+													}"/>
+												<m:ObjectNumber
+													class="sapUiTinyMarginTop"
+													textAlign="Right"
+													number="{
+														path: 'biliModel>previous_increase',
+														formatter: '.formatter.formatNumberWithCommas'
+													}"/>
+											</m:VBox>
+											
 										</m:cells>
 									</m:ColumnListItem>
 								</m:items>

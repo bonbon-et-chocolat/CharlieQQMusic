@@ -1,7 +1,7 @@
 'use strict';
 const moment = require('moment-timezone');
 const db = require("../util/db");
-const { playlist_detail, artist_top_song, artists } = require('NeteaseCloudMusicApi')
+const { playlist_detail, artist_top_song, search } = require('NeteaseCloudMusicApi')
 
 const ID = 1030001;
 const ChartConfig = {
@@ -112,8 +112,21 @@ async function getHotSongs(){
         console.log(error)
     }
 }
+
+async function searchPlaylists(){
+    try {
+        const songs = await artist_top_song({
+            s: '周深',
+            type: 1000
+        });
+        return songs;
+    } catch (error) {
+        console.log(error)
+    }
+}
 module.exports = {
     updateCharts,
     getExistingChartData,
-    getHotSongs
+    getHotSongs,
+    searchPlaylists
 }
