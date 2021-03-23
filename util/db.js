@@ -76,12 +76,12 @@ async function updateYesterdayFavData( client, data ) {
     return upsertOne( client, {tag: 'yesterday'}, data, DB.qq, COLLECTION.lastUpdate );
 }
 
-async function findYesterdayFavData( client ) {
-    return client.db(DB.qq)
-    .collection(COLLECTION.lastUpdate)
-    .findOne({
-        tag: 'yesterday'
-    });
+async function findQQHistoryData( client, sDate ) {
+    return findByDate( client, sDate, DB.qq, COLLECTION.history );
+}
+
+async function updateQQHistoryData( client, sDate, data ) {
+    return upsertOneByDate( client, sDate, data, DB.qq, COLLECTION.history );
 }
 
 async function updateSummary( client, data ) {
@@ -127,13 +127,14 @@ module.exports = {
     updateOneById,
     findByDate,
     findOneChart,
+    findQQHistoryData,
     findBiliHistoryData,
     findBiliVideoData,
     findBiliChannelData,
     updateBiliHistoryData,
+    updateQQHistoryData,
     upsertOneByDate,
     updateYesterdayFavData,
-    findYesterdayFavData,
     updateSummary,
     updateCharts,
     getNeteaseRanksByDate,

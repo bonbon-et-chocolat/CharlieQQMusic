@@ -37,6 +37,14 @@ async function search(req){
     });
     return result.data.singer.list[0].singerMID;
 }
+
+function _getToday() {
+    return moment().tz('Asia/Shanghai').format().substring(0, 10);
+}
+function _getYesterday() {
+    return moment().tz('Asia/Shanghai').subtract(1, 'days').format().substring(0, 10);
+}
+
 async function _getHitSongs ({mid=MID}) {
 
     let pages = PAGES;
@@ -252,25 +260,44 @@ async function getLiveData( query={} ) {
     return _getLiveData( { hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updatedAt, timestamp: Date.now() } );
 }
 
-async function getYesterday( client ) {
-    return db.findYesterdayFavData( client );
+async function getYesterday( client, date=_getToday(), bReadCache=true ) {
+    const cachekey = date+'qqhistory';
+    let cached = global[ cachekey ];
+    if( bReadCache && cached) {
+        return cached;
+    }
+    let result = await db.findQQHistoryData(client, date);
+    if(!result) {
+        result = await updateYesterday();
+    }
+    if( bReadCache ) {
+        global[ cachekey ] = result;
+    }
+    return result;
 }
 
 async function updateYesterday() {
     let client = null;
-    const date = moment().tz('Asia/Shanghai').subtract(1, 'days').format().substring(0, 10);
+    const date = _getToday();
+    const cachekey = date+'qqhistory';
+
     try{
         client = await db.connect();
-        const {details} = await getLiveData();
+        const [ history, current ] = await Promise.all([
+            getYesterday( client, _getYesterday(), false ),
+            getLiveData()
+        ]);
         const data = {};
-        details.forEach( ({id, favCount}) => {
-            data[id] = favCount;
+        current.details.forEach( ({id, favCount}) => {
+            data[id] = {
+                favCount: favCount,
+                inc: favCount - history.data[id].favCount
+            };
         });
-        await db.updateYesterdayFavData( client, {
-            tag: 'yesterday',
-            date,
-            data
-        } );
+        data.updatedAt = date;
+        data.timestamp = Date.now();
+        await db.updateQQHistoryData(client, date, data);
+        global[ cachekey ] = data;
     } catch( err ) {
         console.log( err.stack );
     } finally {
@@ -282,13 +309,14 @@ async function updateYesterday() {
 
 function _combine( today, yesterday ){
     today.details.forEach( song => {
-        let oldData = yesterday.data[song.id] || 0;
+        let oldData = yesterday.data[song.id].favCount || 0;
         song.increase = song.favCount - oldData;
+        song.yesterdayInc = yesterday.data[song.id].inc || 0;
     });
     return today;
 }
 
-async function updateReportData() {
+async function updateReportData(bUpdateDB=true) {
     let client = null;
     let data = null;
     const curDate = moment().tz('Asia/Shanghai');
@@ -298,7 +326,9 @@ async function updateReportData() {
         const date = curDate.format().substring(0, 10);
         const yesterday = await getYesterday( client );
         data = _combine(today, yesterday);
-        await db.upsertOneByDate( client, date, data );
+        if(bUpdateDB){
+            await db.upsertOneByDate( client, date, data );
+        }
     } catch( err ) {
         console.log( err.stack );
     } finally {

@@ -70,17 +70,24 @@ module.exports = {
     },
     '/inc': async(req, res)=>{
         const client = await db.connect();
-        let data = await db.findAll(client);
-        data = data.map( d => {
-           let details = d.details.filter( s=> s.id===290045025);
-           return {
-               updatedAt: d.updatedAt.substring(0,10),
-               inc: details[0] ? details[0].increase : 0,
-               hitListenCount: details[0] ? details[0].hitListenCount : 0,
-               score: details[0] ? details[0].score : 0,
-           }
-        } ).filter( d=> d.inc );
-        res.send({data}); 
+        let {details} = await Songs.getExistingData( client, req.query  );
+        
+        let {data} = await db.findYesterdayFavData( client );
+
+        let data1 = {};
+        details.forEach( ({id, favCount}) => {
+            data1[id] = {
+                favCount: data[id],
+                inc: data[id]-favCount
+            };
+        });
+        await db.updateQQHistoryData(client, req.query.date, {
+            date: req.query.date,
+            updatedAt: req.query.date,
+            timestamp: Date.now(),
+            data: data1
+        });
+        res.send({data1}); 
     },
     '/fav/report': async (req, res) => {
         try {

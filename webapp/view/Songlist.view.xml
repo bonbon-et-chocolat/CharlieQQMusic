@@ -246,7 +246,10 @@
 										<m:Text text="收藏"/>
 									</m:Column>
 									<m:Column id="inc">
-										<m:Text text="收藏较昨日增长"/>
+										<m:Text text="今日增长"/>
+									</m:Column>
+									<m:Column id="inc-yesterday">
+										<m:Text text="昨日增长"/>
 									</m:Column>
 									<m:Column id="time">
 										<m:Text text="发行时间"/>
@@ -271,6 +274,12 @@
 												textAlign="Right"
 												number="{
 													path: 'dataModel>increase',
+													formatter: '.formatter.formatNumberWithCommas'
+												}"/>
+											<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'dataModel>yesterdayInc',
 													formatter: '.formatter.formatNumberWithCommas'
 												}"/>
 											<m:Text
