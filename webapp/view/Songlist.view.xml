@@ -212,7 +212,7 @@
 							</m:Table>
 						</blocks>
 					</ObjectPageSubSection>
-					<ObjectPageSubSection id="qq-charts-playlists" title="QQ热门歌单(含团建)" titleUppercase="false">
+					<ObjectPageSubSection id="qq-charts-playlists" title="QQ热门歌单Top4" titleUppercase="false">
 						<blocks>
 							<m:Table
 								id="qq-playlists-table"
@@ -420,7 +420,7 @@
 						</blocks>
 					</ObjectPageSubSection>
 
-					<ObjectPageSubSection id="netease-charts-playlists" title="热门歌单Top4" titleUppercase="false">
+					<ObjectPageSubSection id="netease-charts-playlists" title="网易云热门歌单Top4" titleUppercase="false">
 						<blocks>
 							<m:Table
 								id="netease-playlists-table"
