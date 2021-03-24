@@ -14,7 +14,8 @@ const COLLECTION = {
     history: 'history',
     ranks: 'ranks',
     summary: 'summary',
-    lastUpdate: 'lastUpdate'
+    lastUpdate: 'lastUpdate',
+    playlist: 'playlist'
 };
 
 //generic
@@ -119,6 +120,14 @@ async function getNeteaseRanksByDate( client, sDate ) {
 async function updateNeteaseRanks( client, sDate, data ) {
     return upsertOneByDate( client, sDate, data, DB.netease, COLLECTION.ranks );
 }
+
+async function findNeteasePlaylistData( client, sDate ) {
+    return findByDate( client, sDate, DB.netease, COLLECTION.playlist );
+}
+async function updateNeteasePlaylistData( client, sDate, data ) {
+    return upsertOneByDate( client, sDate, data, DB.netease, COLLECTION.playlist );
+}
+
 module.exports = {
     connect,
     findAll,
@@ -138,5 +147,7 @@ module.exports = {
     updateSummary,
     updateCharts,
     getNeteaseRanksByDate,
-    updateNeteaseRanks
+    updateNeteaseRanks,
+    findNeteasePlaylistData,
+    updateNeteasePlaylistData
 };

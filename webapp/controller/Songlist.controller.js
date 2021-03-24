@@ -34,6 +34,7 @@ sap.ui.define([
 			this._loadBili();
 			this._loadNeteaseRanks();
 			this._loadNeteaseSongs();
+			this._loadNeteasePlaylists();
 		},
 
 		_initProductSwitcher: function() {
@@ -150,6 +151,20 @@ sap.ui.define([
 				this.getView().getModel( 'viewModel' ).setProperty( '/neteaseSongsLoading', false);
 			}
 		},
+		_loadNeteasePlaylists: async function() {
+			try{
+				const [ response ] = await ServiceDAO.getNeteasePlaylists();
+				const oModel = new JSONModel({
+					data: response.data
+				});
+				this.setModel(oModel, "neteasePlaylistModel");
+			} catch(error) {
+				//
+			} finally {
+				this.getView().getModel( 'viewModel' ).setProperty( '/neteasePlaylistLoading', false);
+			}
+		},
+		
 		/**
 		 * Triggered by the SearchFields's 'search' event
 		 * @param {sap.ui.base.Event} oEvent SearchFields's search event

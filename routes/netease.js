@@ -42,5 +42,22 @@ module.exports = {
                 error: err
             });
         }
+    },
+    '/lists': async(req, res)=>{
+        try {
+            let data = global.neteasePlaylists;
+            if(expired(data)) {
+                data = await Netease.getReportData();
+                global.neteasePlaylists = data;
+            }
+            res.send({
+                data
+            })
+        } catch (err) {
+            res.render('error', {
+                message: "找不到数据",
+                error: err
+            });
+        }
     }
 }

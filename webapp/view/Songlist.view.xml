@@ -350,6 +350,76 @@
 						</blocks>
 					</ObjectPageSubSection>
 
+					<ObjectPageSubSection id="netease-charts-playlists" title="热门歌单Top4" titleUppercase="false">
+						<blocks>
+							<m:Table
+								id="netease-playlists-table"
+								width="auto"
+								class="sapUiResponsiveMargin"
+								growing="true"
+								items="{
+										path: 'neteasePlaylistModel>/data'
+									}"
+								busy="{viewModel>/neteasePlaylistLoading}"
+								busyIndicatorDelay="0">
+								<m:headerToolbar>
+									<m:Toolbar>
+										<m:ToolbarSpacer />
+										<m:Button
+											tooltip="排序"
+											icon="sap-icon://sort"
+											press="handleSortButtonPressed('NeteaseSortDialog')" />
+									</m:Toolbar>
+								</m:headerToolbar>
+								<m:columns>
+									<m:Column>
+										<m:Text text="歌单"/>
+									</m:Column>
+									<m:Column width="30%">
+										<m:Text text="播放量"/>
+									</m:Column>
+									<m:Column width="30%">
+										<m:Text text="增长（今/昨）"/>
+									</m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem
+										vAlign="Middle">
+										<m:cells>
+											<m:HBox align='Center'>
+												<m:Link
+													text="{neteasePlaylistModel>title}"
+													wrapping="true"
+													press=".openNeteasePlaylist($event, 'neteasePlaylistModel')"/>
+											</m:HBox>
+										 	<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'neteasePlaylistModel>playCount',
+													formatter: '.formatter.formatNumberWithCommas'
+												}"/>
+											<m:VBox>
+												<m:ObjectNumber
+													textAlign="Right"
+													number="{
+													path: 'neteasePlaylistModel>increase',
+													formatter: '.formatter.formatNumberWithCommas'
+												}"/>
+												<m:ObjectNumber
+													class="sapUiTinyMarginTop"
+													textAlign="Right"
+													number="{
+														path: 'neteasePlaylistModel>previous_increase',
+														formatter: '.formatter.formatNumberWithCommas'
+													}"/>
+											</m:VBox>
+											
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
 					<ObjectPageSubSection id="netease-hot-songs" title="热歌Top50" titleUppercase="false">
 						<blocks>
 							<m:Table

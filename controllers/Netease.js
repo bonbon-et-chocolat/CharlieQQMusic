@@ -25,8 +25,34 @@ const ChartConfig = {
     POTENTIAL_CHART: 5338990334
 };
 
+const HotPlaylists = [
+    2129920743,
+    3205269853,
+    2507444104,
+    50577102
+];
+
 function _getToday() {
     return moment().tz('Asia/Shanghai').format().substring(0, 10);
+}
+function _getYesterday() {
+    return moment().tz('Asia/Shanghai').subtract(1, 'days').format().substring(0, 10);
+}
+
+async function getOldPlayCounts( client, date=_getToday(), bReadCache=true ) {
+    const cachekey = date+'neteasehistory';
+    let cached = global[ cachekey ];
+    if( bReadCache && cached) {
+        return cached;
+    }
+    let result = await db.findNeteasePlaylistData(client, date);
+    if(!result) {
+        result = await updateYesterday();
+    }
+    if( bReadCache ) {
+        global[ cachekey ] = result;
+    }
+    return result;
 }
 
 function isZhouShen(ar) {
@@ -113,13 +139,89 @@ async function getHotSongs(){
     }
 }
 
+function formatPlaylist(history, results, bPersist ) {
+    if(bPersist) {
+        let result = {};
+        results.forEach(({id, name, playCount})=>{
+            result[id] = {
+                name,
+                listID: id,
+                playCount
+            };
+        });
+        return {
+            data: result
+        };
+    }
+    return results.map( ({id, name, playCount}) => {
+        return{
+            title: name,
+            playCount,
+            listID: id,
+            increase: playCount - history.data[id].playCount,
+            previous_increase: history.data[id] ? history.data[id].increase : 0
+        }
+    });
+}
+
+async function getReportData( date=_getToday()) {
+    const client = await db.connect();
+    const [ history, current ] = await Promise.all([
+        getOldPlayCounts( client, date ),
+        getPlaylists()
+    ]);
+    const data = formatPlaylist( history, current );
+    return data;
+}
+
+async function updateYesterday() {
+    let client = null;
+    const date = _getToday();
+    const cachekey = date+'neteasehistory';
+
+    try{
+        client = await db.connect();
+        const [ history, current ] = await Promise.all([
+            getOldPlayCounts( client, _getYesterday(), false ),
+            getPlaylists()
+        ]);
+        const data = formatPlaylist( history, current, true );
+        data.updatedAt = date;
+        await db.updateNeteasePlaylistData(client, date, data);
+        global[ cachekey ] = data;
+    } catch( err ) {
+        console.log( err.stack );
+    } finally {
+        if( client ) {
+            await client.close();
+        }
+    }
+}
+
+async function getPlaylists() {
+    try {
+        const promises = HotPlaylists.map(l => {
+            return playlist_detail({
+                id: l
+            });
+        })
+        const results_raw = await Promise.all(promises);
+        return results_raw.map((x)=>{
+            return x.body.playlist;
+        });
+    } catch (error) {
+        console.log(error)
+        return {};
+    }
+}
+
 async function searchPlaylists(){
     try {
-        const songs = await artist_top_song({
-            s: '周深',
+        const songs = await search({
+            keywords: '周深',
             type: 1000
         });
-        return songs;
+        return songs.body.result.playlists;
     } catch (error) {
         console.log(error)
     }
@@ -128,5 +230,8 @@ module.exports = {
     updateCharts,
     getExistingChartData,
     getHotSongs,
-    searchPlaylists
+    searchPlaylists,
+    getPlaylists,
+    getReportData,
+    updateYesterday
 }

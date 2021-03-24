@@ -52,6 +52,11 @@ sap.ui.define( [], function() {
         async getNeteaseSongs() {
             const sUrl = '/netease/songs';
             return genericRequest( sUrl, defaultOptions );
-        }        
+        },
+
+        async getNeteasePlaylists() {
+            const sUrl = '/netease/lists';
+            return genericRequest( sUrl, defaultOptions );
+        }    
     };
 });
