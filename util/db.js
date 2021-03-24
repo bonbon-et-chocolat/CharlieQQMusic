@@ -92,6 +92,13 @@ async function updateSummary( client, data ) {
 async function updateCharts( client, data ) {
     return upsertOne( client, {tag: 'charts'}, data, DB.qq, COLLECTION.ranks );
 }
+
+async function findQQPlaylistData( client, sDate ) {
+    return findByDate( client, sDate, DB.qq, COLLECTION.playlist );
+}
+async function updateQQPlaylistData( client, sDate, data ) {
+    return upsertOneByDate( client, sDate, data, DB.qq, COLLECTION.playlist );
+}
 //BILIBILI
 async function findBiliVideoData( client, sDate ) {
     return findByDate( client, sDate, DB.bili, COLLECTION.videos );
@@ -149,5 +156,7 @@ module.exports = {
     getNeteaseRanksByDate,
     updateNeteaseRanks,
     findNeteasePlaylistData,
-    updateNeteasePlaylistData
+    updateNeteasePlaylistData,
+    findQQPlaylistData,
+    updateQQPlaylistData
 };

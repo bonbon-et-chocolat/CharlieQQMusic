@@ -13,7 +13,7 @@ async function search(req){
       pageNo = 1,
       pageSize = 20,
       key,
-      t = 9 // 0：单曲，2：歌单，7：歌词，8：专辑，9：歌手，12：mv
+      t // 0：单曲，2：歌单，7：歌词，8：专辑，9：歌手，12：mv
     } = req.query;
     const url = 'http://c.y.qq.com/soso/fcgi-bin/client_search_cp';
 
@@ -35,7 +35,7 @@ async function search(req){
         Referer: 'https://y.qq.com'
       }
     });
-    return result.data.singer.list[0].singerMID;
+    return result;
 }
 
 function _getToday() {
@@ -343,10 +343,110 @@ async function updateReportData(bUpdateDB=true) {
     return data;
 }
 
+async function getOldPlayCounts( client, date=_getToday(), bReadCache=true ) {
+    const cachekey = date+'qqlisthistory';
+    let cached = global[ cachekey ];
+    if( bReadCache && cached) {
+        return cached;
+    }
+    let result = await db.findQQPlaylistData(client, date);
+    if(!result) {
+        result = await updateYesterdayPlaylist();
+    }
+    if( bReadCache ) {
+        global[ cachekey ] = result;
+    }
+    return result;
+}
+
+async function updateYesterdayPlaylist() {
+    let client = null;
+    const date = _getToday();
+    const cachekey = date+'qqlisthistory';
+
+    try{
+        client = await db.connect();
+        const [ history, current ] = await Promise.all([
+            getOldPlayCounts( client, _getYesterday(), false ),
+            getPlaylists()
+        ]);
+        const data = formatPlaylist( history, current, true );
+        data.updatedAt = date;
+        await db.updateQQPlaylistData(client, date, data);
+        global[ cachekey ] = data;
+    } catch( err ) {
+        console.log( err.stack );
+    } finally {
+        if( client ) {
+            await client.close();
+        }
+    }
+}
+
+function formatPlaylist(history, results, bPersist ) {
+    if(bPersist) {
+        let result = {};
+        results.forEach(({id, name, playCount})=>{
+            result[id] = {
+                name,
+                listID: id,
+                playCount
+            };
+        });
+        return {
+            data: result
+        };
+    }
+    return results.map( ({id, name, playCount}) => {
+        return{
+            title: name,
+            playCount,
+            listID: id,
+            increase: playCount - history.data[id].playCount,
+            previous_increase: history.data[id] ? history.data[id].increase : 0
+        }
+    });
+}
+
+async function getPlaylistReportData( req, date=_getToday()) {
+    const client = await db.connect();
+    const [ history, current ] = await Promise.all([
+        getOldPlayCounts( client, date ),
+        getPlaylists()
+    ]);
+    const data = formatPlaylist( history, current );
+    return data;
+}
+
+async function getPlaylists() {
+    const results_raw = await request({
+        url: 'http://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
+        data: {
+          type: 1,
+          utf8: 1,
+          disstid: [7503734031, 7520517030, 7039448240, 7337210245, 7937853998, 7912406056], // 歌单的id
+          loginUin: 0,
+        },
+        headers: {
+          Referer: 'https://y.qq.com/n/yqq/playlist',
+        },
+    });
+    const results = results_raw.cdlist.map( ({visitnum, dissname, disstid })=> {
+        return {
+            playCount:visitnum,
+            name: dissname,
+            id: disstid
+        }
+    })
+    return results;
+}
 module.exports = {
     getLiveData,
     getExistingData,
     updateReportData,
+    getPlaylistReportData,
     updateYesterday,
-    search
+    updateYesterdayPlaylist,
+    search,
+    getPlaylists
 }

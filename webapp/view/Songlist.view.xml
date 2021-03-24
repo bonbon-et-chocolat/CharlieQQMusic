@@ -143,7 +143,7 @@
 												<m:Link
 													text="{rankModel>title}"
 													wrapping="true"
-													press=".openQQPlaylist"/>
+													press=".openQQToplist"/>
 											</m:HBox>
 										 	<m:VBox items="{rankModel>song}">
 												<m:Text text="第{rankModel>rank}名：{rankModel>title}"/>
@@ -206,6 +206,76 @@
 												}"/>
 											<m:Text
 												text="{yobangModel>uniIndex}"/>
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
+					<ObjectPageSubSection id="qq-charts-playlists" title="QQ热门歌单(含团建)" titleUppercase="false">
+						<blocks>
+							<m:Table
+								id="qq-playlists-table"
+								width="auto"
+								class="sapUiResponsiveMargin"
+								growing="true"
+								items="{
+										path: 'qqPlaylistModel>/data'
+									}"
+								busy="{viewModel>/qqPlaylistLoading}"
+								busyIndicatorDelay="0">
+								<m:headerToolbar>
+									<m:Toolbar>
+										<m:ToolbarSpacer />
+										<m:Button
+											tooltip="排序"
+											icon="sap-icon://sort"
+											press="handleSortButtonPressed('qqSortDialog')" />
+									</m:Toolbar>
+								</m:headerToolbar>
+								<m:columns>
+									<m:Column>
+										<m:Text text="歌单"/>
+									</m:Column>
+									<m:Column width="30%">
+										<m:Text text="播放量"/>
+									</m:Column>
+									<m:Column width="30%">
+										<m:Text text="增长（今/昨）"/>
+									</m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem
+										vAlign="Middle">
+										<m:cells>
+											<m:HBox align='Center'>
+												<m:Link
+													text="{qqPlaylistModel>title}"
+													wrapping="true"
+													press=".openQQPlayList($event, 'qqPlaylistModel')"/>
+											</m:HBox>
+										 	<m:ObjectNumber
+												textAlign="Right"
+												number="{
+													path: 'qqPlaylistModel>playCount',
+													formatter: '.formatter.formatNumberWithCommas'
+												}"/>
+											<m:VBox>
+												<m:ObjectNumber
+													textAlign="Right"
+													number="{
+													path: 'qqPlaylistModel>increase',
+													formatter: '.formatter.formatNumberWithCommas'
+												}"/>
+												<m:ObjectNumber
+													class="sapUiTinyMarginTop"
+													textAlign="Right"
+													number="{
+														path: 'qqPlaylistModel>previous_increase',
+														formatter: '.formatter.formatNumberWithCommas'
+													}"/>
+											</m:VBox>
+											
 										</m:cells>
 									</m:ColumnListItem>
 								</m:items>

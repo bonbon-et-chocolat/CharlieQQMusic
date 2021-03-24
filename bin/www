@@ -120,6 +120,7 @@ function onListening() {
 
   // start cron job for updating yesterday data
   cron.schedule( '0 0 * * *', async () => {
+    Songs.updateYesterdayPlaylist();
     Netease.updateYesterday();
     Songs.updateYesterday();
     Bili.updateYesterday();

@@ -24,7 +24,9 @@ sap.ui.define([
 				songsLoading: true,
 				ranksLoading: true,
 				yobangLoading: true,
-				biliLoading: true
+				biliLoading: true,
+				neteasePlaylistLoading: true,
+				qqPlaylistLoading: true
 			});
 			this._initProductSwitcher();
 			this.setModel(oModel, "viewModel");
@@ -35,6 +37,7 @@ sap.ui.define([
 			this._loadNeteaseRanks();
 			this._loadNeteaseSongs();
 			this._loadNeteasePlaylists();
+			this._loadQQPlaylists();
 		},
 
 		_initProductSwitcher: function() {
@@ -164,7 +167,19 @@ sap.ui.define([
 				this.getView().getModel( 'viewModel' ).setProperty( '/neteasePlaylistLoading', false);
 			}
 		},
-		
+		_loadQQPlaylists: async function() {
+			try{
+				const [ response ] = await ServiceDAO.getQQPlaylists();
+				const oModel = new JSONModel({
+					data: response.data
+				});
+				this.setModel(oModel, "qqPlaylistModel");
+			} catch(error) {
+				//
+			} finally {
+				this.getView().getModel( 'viewModel' ).setProperty( '/qqPlaylistLoading', false);
+			}
+		},
 		/**
 		 * Triggered by the SearchFields's 'search' event
 		 * @param {sap.ui.base.Event} oEvent SearchFields's search event
@@ -217,16 +232,22 @@ sap.ui.define([
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
 			const mid = oButton.getBindingContext('dataModel').getProperty('mid');
 			if (mid === '004AkQIa1JTR6p') {
-				this.openURL( 'https://i.y.qq.com/n2/m/share/details/taoge.html?hosteuin=oK6kowEAoK4z7Kn5NKoFoecA7z**&id=7854751705');
+				this.openURL( 'https://y.qq.com/n/yqq/playlist/7854751705.html');
 			} else {
 				this.openURL( `https://y.qq.com/n/yqq/song/${mid}.html`);			
 			}
 		},
 
-		openQQPlaylist: function(oEvent, context='rankModel') {
+		openQQToplist: function(oEvent, context='rankModel') {
 			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
 			const id = oButton.getBindingContext(context).getProperty('listID');
 			this.openURL( `https://y.qq.com/n/yqq/toplist/${id}.html`);
+		},
+
+		openQQPlayList: function(oEvent, context='qqPlaylistModel') {
+			const oButton = oEvent.getParameter( 'source' ) || oEvent.getSource();
+			const id = oButton.getBindingContext(context).getProperty('listID');
+			this.openURL( `https://y.qq.com/n/yqq/playlist/${id}.html`);
 		},
 
 		openNeteaseSong: function(oEvent, context='neteaseRankModel') {

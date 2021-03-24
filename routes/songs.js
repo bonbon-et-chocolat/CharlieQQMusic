@@ -140,7 +140,9 @@ module.exports = {
     },
     '/zhouxingzhuikeai': async(req, res)=>{
         try{
-            const mid = await Songs.search(req);
+            req.query.t=9;
+            const result = await Songs.search(req);
+            const mid = result.data.singer.list[0].singerMID;
             const data = await Songs.getLiveData({
                 mid
             });
@@ -150,6 +152,20 @@ module.exports = {
                 util: {
                     formatNumberWithCommas
                 }
+            });
+        }catch (err) {
+            res.render('error', {
+                message: "找不到数据",
+                error: err
+            });
+        }
+    },
+    '/lists': async(req, res)=>{
+        try{
+            const data = await Songs.getPlaylistReportData(req);
+           
+            res.send({
+                data
             });
         }catch (err) {
             res.render('error', {

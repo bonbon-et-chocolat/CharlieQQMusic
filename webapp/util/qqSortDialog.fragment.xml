@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<ViewSettingsDialog
+		sortDescending="true"
+		confirm="handleSortDialogConfirm($event, 'qq-playlists-table')">
+		<sortItems>
+			<ViewSettingsItem text="播放量" key="playCount" selected="true" />
+			<ViewSettingsItem text="今日增长" key="increase" />
+			<ViewSettingsItem text="昨日增长" key="previous_increase" />
+		</sortItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>
