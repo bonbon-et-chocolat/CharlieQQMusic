@@ -277,12 +277,11 @@ async function getYesterday( client, date=_getToday(), bReadCache=true ) {
 }
 
 async function updateYesterday() {
-    let client = null;
+    let client = global.client;
     const date = _getToday();
     const cachekey = date+'qqhistory';
 
     try{
-        client = await db.connect();
         const [ history, current ] = await Promise.all([
             getYesterday( client, _getYesterday(), false ),
             getLiveData()
@@ -302,10 +301,6 @@ async function updateYesterday() {
         global[ cachekey ] = data;
     } catch( err ) {
         console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 
@@ -319,11 +314,10 @@ function _combine( today, yesterday ){
 }
 
 async function updateReportData(bUpdateDB=true) {
-    let client = null;
+    let client = global.client;
     let data = null;
     const curDate = moment().tz('Asia/Shanghai');
     try{
-        client = await db.connect();
         const today = await getLiveData();
         const date = curDate.format().substring(0, 10);
         const yesterday = await getYesterday( client );
@@ -333,10 +327,6 @@ async function updateReportData(bUpdateDB=true) {
         }
     } catch( err ) {
         console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
     global.reportData = data;
     console.log( `Updated data for ${new Date()}` );
@@ -360,12 +350,11 @@ async function getOldPlayCounts( client, date=_getToday(), bReadCache=true ) {
 }
 
 async function updateYesterdayPlaylist() {
-    let client = null;
+    let client = global.client;
     const date = _getToday();
     const cachekey = date+'qqlisthistory';
 
     try{
-        client = await db.connect();
         const [ history, current ] = await Promise.all([
             getOldPlayCounts( client, _getYesterday(), false ),
             getPlaylists()
@@ -376,10 +365,6 @@ async function updateYesterdayPlaylist() {
         global[ cachekey ] = data;
     } catch( err ) {
         console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 
@@ -410,9 +395,8 @@ function formatPlaylist(history, results, bPersist ) {
 }
 
 async function getPlaylistReportData( req, date=_getToday()) {
-    let client = null;
+    let client = global.client;
     try{
-        client = await db.connect();
         const [ history, current ] = await Promise.all([
             getOldPlayCounts( client, date ),
             getPlaylists()
@@ -421,10 +405,6 @@ async function getPlaylistReportData( req, date=_getToday()) {
         return data;
     } catch( err ) {
         console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 

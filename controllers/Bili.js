@@ -70,22 +70,13 @@ function _getDiff( n, yesterday ) {
 }
 
 async function getReportData( date=_getToday()) {
-    let client = null;
-    try{
-        client = await db.connect();
-        const [ history, current ] = await Promise.all([
-            getOldViewCounts( client, date ),
-            _getData()
-        ]);
-        const data = _formatData( history, current );
-        return data;
-    } catch( err ) {
-        console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
-    }
+    let client = global.client;
+    const [ history, current ] = await Promise.all([
+        getOldViewCounts( client, date ),
+        _getData()
+    ]);
+    const data = _formatData( history, current );
+    return data;
 }
 
 function formatFeatured(results, history, bPersist ) {
@@ -166,12 +157,11 @@ function _formatData( history, {channelMeta, featured, uploaded, followers}, bPe
     }
 }
 async function updateYesterday() {
-    let client = null;
+    let client = global.client;
     const date = _getToday();
     const cachekey = date+'bilihistory';
 
     try{
-        client = await db.connect();
         const [ history, current ] = await Promise.all([
             getOldViewCounts( client, _getYesterday(), false ),
             _getData()
@@ -182,10 +172,6 @@ async function updateYesterday() {
         global[ cachekey ] = data;
     } catch( err ) {
         console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 

@@ -13,6 +13,7 @@ const Songs = require('../controllers/Songs');
 const Ranks = require('../controllers/Ranks');
 const Netease = require('../controllers/Netease');
 const Bili = require('../controllers/Bili');
+const db = require("../util/db");
 
 /**
  * Get port from environment and store in Express.
@@ -96,6 +97,10 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
   console.log(`Listening on \n http://localhost:${addr.port} \n http://127.0.0.1:${addr.port}`);
+  
+  (async function(){
+    global.client = await db.connect();
+  })()
   
   // start cron job for fetching live data
   cron.schedule( '1 0,10-23 * * *', async () => {

@@ -80,9 +80,8 @@ function formatResult(result) {
     };
 }
 async function updateCharts() {
-    let client = null;
+    let client = global.client;
     try {
-        client = await db.connect();
         const toplists = Object.values(ChartConfig);
         const promises = toplists.map(l => {
             return playlist_detail({
@@ -99,25 +98,16 @@ async function updateCharts() {
         return result;
     } catch (error) {
         console.log(error)
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 
 async function getExistingChartData( date=_getToday() ){
-    let client = null;
+    let client = global.client;
     try {
-        client = await db.connect();
         const data = await db.getNeteaseRanksByDate(client, date);
         return data;
     } catch (error) {
         console.log(error)
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 
@@ -166,9 +156,8 @@ function formatPlaylist(history, results, bPersist ) {
 }
 
 async function getReportData( date=_getToday()) {
-    let client = null;
+    let client = global.client;
     try{
-        client = await db.connect();
         const [ history, current ] = await Promise.all([
             getOldPlayCounts( client, date ),
             getPlaylists()
@@ -177,20 +166,15 @@ async function getReportData( date=_getToday()) {
         return data;
     } catch( err ) {
         console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 
 async function updateYesterday() {
-    let client = null;
+    let client = global.client;
     const date = _getToday();
     const cachekey = date+'neteasehistory';
 
     try{
-        client = await db.connect();
         const [ history, current ] = await Promise.all([
             getOldPlayCounts( client, _getYesterday(), false ),
             getPlaylists()
@@ -201,10 +185,6 @@ async function updateYesterday() {
         global[ cachekey ] = data;
     } catch( err ) {
         console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 

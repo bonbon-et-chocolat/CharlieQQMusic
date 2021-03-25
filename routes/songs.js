@@ -16,9 +16,8 @@ async function _getData( req ) {
         data = global.reportData;
     }
     if( !data ) {
-        const client = await db.connect();
+        const client = global.client;
         data = await Songs.getExistingData( client, req.query, true  );
-        await client.close();
         if( bToday ) {
             if( !data ) {
                 data = await Songs.updateReportData();
@@ -56,9 +55,8 @@ module.exports = {
     },
     '/forceupdatecache': async (req, res) => {
         try {
-            const client = await db.connect();
+            const client = global.client;
             let data = await Songs.getExistingData( client, req.query  );
-            await client.close();
             global.reportData = data;
             res.send({});
         } catch (err) {
@@ -69,7 +67,7 @@ module.exports = {
         }
     },
     '/inc': async(req, res)=>{
-        const client = await db.connect();
+        const client = global.client;
         let {details} = await Songs.getExistingData( client, req.query  );
         
         let {data} = await db.findYesterdayFavData( client );
@@ -87,14 +85,13 @@ module.exports = {
             timestamp: Date.now(),
             data: data1
         });
-        await client.close();
         res.send({data1}); 
     },
     '/fav/report': async (req, res) => {
         try {
             const start = '2021-02-01';
             const end = '2021-02-28';
-            const client = await db.connect();
+            const client = global.client;
             let data1 = await Songs.getExistingData( client,  {date: start});
             let data2 = await Songs.getExistingData( client,  {date: end});
 
@@ -128,7 +125,6 @@ module.exports = {
                 tag: 'summary',
                 data
             });
-            await client.close();
             res.send({
                 data,
                 result: data.details.length

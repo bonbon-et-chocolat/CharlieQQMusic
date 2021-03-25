@@ -168,34 +168,24 @@ async function getCharts( chartIds = dayCharts.concat(weekCharts), time = moment
 }
 
 async function getExistingChartData() {
-    let client = null;
+    let client = global.client;
     try{
-        client = await db.connect();
         const data = await db.findOneChart(client);
         return data; 
     } catch( err ) {
         console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 
 async function updateCharts( chartIds, time ) {
-    let client = null;
+    let client = global.client;
     try{
         const data = await getCharts( chartIds, time );
-        client = await db.connect();
         await db.updateCharts(client, data);
         global.rankData = data;
         return data;
     } catch( err ) {
         console.log( err.stack );
-    } finally {
-        if( client ) {
-            await client.close();
-        }
     }
 }
 
