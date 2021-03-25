@@ -390,7 +390,8 @@ function formatPlaylist(history, results, bPersist ) {
             result[id] = {
                 name,
                 listID: id,
-                playCount
+                playCount,
+                increase: playCount - history.data[id].playCount
             };
         });
         return {
@@ -409,13 +410,22 @@ function formatPlaylist(history, results, bPersist ) {
 }
 
 async function getPlaylistReportData( req, date=_getToday()) {
-    const client = await db.connect();
-    const [ history, current ] = await Promise.all([
-        getOldPlayCounts( client, date ),
-        getPlaylists()
-    ]);
-    const data = formatPlaylist( history, current );
-    return data;
+    let client = null;
+    try{
+        client = await db.connect();
+        const [ history, current ] = await Promise.all([
+            getOldPlayCounts( client, date ),
+            getPlaylists()
+        ]);
+        const data = formatPlaylist( history, current );
+        return data;
+    } catch( err ) {
+        console.log( err.stack );
+    } finally {
+        if( client ) {
+            await client.close();
+        }
+    }
 }
 
 async function getPlaylists() {

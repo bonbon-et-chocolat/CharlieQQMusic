@@ -87,6 +87,7 @@ module.exports = {
             timestamp: Date.now(),
             data: data1
         });
+        await client.close();
         res.send({data1}); 
     },
     '/fav/report': async (req, res) => {
@@ -127,6 +128,7 @@ module.exports = {
                 tag: 'summary',
                 data
             });
+            await client.close();
             res.send({
                 data,
                 result: data.details.length

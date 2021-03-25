@@ -70,13 +70,22 @@ function _getDiff( n, yesterday ) {
 }
 
 async function getReportData( date=_getToday()) {
-    const client = await db.connect();
-    const [ history, current ] = await Promise.all([
-        getOldViewCounts( client, date ),
-        _getData()
-    ]);
-    const data = _formatData( history, current );
-    return data;
+    let client = null;
+    try{
+        client = await db.connect();
+        const [ history, current ] = await Promise.all([
+            getOldViewCounts( client, date ),
+            _getData()
+        ]);
+        const data = _formatData( history, current );
+        return data;
+    } catch( err ) {
+        console.log( err.stack );
+    } finally {
+        if( client ) {
+            await client.close();
+        }
+    }
 }
 
 function formatFeatured(results, history, bPersist ) {
