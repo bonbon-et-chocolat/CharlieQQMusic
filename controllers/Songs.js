@@ -306,9 +306,12 @@ async function updateYesterday() {
 
 function _combine( today, yesterday ){
     today.details.forEach( song => {
-        let oldData = yesterday.data[song.id].favCount || 0;
-        song.increase = song.favCount - oldData;
-        song.yesterdayInc = yesterday.data[song.id].inc || 0;
+        let oldData = yesterday.data[song.id] || {
+            favCount: 0,
+            inc: 0
+        };
+        song.increase = song.favCount - oldData.favCount;
+        song.yesterdayInc = oldData.inc;
     });
     return today;
 }
