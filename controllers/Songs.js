@@ -209,8 +209,8 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
         formatted.record = record ? record.data : undefined;
         formatted.score = score;
         if( formatted.mid === '004OQ5Mt0EmEzv' && !score ) {
-            formatted.score = 317075;
-            listenCnt = '40w+';
+            formatted.score = 341287;
+            listenCnt = '50w+';
             formatted.record = [];
         }
         if( formatted.mid === '003akgwo0qN5bE' && !score ) {
@@ -288,9 +288,10 @@ async function updateYesterday() {
         ]);
         const data = {};
         current.details.forEach( ({id, favCount}) => {
+            let oldFav = history.data[id] ? history.data[id].favCount : 0;
             data[id] = {
                 favCount: favCount,
-                inc: favCount - history.data[id].favCount
+                inc: favCount - oldFav
             };
         });
         await db.updateQQHistoryData(client, date, {
