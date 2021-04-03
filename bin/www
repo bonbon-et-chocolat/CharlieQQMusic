@@ -4,86 +4,87 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('qqmusicapi:server');
-var http = require('http');
-var config = require('./config');
-const cron = require('node-cron');
-const Songs = require('../controllers/Songs');
-const Ranks = require('../controllers/Ranks');
-const Netease = require('../controllers/Netease');
-const Bili = require('../controllers/Bili');
-const db = require("../util/db");
+'use strict';
+let app = require( '../app' );
+let debug = require( 'debug' )( 'qqmusicapi:server' );
+let http = require( 'http' );
+let config = require( './config' );
+const cron = require( 'node-cron' );
+const Songs = require( '../controllers/Songs' );
+const Ranks = require( '../controllers/Ranks' );
+const Netease = require( '../controllers/Netease' );
+const Bili = require( '../controllers/Bili' );
+const db = require( '../util/db' );
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || config.port);
+let port = normalizePort( process.env.PORT || config.port );
 global.PORT = port;
 global.useDataStatistics = config.useDataStatistics;
-app.set('port', port);
+app.set( 'port', port );
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+let server = http.createServer( app );
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+server.listen( port );
+server.on( 'error', onError );
+server.on( 'listening', onListening );
 
 /**
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+function normalizePort( val ) {
+    let port = parseInt( val, 10 );
 
-  if (isNaN(port)) {
+    if( isNaN( port ) ) {
     // named pipe
-    return val;
-  }
+        return val;
+    }
 
-  if (port >= 0) {
+    if( port >= 0 ) {
     // port number
-    return port;
-  }
+        return port;
+    }
 
-  return false;
+    return false;
 }
 
 /**
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+function onError( error ) {
+    if( error.syscall !== 'listen' ) {
+        throw error;
+    }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+    let bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
+    // handle specific listen errors with friendly messages
+    switch( error.code ) {
+    case'EACCES':
+        console.error( bind + ' requires elevated privileges' );
+        process.exit( 1 );
+        break;
+    case'EADDRINUSE':
+        console.error( bind + ' is already in use' );
+        process.exit( 1 );
+        break;
     default:
-      throw error;
-  }
+        throw error;
+    }
 }
 
 /**
@@ -91,39 +92,39 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-  console.log(`Listening on \n http://localhost:${addr.port} \n http://127.0.0.1:${addr.port}`);
-  
-  (async function(){
-    global.client = await db.connect();
-  })()
-  
-  // start cron job for fetching live data
-  cron.schedule( '1 0,10-23 * * *', async () => {
-    Songs.updateReportData();
-  }, {
-    timezone: "Asia/Shanghai"
-  }).start();
+    let addr = server.address();
+    let bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug( 'Listening on ' + bind );
+    console.log( `Listening on \n http://localhost:${addr.port} \n http://127.0.0.1:${addr.port}` );
 
-  // start cron job for fetching live data
-  cron.schedule( '0 0,8-14 * * *', async () => {
-    Ranks.updateCharts();
-    Netease.updateCharts();
-  }, {
-    timezone: "Asia/Shanghai"
-  }).start();
+    ( async function(){
+        global.client = await db.connect();
+    })();
 
-  // start cron job for updating yesterday data
-  cron.schedule( '0 0 * * *', async () => {
-    Songs.updateYesterdayPlaylist();
-    Netease.updateYesterday();
-    Songs.updateYesterday();
-    Bili.updateYesterday();
-  }, {
-    timezone: "Asia/Shanghai"
-  }).start();
+    // start cron job for fetching live data
+    cron.schedule( '1 1,10-23 * * *', async () => {
+        Songs.updateReportData();
+    }, {
+        timezone: 'Asia/Shanghai'
+    }).start();
+
+    // start cron job for fetching live data
+    cron.schedule( '0 0,8-14 * * *', async () => {
+        Ranks.updateCharts();
+        Netease.updateCharts();
+    }, {
+        timezone: 'Asia/Shanghai'
+    }).start();
+
+    // start cron job for updating yesterday data
+    cron.schedule( '0 0 * * *', async () => {
+        Songs.updateYesterdayPlaylist();
+        Netease.updateYesterday();
+        Songs.updateYesterday();
+        Bili.updateYesterday();
+    }, {
+        timezone: 'Asia/Shanghai'
+    }).start();
 }
