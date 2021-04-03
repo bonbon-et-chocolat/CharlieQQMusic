@@ -89,6 +89,10 @@ async function updateSummary( client, data ) {
     return upsertOne( client, {tag: 'summary'}, data, DB.qq, COLLECTION.summary );
 }
 
+async function findSummary( client ) {
+    return _find( client, {tag: 'summary'}, DB.qq, COLLECTION.summary);
+}
+
 async function updateCharts( client, data ) {
     return upsertOne( client, {tag: 'charts'}, data, DB.qq, COLLECTION.ranks );
 }
@@ -158,5 +162,6 @@ module.exports = {
     findNeteasePlaylistData,
     updateNeteasePlaylistData,
     findQQPlaylistData,
-    updateQQPlaylistData
+    updateQQPlaylistData,
+    findSummary
 };

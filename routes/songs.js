@@ -89,9 +89,10 @@ module.exports = {
     },
     '/fav/report': async (req, res) => {
         try {
-            const start = '2021-02-01';
-            const end = '2021-02-28';
+            const start = '2021-03-01';
+            const end = '2021-03-31';
             const client = global.client;
+            const lastMonth = await db.findSummary( client );
             let data1 = await Songs.getExistingData( client,  {date: start});
             let data2 = await Songs.getExistingData( client,  {date: end});
 
@@ -101,7 +102,9 @@ module.exports = {
                     favCount: x.favCount
                 }
             });
-
+            lastMonth.data.forEach( x=> {
+                dict[x.mid].favCountFeb = x.diff
+            })
             const data = data2.details.map( ({mid, title, timePublic, favCount }) => {
                 let formatted = {
                     mid,
@@ -110,8 +113,9 @@ module.exports = {
                     favCount
                 };
                 formatted.favCountMin = dict[mid] ? dict[mid].favCount : 0;
-                if(mid === '003zysEj2zeF4I') {
-                    formatted.favCountMin = 1830000
+                formatted.favCountFeb = dict[mid] ? dict[mid].favCountFeb : 0;
+                if(mid === '004AkQIa1JTR6p') {
+                    formatted.favCountMin = 1800000
                 } else if (timePublic<start && formatted.favCountMin === 0 ) {
                     formatted.favCountMin = formatted.favCount;
                 }
@@ -126,8 +130,7 @@ module.exports = {
                 data
             });
             res.send({
-                data,
-                result: data.details.length
+                data
             })
         } catch (err) {
             res.render('error', {
