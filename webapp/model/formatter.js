@@ -1,69 +1,69 @@
-sap.ui.define([
-	"charlie/data/model/DateFormatter"
-], function (DateFormatter) {
-	"use strict";
+'use strict';
 
-	return {
-		/**
+sap.ui.define( [
+    'charlie/data/model/DateFormatter'
+], function( DateFormatter ) {
+    return{
+        /**
 		 * Rounds the number unit value to 2 digits
 		 *
 		 * @public
 		 * @param {string} sValue the number string to be rounded
 		 * @returns {string} sValue with 2 digits rounded
 		 */
-		numberUnit: function (sValue) {
-			if (!sValue) {
-				return "";
-			}
+        numberUnit: function( sValue ) {
+            if( !sValue ) {
+                return'';
+            }
 
-			return parseFloat(sValue).toFixed(2);
-		},
+            return parseFloat( sValue ).toFixed( 2 );
+        },
 
-		/**
+        /**
 		 * Defines a value state based on the price
 		 *
 		 * @public
 		 * @param {number} iPrice the price of a post
 		 * @returns {string} sValue the state for the price
 		 */
-		priceState: function (iPrice) {
-			if (iPrice < 50) {
-				return "Success";
-			} else if (iPrice >= 50 && iPrice < 250 ) {
-				return "None";
-			} else if (iPrice >= 250 && iPrice < 2000 ) {
-				return "Warning";
-			} else {
-				return "Error";
-			}
-		},
+        priceState: function( iPrice ) {
+            if( iPrice < 50 ) {
+                return'Success';
+            } else if( iPrice >= 50 && iPrice < 250 ) {
+                return'None';
+            } else if( iPrice >= 250 && iPrice < 2000 ) {
+                return'Warning';
+            } else {
+                return'Error';
+            }
+        },
 
-		/**
+        /**
 		 * Creates a human readable date
 		 *
 		 * @public
 		 * @param {Date} oDate the date of the property.
 		 * @returns {string} sValue the formatted date
 		 */
-		date: function(oDate) {
-			return new DateFormatter({ now: Date.now }).format(oDate);
-		},
+        date: function( oDate ) {
+            return new DateFormatter({ now: Date.now }).format( oDate );
+        },
 
-		formatNumberWithCommas:function (x) {
-			try{
-				return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-			} catch(err) {
-				return '-';
-			}
-		},
+        formatNumberWithCommas: function( x ) {
+            try {
+                return x.toString().replace( /\B(?=(\d{3})+(?!\d))/g, ',' );
+            } catch( err ) {
+                return'-';
+            }
+        },
 
-		formatNumberWithWan: function(x) {
-			if(x===0) {
-				return '-'
-			} else {
-				return x.toFixed(1)+'万';
-			}
-		}
-	};
+        formatNumberWithWan: function( x ) {
+            if( x===0 ) {
+                return'-';
+            } else {
+                return x.toFixed( 1 )+'万';
+            }
+        }
+    };
 
 });

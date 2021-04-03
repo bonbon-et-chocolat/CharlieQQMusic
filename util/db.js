@@ -1,5 +1,6 @@
+'use strict';
 // mongodb driver
-const MongoClient = require('mongodb').MongoClient;
+const MongoClient = require( 'mongodb' ).MongoClient;
 
 const URI = process.env.DB_URL;
 const DB = {
@@ -19,37 +20,37 @@ const COLLECTION = {
 };
 
 //generic
-async function connect ( uri=URI ) {
-    const client = new MongoClient(uri, { useUnifiedTopology: true });
+async function connect( uri=URI ) {
+    const client = new MongoClient( uri, { useUnifiedTopology: true });
     await client.connect();
     return client;
 }
 
 async function findAll( client, db=DB.qq, collection=COLLECTION.songs ) {
-    return client.db(db)
-    .collection(collection)
+    return client.db( db )
+    .collection( collection )
     .find({}).toArray();
 }
 
 async function _find( client, query, db=DB.qq, collection=COLLECTION.songs ) {
-    return client.db(db)
-    .collection(collection)
-    .findOne(query);
+    return client.db( db )
+    .collection( collection )
+    .findOne( query );
 }
 
 async function findByDate( client, sDate, db=DB.qq, collection=COLLECTION.songs ) {
-    return _find( client, {updatedAt: new RegExp(sDate)}, db, collection);
+    return _find( client, { updatedAt: new RegExp( sDate ) }, db, collection );
 }
 
 async function insertOne( client, data, db=DB.qq, collection=COLLECTION.songs  ) {
-    return client.db(db)
-    .collection(collection)
+    return client.db( db )
+    .collection( collection )
     .insertOne( data );
 }
 
 async function upsertOne( client, query, data, db=DB.qq, collection=COLLECTION.songs  ) {
-    return client.db(db)
-    .collection(collection)
+    return client.db( db )
+    .collection( collection )
     .updateOne(
         query,
         {
@@ -63,18 +64,18 @@ async function upsertOne( client, query, data, db=DB.qq, collection=COLLECTION.s
 
 
 async function updateOneById( client, _id, data, db=DB.qq, collection=COLLECTION.songs  ) {
-    return client.db(db)
-    .collection(collection)
-    .updateOne( {_id }, {$set: data} );
+    return client.db( db )
+    .collection( collection )
+    .updateOne({ _id }, { $set: data });
 }
 
 async function upsertOneByDate( client, sDate, data, db=DB.qq, collection=COLLECTION.songs ) {
-    return upsertOne( client, {updatedAt: new RegExp(sDate)}, data, db, collection );
+    return upsertOne( client, { updatedAt: new RegExp( sDate ) }, data, db, collection );
 }
 
 //qq
 async function updateYesterdayFavData( client, data ) {
-    return upsertOne( client, {tag: 'yesterday'}, data, DB.qq, COLLECTION.lastUpdate );
+    return upsertOne( client, { tag: 'yesterday' }, data, DB.qq, COLLECTION.lastUpdate );
 }
 
 async function findQQHistoryData( client, sDate ) {
@@ -86,15 +87,15 @@ async function updateQQHistoryData( client, sDate, data ) {
 }
 
 async function updateSummary( client, data ) {
-    return upsertOne( client, {tag: 'summary'}, data, DB.qq, COLLECTION.summary );
+    return upsertOne( client, { tag: 'summary' }, data, DB.qq, COLLECTION.summary );
 }
 
 async function findSummary( client ) {
-    return _find( client, {tag: 'summary'}, DB.qq, COLLECTION.summary);
+    return _find( client, { tag: 'summary' }, DB.qq, COLLECTION.summary );
 }
 
 async function updateCharts( client, data ) {
-    return upsertOne( client, {tag: 'charts'}, data, DB.qq, COLLECTION.ranks );
+    return upsertOne( client, { tag: 'charts' }, data, DB.qq, COLLECTION.ranks );
 }
 
 async function findQQPlaylistData( client, sDate ) {
@@ -117,7 +118,7 @@ async function findBiliHistoryData( client, sDate ) {
 }
 
 async function findOneChart( client ) {
-    return _find( client, {tag: 'charts'}, DB.qq, COLLECTION.ranks );
+    return _find( client, { tag: 'charts' }, DB.qq, COLLECTION.ranks );
 }
 
 async function updateBiliHistoryData( client, sDate, data ) {

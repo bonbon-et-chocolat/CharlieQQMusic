@@ -1,7 +1,7 @@
 'use strict';
-const request  = require('../util/request');
-const moment = require('moment-timezone');
-const db = require("../util/db");
+const request  = require( '../util/request' );
+const moment = require( 'moment-timezone' );
+const db = require( '../util/db' );
 const CHANNEL_META = 'https://api.bilibili.com/x/web-interface/web/channel/detail?channel_id=751970';
 const CHANNEL_FEATURED = 'https://api.bilibili.com/x/web-interface/web/channel/featured/list?channel_id=751970&filter_type=0&page_size=30';
 const UPLOADED = 'https://api.bilibili.com/x/space/arc/search?mid=3404595&ps=30&tid=0&pn=1&keyword=&order=click&jsonp=jsonp';
@@ -14,19 +14,19 @@ async function _get( url ){
 }
 
 function _getToday() {
-    return moment().tz('Asia/Shanghai').format().substring(0, 10);
+    return moment().tz( 'Asia/Shanghai' ).format().substring( 0, 10 );
 }
 function _getYesterday() {
-    return moment().tz('Asia/Shanghai').subtract(1, 'days').format().substring(0, 10);
+    return moment().tz( 'Asia/Shanghai' ).subtract( 1, 'days' ).format().substring( 0, 10 );
 }
 async function getOldViewCounts( client, date=_getToday(), bReadCache=true ) {
     const cachekey = date+'bilihistory';
     let cached = global[ cachekey ];
-    if( bReadCache && cached) {
+    if( bReadCache && cached ) {
         return cached;
     }
-    let result = await db.findBiliHistoryData(client, date);
-    if(!result) {
+    let result = await db.findBiliHistoryData( client, date );
+    if( !result ) {
         result = await updateYesterday();
     }
     if( bReadCache ) {
@@ -35,20 +35,20 @@ async function getOldViewCounts( client, date=_getToday(), bReadCache=true ) {
     return result;
 }
 
-async function _getData() { 
-    const [
+async function _getData() {
+    const[
         channelMeta,
         featured,
         uploaded,
         followers
-    ] = await Promise.all([
+    ] = await Promise.all( [
         _get( CHANNEL_META ),
         _get( CHANNEL_FEATURED ),
         _get( UPLOADED ),
         _get( FOLLOWERS )
-    ]);
+    ] );
 
-    return {
+    return{
         channelMeta,
         featured,
         uploaded,
@@ -60,30 +60,30 @@ function _getDiff( n, yesterday ) {
     if( !yesterday ) {
         return 0;
     }
-    if(typeof yesterday === 'object' ) {
+    if( typeof yesterday === 'object' ) {
         yesterday = yesterday.data;
     }
-    if( n % 1 !== 0 || yesterday%1 !==0) {
-        return Number((n-yesterday).toFixed(1));
+    if( n % 1 !== 0 || yesterday%1 !==0 ) {
+        return Number( ( n-yesterday ).toFixed( 1 ) );
     }
     return n - yesterday;
 }
 
-async function getReportData( date=_getToday()) {
+async function getReportData( date=_getToday() ) {
     let client = global.client;
-    const [ history, current ] = await Promise.all([
+    const[ history, current ] = await Promise.all( [
         getOldViewCounts( client, date ),
         _getData()
-    ]);
+    ] );
     const data = _formatData( history, current );
     return data;
 }
 
-function formatFeatured(results, history, bPersist ) {
-    if(bPersist) {
+function formatFeatured( results, history, bPersist ) {
+    if( bPersist ) {
         let result = {};
-        results.data.list.forEach( ({view_count, bvid }) => {
-            let data = Number(view_count.match(/\d+\.*\d+/g));
+        results.data.list.forEach( ({ view_count, bvid }) => {
+            let data = Number( view_count.match( /\d+\.*\d+/g ) );
             result[bvid] = {
                 data: data,
                 increase: _getDiff( data, history.featured[bvid] )
@@ -91,8 +91,8 @@ function formatFeatured(results, history, bPersist ) {
         });
         return result;
     }
-    return results.data.list.map( ({name, view_count, like_count, bvid }) => {
-        view_count = Number(view_count.match(/\d+\.*\d+/g));
+    return results.data.list.map( ({ name, view_count, like_count, bvid }) => {
+        view_count = Number( view_count.match( /\d+\.*\d+/g ) );
         return{
             title: name,
             view_count,
@@ -100,14 +100,14 @@ function formatFeatured(results, history, bPersist ) {
             bvid,
             increase: _getDiff( view_count, history.featured[bvid] ),
             previous_increase: history.featured[bvid] ? history.featured[bvid].increase : 0
-        }
+        };
     });
 }
 
-function formatUploaded(results, history, bPersist) {
-    if(bPersist) {
+function formatUploaded( results, history, bPersist ) {
+    if( bPersist ) {
         let result = {};
-        results.data.list.vlist.forEach( ({bvid, play}) => {
+        results.data.list.vlist.forEach( ({ bvid, play }) => {
             result[bvid] = {
                 data: play,
                 increase: _getDiff( play, history.uploaded[bvid] )
@@ -115,7 +115,7 @@ function formatUploaded(results, history, bPersist) {
         });
         return result;
     }
-    return results.data.list.vlist.map( ({title, play, comment, bvid }) => {
+    return results.data.list.vlist.map( ({ title, play, comment, bvid }) => {
         return{
             title,
             view_count: play,
@@ -123,52 +123,52 @@ function formatUploaded(results, history, bPersist) {
             bvid,
             increase: _getDiff( play, history.uploaded[bvid] ),
             previous_increase: history.uploaded[bvid] ? history.uploaded[bvid].increase : 0
-        }
-    })
+        };
+    });
 }
 
-function formatChannelMeta(results, history) {
-    let { archive_count, featured_count, subscribed_count, view_count } = results.data;
-    const video_count = Number(archive_count.match(/\d+\.*\d+/g));//视频总数,
-    view_count = Number(view_count.match(/\d+\.*\d+/g));//观看
-    return {
-        video_count,//视频总数
+function formatChannelMeta( results, history ) {
+    let{ archive_count, featured_count, subscribed_count, view_count } = results.data;
+    const video_count = Number( archive_count.match( /\d+\.*\d+/g ) );//视频总数,
+    view_count = Number( view_count.match( /\d+\.*\d+/g ) );//观看
+    return{
+        video_count, //视频总数
         featured_count, //精选视频
-        subscribed_count,//订阅
-        view_count,//观看
+        subscribed_count, //订阅
+        view_count, //观看
         subscribed_increase: _getDiff( subscribed_count, history.channelMeta.subscribed_count ) //订阅增长
-    }
+    };
 }
 
 function formatUpStats( followers, history ) {
-    return {
+    return{
         followers: followers.data.follower,
         increase: _getDiff( followers.data.follower, history.upstats.followers )
-    }
+    };
 }
 
-function _formatData( history, {channelMeta, featured, uploaded, followers}, bPersist ) {
+function _formatData( history, { channelMeta, featured, uploaded, followers }, bPersist ) {
     return{
         timestamp: Date.now(),
         channelMeta: formatChannelMeta( channelMeta, history ),
         featured: formatFeatured( featured, history, bPersist ),
         uploaded: formatUploaded( uploaded, history, bPersist ),
         upstats: formatUpStats( followers, history )
-    }
+    };
 }
 async function updateYesterday() {
     let client = global.client;
     const date = _getToday();
     const cachekey = date+'bilihistory';
 
-    try{
-        const [ history, current ] = await Promise.all([
+    try {
+        const[ history, current ] = await Promise.all( [
             getOldViewCounts( client, _getYesterday(), false ),
             _getData()
-        ]);
+        ] );
         const data = _formatData( history, current, true );
         data.updatedAt = date;
-        await db.updateBiliHistoryData(client, date, data);
+        await db.updateBiliHistoryData( client, date, data );
         global[ cachekey ] = data;
     } catch( err ) {
         console.log( err.stack );
@@ -179,4 +179,4 @@ module.exports = {
     getReportData,
     updateYesterday,
     getOldViewCounts
-}
+};

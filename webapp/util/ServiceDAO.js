@@ -17,7 +17,7 @@ sap.ui.define( [], function() {
             throw new Error( 'error' );
         }
         if( oResponse.status >= 400 ) {
-            throw new Error('request failed');
+            throw new Error( 'request failed' );
         } else {
             return[ oData, oResponse ];
         }
@@ -62,6 +62,6 @@ sap.ui.define( [], function() {
             const sUrl = '/songs/lists';
             return genericRequest( sUrl, defaultOptions );
         }
-        
+
     };
 });

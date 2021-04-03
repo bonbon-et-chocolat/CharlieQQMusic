@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "build:docker": "docker build -t qqmusic-data-for-charlie:1.0 .",
     "rm:docker": "docker container rm qqmusic-data-for-charlie -f",
-    "start:docker": "docker build -t qqmusic-data-for-charlie:1.0 . && docker run --name qqmusic-data-for-charlie -p 8888:80 -d qqmusic-data-for-charlie:1.0"
+    "start:docker": "docker build -t qqmusic-data-for-charlie:1.0 . && docker run --name qqmusic-data-for-charlie -p 8888:80 -d qqmusic-data-for-charlie:1.0",
+    "eslint": "eslint"
   },
   "engines": {
     "node": "~12.x",
@@ -30,5 +31,10 @@
     "useragent": "^2.3.0",
     "xml2js": "^0.4.22"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^7.23.0",
+    "eslint-plugin-html": "^6.1.2",
+    "eslint-plugin-json": "^2.1.2",
+    "eslint-plugin-mocha": "^8.1.0"
+  }
 }

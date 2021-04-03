@@ -1,29 +1,29 @@
-sap.ui.define([
-	'sap/ui/core/UIComponent'
-], function (UIComponent) {
-	"use strict";
+'use strict';
+sap.ui.define( [
+    'sap/ui/core/UIComponent'
+], function( UIComponent ) {
 
-	return UIComponent.extend("charlie.data.Component", {
+    return UIComponent.extend( 'charlie.data.Component', {
 
-		metadata: {
-			manifest: "json"
-		},
+        metadata: {
+            manifest: 'json'
+        },
 
-		/**
+        /**
 		 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
 		 * In this function, the resource and application models are set and the router is initialized.
 		 * @public
 		 * @override
 		 */
-		init: function () {
+        init: function() {
 
-			// call the base component's init function
-			UIComponent.prototype.init.apply(this, arguments);
+            // call the base component's init function
+            UIComponent.prototype.init.apply( this, arguments );
 
-			// create the views based on the url/hash
-			this.getRouter().initialize();
-		}
+            // create the views based on the url/hash
+            this.getRouter().initialize();
+        }
 
-	});
+    });
 
 });

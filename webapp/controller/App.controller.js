@@ -1,12 +1,13 @@
-sap.ui.define([
-	'./BaseController'
-], function (BaseController) {
-	"use strict";
+'use strict';
+sap.ui.define( [
+    './BaseController'
+], function( BaseController ) {
 
-	return BaseController.extend("charlie.data.controller.App", {
+    return BaseController.extend( 'charlie.data.controller.App', {
 
-		onInit: function () {
-		}
-	});
+        onInit: function() {
+            //noop
+        }
+    });
 
 });

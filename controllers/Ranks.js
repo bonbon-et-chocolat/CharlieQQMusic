@@ -1,13 +1,13 @@
 'use strict';
-const request  = require('../util/request');
-const moment = require('moment-timezone');
-const db = require("../util/db");
+const request  = require( '../util/request' );
+const moment = require( 'moment-timezone' );
+const db = require( '../util/db' );
 
 const ChartConfig = {
     // 飙升榜
-    UP_CHART: 62, 
+    UP_CHART: 62,
     // 热歌榜
-    HOT_CHART: 26, 
+    HOT_CHART: 26,
     // 新歌榜
     NEW_CHART: 27,
     // 流行指数榜
@@ -79,9 +79,9 @@ const weekCharts = [
     ChartConfig.AREA_MAINLAND_CHART,
     // ChartConfig.AREA_HK_CHART,
     // ChartConfig.AREA_TW_CHART,
-    // ChartConfig.AREA_EUAM_CHART, 
-    // ChartConfig.AREA_KOREA_CHART, 
-    // ChartConfig.AREA_JP_CHART, 
+    // ChartConfig.AREA_EUAM_CHART,
+    // ChartConfig.AREA_KOREA_CHART,
+    // ChartConfig.AREA_JP_CHART,
     ChartConfig.SHOW_CHART,
     ChartConfig.TV_CHART,
     ChartConfig.CARTOON_CHART,
@@ -89,7 +89,7 @@ const weekCharts = [
     // 周四更新，50首
     //ChartConfig.RAP_CHART,
     //ChartConfig.ELE_CHART,
-    ChartConfig.KTV_CHART,
+    ChartConfig.KTV_CHART
     // 周日更新，100首
     // ChartConfig.BILLBOARD_CHART,
     // 周一更新，
@@ -109,10 +109,10 @@ const weekCharts = [
     //ChartConfig.YOUTUBE_CHART
 ];
 
-async function _getChart({id = 4, pageNo = 1, pageSize = 100, period, time}) {
-    let timeType = dayCharts.indexOf(id)> -1 ? 'YYYY-MM-DD': 'YYYY_W';
-    let postPeriod = (period || moment(time).tz('Asia/Shanghai').format(timeType));
-    
+async function _getChart({ id = 4, pageNo = 1, pageSize = 100, period, time }) {
+    let timeType = dayCharts.indexOf( id )> -1 ? 'YYYY-MM-DD': 'YYYY_W';
+    let postPeriod = ( period || moment( time ).tz( 'Asia/Shanghai' ).format( timeType ) );
+
     const reqFunc = async () => request({
         url: 'http://u.y.qq.com/cgi-bin/musicu.fcg',
         data: {
@@ -123,43 +123,43 @@ async function _getChart({id = 4, pageNo = 1, pageSize = 100, period, time}) {
                     cv: 0
                 },
                 detail: {
-                    method: "GetDetail",
-                    module: "musicToplist.ToplistInfoServer",
-                    "param": {
-                        "topId": Number(id),
-                        "offset": (pageNo - 1) * pageSize,
-                        "num": Number(pageSize),
-                        "period": postPeriod,
-                    },
+                    method: 'GetDetail',
+                    module: 'musicToplist.ToplistInfoServer',
+                    'param': {
+                        'topId': Number( id ),
+                        'offset': ( pageNo - 1 ) * pageSize,
+                        'num': Number( pageSize ),
+                        'period': postPeriod
+                    }
                 }
             })
         }
-    })
+    });
     let result = await reqFunc();
-    if (result.detail.data.data.period !== postPeriod) {
+    if( result.detail.data.data.period !== postPeriod ) {
         postPeriod = result.detail.data.data.period;
         result = await reqFunc();
     }
     const data = result.detail.data.data;
-    if(data) {
-        return {
-            listID: Number(id),
+    if( data ) {
+        return{
+            listID: Number( id ),
             title: data.title,
             intro: data.intro,
-            song: data.song.filter( s => s.singerName.includes('周深')).map( s=> {
-                return {
+            song: data.song.filter( s => s.singerName.includes( '周深' ) ).map( s=> {
+                return{
                     rank: s.rank,
                     title: s.title
                 };
             })
         };
-    };
+    }
 }
 
-async function getCharts( chartIds = dayCharts.concat(weekCharts), time = moment().tz('Asia/Shanghai').format('YYYY-MM-DD') ) {
-    let results = await Promise.all(chartIds.map(async (id) => {
+async function getCharts( chartIds = dayCharts.concat( weekCharts ), time = moment().tz( 'Asia/Shanghai' ).format( 'YYYY-MM-DD' ) ) {
+    let results = await Promise.all( chartIds.map( async ( id ) => {
         return _getChart({ id });
-    }));
+    }) );
     results = results.filter( chart => chart.song.length > 0 );
     return{
         updatedAt: time,
@@ -169,9 +169,9 @@ async function getCharts( chartIds = dayCharts.concat(weekCharts), time = moment
 
 async function getExistingChartData() {
     let client = global.client;
-    try{
-        const data = await db.findOneChart(client);
-        return data; 
+    try {
+        const data = await db.findOneChart( client );
+        return data;
     } catch( err ) {
         console.log( err.stack );
     }
@@ -179,9 +179,9 @@ async function getExistingChartData() {
 
 async function updateCharts( chartIds, time ) {
     let client = global.client;
-    try{
+    try {
         const data = await getCharts( chartIds, time );
-        await db.updateCharts(client, data);
+        await db.updateCharts( client, data );
         global.rankData = data;
         return data;
     } catch( err ) {
@@ -193,4 +193,4 @@ module.exports = {
     getCharts,
     getExistingChartData,
     updateCharts
-}
+};
