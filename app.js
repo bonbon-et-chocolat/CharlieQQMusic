@@ -91,10 +91,10 @@ app.use( '/hitsongs', ( req, res ) => {
     res.redirect( '/webapp/index.html' );
 });
 
-app.use( '/', ( req, res ) => {
+app.use( '/', ( req, res, next ) => {
     const router = express.Router();
     router.get( '/', ( _req, _res ) => require( './routes/index' )['/']( _req, _res ) );
-    router( req, res );
+    router( req, res, next );
 });
 
 // catch 404 and forward to error handler

@@ -322,14 +322,15 @@ function _combine( today, yesterday ){
 async function updateReportData( bUpdateDB=true ) {
     let client = global.client;
     let data = null;
-    const curDate = moment().tz( 'Asia/Shanghai' );
+    const curDate = _getToday();
     try {
-        const today = await getLiveData();
-        const date = curDate.format().substring( 0, 10 );
-        const yesterday = await getYesterday( client );
+        const[ yesterday, today ] = await Promise.all( [
+            getYesterday( client ),
+            getLiveData()
+        ] );
         data = _combine( today, yesterday );
         if( bUpdateDB ){
-            await db.upsertOneByDate( client, date, data );
+            await db.upsertOneByDate( client, curDate, data );
         }
     } catch( err ) {
         console.log( err.stack );
