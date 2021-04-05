@@ -18,10 +18,6 @@ module.exports = {
                 data = await Bot.getData();
                 global.botCache = data;
             }
-
-            // res.send({
-            //     data
-            // });
             res.render( 'bot', {
                 data
             });
@@ -34,7 +30,23 @@ module.exports = {
     },
     '/add': async ( req, res )=> {
         try {
-            const data = await Bot.addWord( req.body );
+            // await Bot.addWords({
+            //     tag: '脂粉',
+            //     words: []
+            // });
+            // await Bot.addWords({
+            //     tag: '自带表情',
+            //     words: []
+            // });
+            // await Bot.addWords({
+            //     tag: '卖萌',
+            //     words: []
+            // });
+            // await Bot.addWords({
+            //     tag: '暴躁',
+            //     words: []
+            // });
+            let data = await Bot.getData();
             res.send( data );
         } catch( err ) {
             res.render( 'error', {
