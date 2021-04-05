@@ -1,0 +1,28 @@
+extends layout
+
+body.scroll-skin-light
+  block content
+    .content
+      each category in data
+        .title #{category.tag} (#{category.description})
+        div.row
+            div.column
+                table
+                    thead
+                        tr
+                            th 发言
+                    tbody
+                        each word in category.words
+                            tr
+                                td 
+                                    #{word}
+            div.column
+                table
+                    thead
+                        tr
+                            th 表情
+                    tbody
+                        each emoji in category.emoji
+                            tr
+                                td 
+                                    #{emoji}    

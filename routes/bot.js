@@ -19,7 +19,10 @@ module.exports = {
                 global.botCache = data;
             }
 
-            res.send({
+            // res.send({
+            //     data
+            // });
+            res.render( 'bot', {
                 data
             });
         } catch( err ) {
