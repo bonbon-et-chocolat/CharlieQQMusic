@@ -6,7 +6,8 @@ const URI = process.env.DB_URL;
 const DB = {
     qq: 'qq',
     bili: 'bilibili',
-    netease: 'netease'
+    netease: 'netease',
+    bot: 'bot'
 };
 const COLLECTION = {
     songs: 'songs',
@@ -16,7 +17,8 @@ const COLLECTION = {
     ranks: 'ranks',
     summary: 'summary',
     lastUpdate: 'lastUpdate',
-    playlist: 'playlist'
+    playlist: 'playlist',
+    comments: 'comments'
 };
 
 //generic
@@ -140,6 +142,36 @@ async function updateNeteasePlaylistData( client, sDate, data ) {
     return upsertOneByDate( client, sDate, data, DB.netease, COLLECTION.playlist );
 }
 
+//bot
+async function findAllBotComments( client ) {
+    return client.db( DB.bot )
+    .collection( COLLECTION.comments )
+    .find({}).toArray();
+}
+
+async function addBotWords( client, data ) {
+    return client.db( DB.bot )
+    .collection( COLLECTION.comments )
+    .update(
+        {
+            tag: data.tag
+        },
+        { $addToSet: { words: { $each: data.words } } }
+    );
+}
+
+
+async function addBotEmojis( client, data ) {
+    return client.db( DB.bot )
+    .collection( COLLECTION.comments )
+    .update(
+        {
+            tag: data.tag
+        },
+        { $addToSet: { emoji: { $each: data.emoji } } }
+    );
+}
+
 module.exports = {
     connect,
     findAll,
@@ -164,5 +196,8 @@ module.exports = {
     updateNeteasePlaylistData,
     findQQPlaylistData,
     updateQQPlaylistData,
-    findSummary
+    findSummary,
+    findAllBotComments,
+    addBotWords,
+    addBotEmojis
 };
