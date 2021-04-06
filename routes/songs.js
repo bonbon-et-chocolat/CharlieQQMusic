@@ -61,6 +61,8 @@ module.exports = {
             global.reportData = data;
             res.send({});
         } catch( err ) {
+            let data = await Songs.updateReportData();
+            global.reportData = data;
             res.render( 'error', {
                 message: '找不到数据',
                 error: err
