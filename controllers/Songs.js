@@ -212,12 +212,12 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
         formatted.score = score;
         if( formatted.mid === '004OQ5Mt0EmEzv' && !score ) {
             formatted.score = 324008;
-            listenCnt = '50w+';
+            listenCnt = '40w+';
             formatted.record = [];
         }
         if( formatted.mid === '003akgwo0qN5bE' && !score ) {
             formatted.score = 96039;
-            listenCnt = '1w+';
+            listenCnt = '10w+';
             formatted.record = [];
         }
         if( formatted.mid === LVREN && !score ) {
