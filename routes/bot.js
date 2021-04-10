@@ -11,6 +11,17 @@ function expired( data ) {
     return bExpired;
 }
 module.exports = {
+    '/ping': async ( req, res ) => {
+        try {
+            await Bot.ping();
+            res.send({});
+        } catch( err ) {
+            res.render( 'error', {
+                message: '找不到数据',
+                error: err
+            });
+        }
+    },
     '/list': async ( req, res ) => {
         try {
             let data = global.botCache;

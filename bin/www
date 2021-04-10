@@ -14,6 +14,7 @@ const Songs = require( '../controllers/Songs' );
 const Ranks = require( '../controllers/Ranks' );
 const Netease = require( '../controllers/Netease' );
 const Bili = require( '../controllers/Bili' );
+const Bot = require( '../controllers/Bot' );
 const db = require( '../util/db' );
 
 /**
@@ -124,6 +125,13 @@ function onListening() {
         Netease.updateYesterday();
         Songs.updateYesterday();
         Bili.updateYesterday();
+    }, {
+        timezone: 'Asia/Shanghai'
+    }).start();
+
+    // start cron job for updating yesterday data
+    cron.schedule( '0 * * * *', async () => {
+        Bot.ping();
     }, {
         timezone: 'Asia/Shanghai'
     }).start();
