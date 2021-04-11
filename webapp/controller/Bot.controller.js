@@ -26,6 +26,7 @@ sap.ui.define( [
 
         _loadBot: async function() {
             try {
+                this.getView().getModel( 'viewModel' ).setProperty( '/botLoading', true );
                 const[ response ] = await ServiceDAO.getBot();
                 this.oModel = new JSONModel( response.data );
                 this.setModel( this.oModel );

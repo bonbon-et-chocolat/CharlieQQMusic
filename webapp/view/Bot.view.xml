@@ -16,6 +16,9 @@
 				<expandedHeading>
 					<m:Title text="辣辣语录" wrapping="true"/>
 				</expandedHeading>
+				<actions>
+					<m:Button icon="sap-icon://refresh" type="Transparent" press="._loadBot" />
+				</actions>
 			</ObjectPageDynamicHeaderTitle>
 		</headerTitle>
 		<headerContent>
