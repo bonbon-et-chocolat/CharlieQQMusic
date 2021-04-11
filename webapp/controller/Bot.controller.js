@@ -12,10 +12,6 @@ sap.ui.define( [
         onInit: function() {
             this.viewModel = new JSONModel({
                 botLoading: true,
-                categories: [ {
-                    key: '0',
-                    name: ''
-                } ],
                 toDelete: {
                     _id: '',
                     content: ''
@@ -53,11 +49,6 @@ sap.ui.define( [
             // update list binding
             let oBinding = oEvent.getSource().getParent().getParent().getBinding( 'items' );
             oBinding.filter( aFilters );
-        },
-        getGroupHeader: function( oGroup ){
-            return new sap.m.GroupHeaderListItem({
-                title: `${oGroup.name}: ${oGroup.description}`
-            });
         },
         deleteComment: async function() {
             const oContext = this.viewModel.getProperty( '/toDelete' );

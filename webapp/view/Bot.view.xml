@@ -36,6 +36,8 @@
                         	<m:List
                                 id="commentlist"
                                 mode="Delete"
+								growing="true"
+								growingThreshold="50"
                                 delete="handleDelete"
                                 items="{
                                     path: 'data',
