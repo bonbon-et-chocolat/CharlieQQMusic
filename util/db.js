@@ -1,6 +1,7 @@
 'use strict';
 // mongodb driver
 const MongoClient = require( 'mongodb' ).MongoClient;
+const ObjectID = require( 'mongodb' ).ObjectID;
 
 const URI = process.env.DB_URL;
 const DB = {
@@ -18,7 +19,8 @@ const COLLECTION = {
     summary: 'summary',
     lastUpdate: 'lastUpdate',
     playlist: 'playlist',
-    comments: 'comments'
+    comments: 'commentsV2',
+    categories: 'categories'
 };
 
 //generic
@@ -149,29 +151,24 @@ async function findAllBotComments( client ) {
     .find({}).toArray();
 }
 
-async function addBotWords( client, data ) {
+async function addBotComments( client, comments ) {
     return client.db( DB.bot )
     .collection( COLLECTION.comments )
-    .update(
-        {
-            tag: data.tag
-        },
-        { $addToSet: { words: { $each: data.words } } }
-    );
+    .insertMany( comments );
 }
 
-
-async function addBotEmojis( client, data ) {
+async function deleteBotComment( client, id ) {
     return client.db( DB.bot )
     .collection( COLLECTION.comments )
-    .update(
-        {
-            tag: data.tag
-        },
-        { $addToSet: { emoji: { $each: data.emoji } } }
-    );
+    .deleteOne({ _id: new ObjectID( id ) });
 }
 
+async function findAllBotCategories( client ) {
+    const result = await client.db( DB.bot )
+    .collection( COLLECTION.categories )
+    .find({}).toArray();
+    return result[0].list;
+}
 module.exports = {
     connect,
     findAll,
@@ -198,6 +195,7 @@ module.exports = {
     updateQQPlaylistData,
     findSummary,
     findAllBotComments,
-    addBotWords,
-    addBotEmojis
+    addBotComments,
+    findAllBotCategories,
+    deleteBotComment
 };

@@ -73,9 +73,9 @@
 					"target": "songlist"
 				},
 				{
-					"pattern": "Post/{postId}",
-					"name": "post",
-					"target": "post"
+					"pattern": "laguochunlaguolala",
+					"name": "bot",
+					"target": "bot"
 				}
 
 			],
@@ -85,10 +85,11 @@
 					"viewId": "songlist",
 					"viewLevel": 1
 				},
-				"post": {
-					"viewName": "Post",
-					"viewId": "post",
-					"viewLevel": 2
+				"bot": {
+					"viewName": "Bot",
+					"viewId": "Bot",
+					"viewLevel": 2,
+					"title": "辣辣语录"
 				}
 			}
 

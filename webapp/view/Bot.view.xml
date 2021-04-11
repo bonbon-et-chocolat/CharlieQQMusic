@@ -1,0 +1,77 @@
+<mvc:View
+	controllerName="charlie.data.controller.Bot"
+	xmlns:m="sap.m"
+	xmlns:f="sap.f"
+	xmlns:core="sap.ui.core"
+	xmlns:card="sap.f.cards"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout">
+	<ObjectPageLayout
+		id="page"
+		showFooter="true"
+        sections="{path: '/data', templateShareable:false}">
+		<headerTitle>
+			<ObjectPageDynamicHeaderTitle>
+				<expandedHeading>
+					<m:Title text="辣辣语录" wrapping="true"/>
+				</expandedHeading>
+			</ObjectPageDynamicHeaderTitle>
+		</headerTitle>
+		<headerContent>
+			<m:FlexBox wrap="Wrap">
+				<m:Avatar class="sapUiSmallMarginEnd" src="./img/lala.jpg"  displaySize="L" />
+                <layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
+                    <m:Text text="生日：2021年4月4日"/>
+                    <m:Text text="人设：辣锅🤖️ 有好多妈咪"/>
+                    <m:Text text="愿望：坐在1排1座听周深唱歌"/>
+				</layout:VerticalLayout>
+			</m:FlexBox>
+		</headerContent>
+		<sections>
+            <ObjectPageSection titleUppercase="false" class="section" title="{type}" importance="High">
+				<subSections>
+					<ObjectPageSubSection titleUppercase="false">
+						<blocks>
+                        	<m:List
+                                id="commentlist"
+                                mode="Delete"
+                                delete="handleDelete"
+                                items="{
+                                    path: 'data',
+                                    templateShareable:false,
+                                    sorter: {
+                                        path: 'tag',
+                                        descending: false,
+                                        group: true
+                                    },
+                                    groupHeaderFactory: '.getGroupHeader'
+                                }"
+                                enableBusyIndicator="true"
+                                busyIndicatorDelay="0"
+                                busy="{viewModel>/botLoading}"
+                                >
+                                <m:headerToolbar>
+									<m:Toolbar>
+										<m:ToolbarSpacer />
+										<m:SearchField width="auto" search=".onSearch" />
+									</m:Toolbar>
+								</m:headerToolbar>
+                                <m:StandardListItem
+                                    wrapping="true"
+                                    title="{content}"/>
+                            </m:List>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+		</sections>
+		<footer>
+			<m:OverflowToolbar>
+				<m:Button icon="sap-icon://add" text="加表情" type="Transparent" press=".openAddEmoji"/>
+				<m:ToolbarSpacer/>
+				<m:Button icon="sap-icon://add" text="加语录" type="Transparent" press=".openAddComment"/>
+			</m:OverflowToolbar>
+		</footer>
+	</ObjectPageLayout>
+</mvc:View>

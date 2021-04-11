@@ -1,0 +1,45 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Dialog id="add-dialog"
+        stretchOnPhone="true"
+        busyIndicatorDelay="0"
+        busy="{=${newComment>/dialogBusy}===true}"
+        title="{=${newComment>/isEmoji} ? '加表情': '加语录'}"
+        afterClose="clearCommentsModel"
+        class="sapUiContentPadding sapUiSizeCompact">
+        <content>
+            
+            <Label text="选择分类："/>
+            <Select
+                selectedKey="{newComment>/tag}"
+                showSecondaryValues="true"
+                class="sapUiContentPadding"
+				items="{
+					path: '/categories'
+				}">
+				<core:Item key="{id}" text="{name}" additionalText="{description}" enabled="{= ${id}!=='0' || ${newComment>/isEmoji}===false }"/>
+			</Select>
+            <MessageStrip
+                type="Error"
+                visible="{=${newComment>/saveFailed}===true}"
+                text="发送失败 辣辣没学会😭"
+            />
+            <TextArea
+                width="100%"
+                placeholder="提示：不同句子用分号（；或;）隔开。 例：句子1；句子2"
+                valueState="{newComment>/commentState}"
+                value="{newComment>/content}"
+                rows="25"/>
+        </content>
+        <buttons>
+            <Button id="wizard-submit-button"
+                text="保存"
+                press="saveComments"/>
+            <Button
+                id="wizard-cancel-button"
+                text="取消"
+                press="closeDialog"/>
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

@@ -7,7 +7,7 @@ function expired( data ) {
     }
     const lastUpdate = data.updatedAt;
     const now = Date.now();
-    const bExpired = ( now - lastUpdate ) > 60*60*5;
+    const bExpired = ( now - lastUpdate ) > 60*5;
     return bExpired;
 }
 module.exports = {
@@ -22,14 +22,10 @@ module.exports = {
             });
         }
     },
-    '/list': async ( req, res ) => {
+    '/': async ( req, res ) => {
         try {
-            let data = global.botCache;
-            if( expired( data ) ) {
-                data = await Bot.getData();
-                global.botCache = data;
-            }
-            res.render( 'bot', {
+            const data = await Bot.getData();
+            res.send({
                 data
             });
         } catch( err ) {
@@ -41,24 +37,16 @@ module.exports = {
     },
     '/add': async ( req, res )=> {
         try {
-            // await Bot.addWords({
-            //     tag: '脂粉',
-            //     words: []
-            // });
-            // await Bot.addWords({
-            //     tag: '自带表情',
-            //     words: []
-            // });
-            // await Bot.addWords({
-            //     tag: '卖萌',
-            //     words: []
-            // });
-            // await Bot.addWords({
-            //     tag: '暴躁',
-            //     words: []
-            // });
-            let data = await Bot.getData();
-            res.send( data );
+            await Bot.addWords( req.body.data );
+            res.send({});
+        } catch( err ) {
+            res.status( 400 );
+        }
+    },
+    '/delete': async ( req, res )=> {
+        try {
+            await Bot.deleteComment( req.body.id );
+            res.send({});
         } catch( err ) {
             res.render( 'error', {
                 message: '找不到数据',

@@ -61,6 +61,37 @@ sap.ui.define( [], function() {
         async getQQPlaylists() {
             const sUrl = '/songs/lists';
             return genericRequest( sUrl, defaultOptions );
+        },
+
+        async getBot() {
+            const sUrl = '/bot';
+            return genericRequest( sUrl, defaultOptions );
+        },
+
+        async deleteBotComment( id ) {
+            const sUrl = `/bot/delete`;
+            return genericRequest( sUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id
+                })
+            });
+        },
+
+        async addBotComments( aComments ) {
+            const sUrl = `/bot/add`;
+            return genericRequest( sUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: aComments
+                })
+            });
         }
 
     };
