@@ -97,7 +97,7 @@ sap.ui.define( [
             this.openAdd();
         },
         openAddEmoji: function() {
-            this.newCommentsModel.setData( '/isEmoji', true );
+            this.newCommentsModel.setProperty( '/isEmoji', true );
             this.openAdd();
         },
         openAdd: async function() {
