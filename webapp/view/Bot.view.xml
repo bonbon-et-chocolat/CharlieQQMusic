@@ -41,11 +41,10 @@
                                     path: 'data',
                                     templateShareable:false,
                                     sorter: {
-                                        path: 'tag',
+                                        path: 'tag/name',
                                         descending: false,
                                         group: true
-                                    },
-                                    groupHeaderFactory: '.getGroupHeader'
+                                    }
                                 }"
                                 enableBusyIndicator="true"
                                 busyIndicatorDelay="0"

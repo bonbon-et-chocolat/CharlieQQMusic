@@ -10,16 +10,21 @@ sap.ui.define( [
     return BaseController.extend( 'charlie.data.controller.Bot', {
 
         onInit: function() {
-            const oModel = new JSONModel({
+            this.viewModel = new JSONModel({
                 botLoading: true,
                 categories: [ {
                     key: '0',
                     name: ''
-                } ]
+                } ],
+                toDelete: {
+                    _id: '',
+                    content: ''
+                }
             });
-            this.setModel( oModel, 'viewModel' );
+            this.setModel( this.viewModel, 'viewModel' );
             this.newCommentsModel = new JSONModel({});
             this.setModel( this.newCommentsModel, 'newComment' );
+            this.clearCommentsModel();
             this._loadBot();
         },
 
@@ -54,27 +59,54 @@ sap.ui.define( [
                 title: `${oGroup.name}: ${oGroup.description}`
             });
         },
-        handleDelete: async function( oEvent ) {
-            let oList = oEvent.getSource(),
-                oItem = oEvent.getParameter( 'listItem' ),
-                sPath = oItem.getBindingContextPath();
-            const{ _id, content } = this.oModel.getProperty( sPath );
-            // after deletion put the focus back to the list
-            oList.attachEventOnce( 'updateFinished', oList.focus, oList );
-
-            // send a delete request to the odata service
-            await ServiceDAO.deleteBotComment( _id );
-            let msg = `辣辣再也不说"${content}"la`;
+        deleteComment: async function() {
+            const oContext = this.viewModel.getProperty( '/toDelete' );
+            await ServiceDAO.deleteBotComment( oContext._id );
+            let msg = `辣辣再也不说"${oContext.content}"la`;
             MessageToast.show( msg );
             this._loadBot();
         },
+        onApproveDialogPress: function() {
+
+            if( !this.oApproveDialog ) {
+                this.oApproveDialog = new sap.m.Dialog({
+                    type: sap.m.DialogType.Message,
+                    title: '确认删除',
+                    content: new sap.m.Text(),
+                    beginButton: new sap.m.Button({
+                        type: sap.m.ButtonType.Emphasized,
+                        text: '删除',
+                        press: async function() {
+                            // send a delete request to the odata service
+                            await this.deleteComment();
+                            this.oApproveDialog.close();
+                        }.bind( this )
+                    }),
+                    endButton: new sap.m.Button({
+                        text: '按错啦',
+                        press: function() {
+                            this.oApproveDialog.close();
+                        }.bind( this )
+                    })
+                });
+            }
+            this.oApproveDialog.getContent()[0].setText( this.viewModel.getProperty( '/toDelete/content' ) );
+            this.oApproveDialog.open();
+        },
+        handleDelete: async function( oEvent ) {
+            let oItem = oEvent.getParameter( 'listItem' ),
+                sPath = oItem.getBindingContextPath();
+            const oContext = this.oModel.getProperty( sPath );
+            this.viewModel.setProperty( '/toDelete', oContext );
+            this.onApproveDialogPress( oContext );
+        },
 
         openAddComment: function() {
-            this.newCommentsModel.setData({ isEmoji: false });
+            this.newCommentsModel.setProperty( '/isEmoji', false );
             this.openAdd();
         },
         openAddEmoji: function() {
-            this.newCommentsModel.setData({ isEmoji: true });
+            this.newCommentsModel.setData( '/isEmoji', true );
             this.openAdd();
         },
         openAdd: async function() {
@@ -92,7 +124,9 @@ sap.ui.define( [
         },
         clearCommentsModel: function() {
             this.newCommentsModel.setData({
-                tag: '1'
+                tag: '1',
+                content: '',
+                isEmoji: false
             });
         },
         closeDialog: function() {
@@ -103,7 +137,7 @@ sap.ui.define( [
             const aComments = content.trim().split( /[;；]+/ );
             const result = [];
             aComments.forEach( c => {
-                if( c.trim() ) {
+                if( c.trim().length>0 ) {
                     result.push({
                         content: c,
                         isEmoji,
@@ -111,8 +145,9 @@ sap.ui.define( [
                     });
                 }
             });
-            if( aComments.length===0 ) {
+            if( result.length===0 ) {
                 this.newCommentsModel.setProperty( '/commentState', 'Error' );
+                return;
             }
             this.newCommentsModel.setProperty( '/dialogBusy', true );
             try {

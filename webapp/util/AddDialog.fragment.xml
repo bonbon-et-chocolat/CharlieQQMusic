@@ -21,16 +21,19 @@
 				<core:Item key="{id}" text="{name}" additionalText="{description}" enabled="{= ${id}!=='0' || ${newComment>/isEmoji}===false }"/>
 			</Select>
             <MessageStrip
+                type="Info"
+                text="提示：批量添加多个句子/表情时，不同句子/表情要用分号（；或;）隔开。 例：句子1；句子2"
+            />
+            <MessageStrip
                 type="Error"
                 visible="{=${newComment>/saveFailed}===true}"
                 text="发送失败 辣辣没学会😭"
             />
             <TextArea
                 width="100%"
-                placeholder="提示：不同句子用分号（；或;）隔开。 例：句子1；句子2"
                 valueState="{newComment>/commentState}"
                 value="{newComment>/content}"
-                rows="25"/>
+                rows="40"/>
         </content>
         <buttons>
             <Button id="wizard-submit-button"
