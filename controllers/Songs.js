@@ -7,6 +7,7 @@ const MID = '003fA5G40k6hKc';
 const PAGES = [ 1, 2, 3, 4, 5 ];
 const NUM = 100;
 const LVREN = '003zysEj2zeF4I';
+const JIAOHUAN = '0018Wquc2dj7C8';
 const JINGYU = 101806738;
 async function search( req ){
     let{
@@ -81,11 +82,12 @@ async function _getHitSongs({ mid=MID }) {
     songs.forEach( ( cur ) => {
         if( cur && cur.singer ) {
             result = result.concat( cur.singer.data.songList.filter( ( song )=> {
-                if( song.songInfo.id===JINGYU ){
+                if( song.songInfo.mid===JIAOHUAN ){
                     found = true;
                 }
 
                 return song.songInfo.title.indexOf( '伴奏' )===-1
+                // eslint-disable-next-line max-len
                 && ( song.songInfo.fnote===4001 || song.songInfo.fnote===4009 || song.songInfo.mid === LVREN || song.songInfo.id === JINGYU )
                 && song.songInfo.action
                 && song.songInfo.action.msgdown!==3
@@ -95,11 +97,17 @@ async function _getHitSongs({ mid=MID }) {
         }
     });
 
-    if( !found && mid === MID ) {
-        result.push({
-            // eslint-disable-next-line max-len
-            songInfo: { 'id': JINGYU, 'type': 0, 'mid': '004AkQIa1JTR6p', 'name': '化身孤岛的鲸', 'title': '化身孤岛的鲸', 'subtitle': '化身孤岛的鲸', 'singer': [ { 'id': 199509, 'mid': '003fA5G40k6hKc', 'name': '周深', 'title': '周深', 'type': 0, 'uin': 0, 'pmid': '' } ], 'album': { 'id': 1137013, 'mid': '0042uUzs3DnbSF', 'name': '化身孤岛的鲸 周深翻唱精选Vol. 1', 'title': '化身孤岛的鲸 周深翻唱精选Vol. 1', 'subtitle': '化身孤岛的鲸 周深翻唱精选Vol. 1', 'time_public': '2014-04-23', 'pmid': '001vLwvq0xltN3_1' }, 'mv': { 'id': 0, 'vid': '', 'name': '', 'title': '', 'vt': 0 }, 'interval': 234, 'isonly': 1, 'language': 0, 'genre': 0, 'index_cd': 0, 'index_album': 1, 'time_public': '2014-04-23', 'status': 0, 'fnote': 4009, 'file': { 'media_mid': '000qUMkO3ukMC2', 'size_24aac': 0, 'size_48aac': 1414660, 'size_96aac': 2855672, 'size_192ogg': 4981553, 'size_192aac': 5625508, 'size_128mp3': 3758899, 'size_320mp3': 9396959, 'size_ape': 0, 'size_flac': 25411006, 'size_dts': 0, 'size_try': 960887, 'try_begin': 0, 'try_end': 0, 'url': '', 'size_hires': 0, 'hires_sample': 0, 'hires_bitdepth': 0, 'b_30s': 0, 'e_30s': 60000, 'size_96ogg': 2579798 }, 'pay': { 'pay_month': 0, 'price_track': 0, 'price_album': 0, 'pay_play': 0, 'pay_down': 0, 'pay_status': 0, 'time_free': 0 }, 'action': { 'switch': 1, 'msgid': 23, 'alert': 24, 'icons': 9977724, 'msgshare': 0, 'msgfav': 0, 'msgdown': 0, 'msgpay': 0 }, 'ksong': { 'id': 16695069, 'mid': '0000jrm43kvAdx' }, 'volume': { 'gain': -8.239, 'peak': 0.99, 'lra': 12.65 }, 'label': '0', 'url': '', 'bpm': 0, 'version': 0, 'trace': '', 'data_type': 0, 'modify_stamp': 0, 'pingpong': '', 'aid': 0, 'ppurl': '', 'tid': 0, 'ov': 0, 'sa': 0, 'es': '' }
-        });
+    if( mid === MID ) {
+        result.push(
+            { // eslint-disable-next-line max-len
+                songInfo: { 'id': JINGYU, 'type': 0, 'mid': '004AkQIa1JTR6p', 'name': '化身孤岛的鲸', 'title': '化身孤岛的鲸', 'subtitle': '化身孤岛的鲸', 'singer': [ { 'id': 199509, 'mid': '003fA5G40k6hKc', 'name': '周深', 'title': '周深', 'type': 0, 'uin': 0, 'pmid': '' } ], 'album': { 'id': 1137013, 'mid': '0042uUzs3DnbSF', 'name': '化身孤岛的鲸 周深翻唱精选Vol. 1', 'title': '化身孤岛的鲸 周深翻唱精选Vol. 1', 'subtitle': '化身孤岛的鲸 周深翻唱精选Vol. 1', 'time_public': '2014-04-23', 'pmid': '001vLwvq0xltN3_1' }, 'mv': { 'id': 0, 'vid': '', 'name': '', 'title': '', 'vt': 0 }, 'interval': 234, 'isonly': 1, 'language': 0, 'genre': 0, 'index_cd': 0, 'index_album': 1, 'time_public': '2014-04-23', 'status': 0, 'fnote': 4009, 'file': { 'media_mid': '000qUMkO3ukMC2', 'size_24aac': 0, 'size_48aac': 1414660, 'size_96aac': 2855672, 'size_192ogg': 4981553, 'size_192aac': 5625508, 'size_128mp3': 3758899, 'size_320mp3': 9396959, 'size_ape': 0, 'size_flac': 25411006, 'size_dts': 0, 'size_try': 960887, 'try_begin': 0, 'try_end': 0, 'url': '', 'size_hires': 0, 'hires_sample': 0, 'hires_bitdepth': 0, 'b_30s': 0, 'e_30s': 60000, 'size_96ogg': 2579798 }, 'pay': { 'pay_month': 0, 'price_track': 0, 'price_album': 0, 'pay_play': 0, 'pay_down': 0, 'pay_status': 0, 'time_free': 0 }, 'action': { 'switch': 1, 'msgid': 23, 'alert': 24, 'icons': 9977724, 'msgshare': 0, 'msgfav': 0, 'msgdown': 0, 'msgpay': 0 }, 'ksong': { 'id': 16695069, 'mid': '0000jrm43kvAdx' }, 'volume': { 'gain': -8.239, 'peak': 0.99, 'lra': 12.65 }, 'label': '0', 'url': '', 'bpm': 0, 'version': 0, 'trace': '', 'data_type': 0, 'modify_stamp': 0, 'pingpong': '', 'aid': 0, 'ppurl': '', 'tid': 0, 'ov': 0, 'sa': 0, 'es': '' }
+            }
+        );
+        if( !found ) {
+            result.push({ // eslint-disable-next-line max-len
+                songInfo: { 'id': 307891359, 'type': 0, 'mid': '0018Wquc2dj7C8', 'name': '交换', 'title': '交换', 'subtitle': '《乌鸦小姐与蜥蜴先生》网剧主题曲', 'singer': [ { 'id': 199509, 'mid': '003fA5G40k6hKc', 'name': '周深', 'title': '周深', 'type': 0, 'uin': 0, 'pmid': '' } ], 'album': { 'id': 19235934, 'mid': '001i6boY46LISk', 'name': '交换', 'title': '交换', 'subtitle': '《乌鸦小姐与蜥蜴先生》网剧主题曲', 'time_public': '2021-04-26', 'pmid': '001i6boY46LISk_1' }, 'mv': { 'id': 0, 'vid': '', 'name': '', 'title': '', 'vt': 0 }, 'interval': 257, 'isonly': 1, 'language': 0, 'genre': 0, 'index_cd': 0, 'index_album': 1, 'time_public': '2021-04-26', 'status': 0, 'fnote': 4009, 'file': { 'media_mid': '0018Wquc2dj7C8', 'size_24aac': 0, 'size_48aac': 1569129, 'size_96aac': 3155142, 'size_192ogg': 5573728, 'size_192aac': 6221217, 'size_128mp3': 4114996, 'size_320mp3': 10286733, 'size_ape': 0, 'size_flac': 27454924, 'size_dts': 0, 'size_try': 960887, 'try_begin': 0, 'try_end': 0, 'url': '', 'size_hires': 0, 'hires_sample': 0, 'hires_bitdepth': 0, 'b_30s': 0, 'e_30s': 60000, 'size_96ogg': 2831633 }, 'pay': { 'pay_month': 0, 'price_track': 0, 'price_album': 0, 'pay_play': 0, 'pay_down': 0, 'pay_status': 0, 'time_free': 0 }, 'action': { 'switch': 1, 'msgid': 23, 'alert': 24, 'icons': 9977724, 'msgshare': 0, 'msgfav': 0, 'msgdown': 0, 'msgpay': 0 }, 'ksong': { 'id': 18355951, 'mid': '000JfAGD1sK1NE' }, 'volume': { 'gain': -7.653, 'peak': 0.989, 'lra': 16.18 }, 'label': '0', 'url': '', 'bpm': 0, 'version': 0, 'trace': '', 'data_type': 8, 'modify_stamp': 0, 'pingpong': '', 'aid': 0, 'ppurl': '', 'tid': 0, 'ov': 0, 'sa': 0, 'es': '', 'vs': [ '', '' ] }
+            });
+        }
     }
 
     return result;
