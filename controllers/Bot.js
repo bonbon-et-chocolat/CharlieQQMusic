@@ -61,7 +61,7 @@ async function deleteComment( id ) {
 }
 
 async function ping() {
-    await _get( 'https://hotpot-bot.herokuapp.com/' );
+    await _get( 'https://hotpot-lala.herokuapp.com/' );
 }
 module.exports = {
     addWords,
