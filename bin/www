@@ -130,7 +130,7 @@ function onListening() {
     }).start();
 
     // start cron job for updating yesterday data
-    cron.schedule( '0 7-9 * * *', async () => {
+    cron.schedule( '0 * * * *', async () => {
         Bot.ping();
     }, {
         timezone: 'Asia/Shanghai'
