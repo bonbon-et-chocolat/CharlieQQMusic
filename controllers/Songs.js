@@ -230,7 +230,7 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
         // }
         if( formatted.mid === LVREN && !score ) {
             formatted.score =87359;
-            listenCnt = '10w+';
+            listenCnt = '1w+';
             formatted.record = [];
         }
         if( listenCnt ) {
