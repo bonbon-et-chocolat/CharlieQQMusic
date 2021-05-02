@@ -276,14 +276,11 @@ async function getYesterday( client, date=_getToday(), bReadCache=true ) {
     if( bReadCache && cached ) {
         return cached;
     }
-    let result = await db.findQQHistoryData( client, date );
-    if( !result ) {
-        result = await updateYesterday();
-    }
+    let result = await db.findQQHistoryData( client, date ) || {};
     if( bReadCache ) {
-        global[ cachekey ] = result;
+        global[ cachekey ] = result.data;
     }
-    return result;
+    return result.data;
 }
 
 async function updateYesterday() {
@@ -293,7 +290,7 @@ async function updateYesterday() {
 
     try {
         const[ history, current ] = await Promise.all( [
-            getYesterday( client, _getYesterday(), false ),
+            db.findQQHistoryData( client, _getYesterday() ),
             getLiveData()
         ] );
         const data = {};
@@ -317,7 +314,7 @@ async function updateYesterday() {
 
 function _combine( today, yesterday ){
     today.details.forEach( song => {
-        let oldData = yesterday.data&&yesterday.data[song.id] || {
+        let oldData = yesterday&&yesterday[song.id] || {
             favCount: 0,
             inc: 0
         };
