@@ -220,7 +220,7 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
         formatted.score = score;
         if( formatted.mid === '004OQ5Mt0EmEzv' && !score ) {
             formatted.score = 431900;
-            listenCnt = '60w+';
+            listenCnt = '50w+';
             formatted.record = [];
         }
         // if( formatted.mid === '003akgwo0qN5bE' && !score ) {
@@ -230,7 +230,7 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
         // }
         if( formatted.mid === LVREN && !score ) {
             formatted.score =87359;
-            listenCnt = '10w+';
+            listenCnt = '1w+';
             formatted.record = [];
         }
         if( listenCnt ) {
