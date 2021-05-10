@@ -2,11 +2,10 @@
 const Netease = require( '../controllers/Netease' );
 
 
-function expired( data ) {
-    if( !data ) {
+function expired( data, lastUpdate ) {
+    if( !data || !lastUpdate ) {
         return true;
     }
-    const lastUpdate = data.updatedAt;
     const now = Date.now();
     const bExpired = ( now - lastUpdate ) > 60*60*5;
     return bExpired;
@@ -16,10 +15,11 @@ module.exports = {
     '/songs': async ( req, res ) => {
         try {
             let data = global.neteaseSongs;
-            if( expired( data ) ) {
+            let ts = global.neteaseSongs_updatedAt;
+            if( expired( data, ts ) ) {
                 data = await Netease.getHotSongs();
                 global.neteaseSongs = data;
-                global.neteaseSongs.updatedAt = Date.now();
+                global.neteaseSongs_updatedAt = Date.now();
             }
             res.send({
                 data
@@ -35,7 +35,6 @@ module.exports = {
         try {
             let data = global.neteaseRanks || await Netease.getExistingChartData();
             global.neteaseRanks = data;
-            global.neteaseRanks.updatedAt = Date.now();
             res.send({
                 data
             });
@@ -49,10 +48,11 @@ module.exports = {
     '/lists': async ( req, res )=>{
         try {
             let data = global.neteasePlaylists;
-            if( expired( data ) ) {
+            let ts = global.neteasePlaylists_updatedAt;
+            if( expired( data, ts ) ) {
                 data = await Netease.getReportData();
                 global.neteasePlaylists = data;
-                global.neteasePlaylists.updatedAt = Date.now();
+                global.neteasePlaylists_updatedAt = Date.now();
             }
             res.send({
                 data
