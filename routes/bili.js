@@ -5,7 +5,7 @@ function expired( data ) {
     if( !data ) {
         return true;
     }
-    const lastUpdate = data.updatedAt;
+    const lastUpdate = data.timestamp;
     const now = Date.now();
     const bExpired = ( now - lastUpdate ) > 60*60*5;
     return bExpired;
