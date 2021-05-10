@@ -19,6 +19,7 @@ module.exports = {
             if( expired( data ) ) {
                 data = await Netease.getHotSongs();
                 global.neteaseSongs = data;
+                global.neteaseSongs.updatedAt = Date.now();
             }
             res.send({
                 data
@@ -34,6 +35,7 @@ module.exports = {
         try {
             let data = global.neteaseRanks || await Netease.getExistingChartData();
             global.neteaseRanks = data;
+            global.neteaseRanks.updatedAt = Date.now();
             res.send({
                 data
             });
@@ -50,6 +52,7 @@ module.exports = {
             if( expired( data ) ) {
                 data = await Netease.getReportData();
                 global.neteasePlaylists = data;
+                global.neteasePlaylists.updatedAt = Date.now();
             }
             res.send({
                 data
