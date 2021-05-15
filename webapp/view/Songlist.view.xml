@@ -17,7 +17,10 @@
 				</expandedHeading>
 
 				<expandedContent>
-					<m:Text text="榜单数据上次更新：{dataModel>/data/updatedAt}"/>
+					<m:VBox>
+						<m:Text text="微信搜索小程序：“C929音乐数据”"/>
+						<m:Text text="榜单数据上次更新：{dataModel>/data/updatedAt}"/>
+					</m:VBox>
 				</expandedContent>
 
 				<snappedContent>
@@ -27,9 +30,6 @@
 				<snappedTitleOnMobile>
 					<m:Title text="周深音乐数据 {dataModel>/data/updatedAt}"/>
 				</snappedTitleOnMobile>
-				<actions>
-					<m:Button icon="sap-icon://menu" type="Transparent" press=".handleProductSwitcher" visible="false"/>
-				</actions>
 			</ObjectPageDynamicHeaderTitle>
 		</headerTitle>
 		<headerContent>
