@@ -344,6 +344,8 @@ async function getChartSongs( chartID=8888 ) {
         listID: chartID,
         title: meta.data.rankname,
         intro: meta.data.intro,
+        ranktype: meta.data.ranktype,
+        imgurl: meta.data.banner7url,
         song: songList
     };
 }
