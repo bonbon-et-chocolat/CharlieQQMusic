@@ -298,7 +298,7 @@ async function updateMeta() {
     let client = global.client;
     let data = await getSingerInfo();
     await db.updateKugouMeta( client, _getToday(), {
-        data,
+        data: data.data,
         updatedAt: moment().tz( 'Asia/Shanghai' ).format()
     });
     global.kugouMeta = data;
