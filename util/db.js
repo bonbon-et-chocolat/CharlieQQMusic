@@ -176,7 +176,9 @@ async function findAllBotCategories( client ) {
 async function updateKugouHonors( client, data ) {
     return upsertOne( client, { tag: 'honors' }, data, DB.kugou, COLLECTION.honors );
 }
-
+async function updateKugouCharts( client, data ) {
+    return upsertOne( client, { tag: 'charts' }, data, DB.kugou, COLLECTION.honors );
+}
 async function findKugouHonors( client ) {
     return _find( client, { tag: 'honors' }, DB.kugou, COLLECTION.honors );
 }
@@ -221,5 +223,6 @@ module.exports = {
     updateKugouMeta,
     updateKugouHonors,
     findKugouMetaByDate,
-    findKugouHonors
+    findKugouHonors,
+    updateKugouCharts
 };

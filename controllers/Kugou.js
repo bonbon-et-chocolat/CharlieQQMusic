@@ -292,6 +292,14 @@ async function updateHonors() {
     return data;
 }
 
+async function updateCharts() {
+    let client = global.client;
+    let data = await getCharts();
+    await db.updateKugouCharts( client, data );
+    global.kugouCharts = data;
+    return data;
+}
+
 async function getChartSongs( chartID=8888 ) {
     // chart meta
     let[ meta, songs ] = await Promise.all( [
@@ -340,13 +348,13 @@ async function getChartSongs( chartID=8888 ) {
     };
 }
 
-async function getCharts( chartIds = Object.values( ChartConfig ), time = moment().tz( 'Asia/Shanghai' ).format( 'YYYY-MM-DD' ) ) {
+async function getCharts( chartIds = Object.values( ChartConfig ) ) {
     let results = await Promise.all( chartIds.map( async ( id ) => {
         return getChartSongs( id );
     }) );
     results = results.filter( chart => chart.song.length > 0 );
     return{
-        updatedAt: time,
+        timestamp: Date.now(),
         data: results
     };
 }
@@ -358,5 +366,6 @@ module.exports = {
     getChartSongs,
     getCharts,
     updateMeta,
-    updateHonors
+    updateHonors,
+    updateCharts
 };
