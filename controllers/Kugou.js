@@ -202,12 +202,16 @@ async function getHonors() {
     }) );
 
     let result = [];
-
+    let hashMap = {};
     records.forEach( ( details ) => {
         let cur = [];
         if( typeof details.data.info_list.map === 'function' ) {
             cur = details.data.info_list.map( ({ src_type, highest_ranking, hash, audio_name, accumulated_days, album_id, album_audio_id }) => {
                 return{ src_type, highest_ranking, hash, audio_name, accumulated_days, album_id, album_audio_id };
+            }).filter( ({ hash }) => {
+                let isNewEntry = hashMap[hash] !== true;
+                hashMap[hash] = true;
+                return isNewEntry;
             });
         }
         result = result.concat( cur );
