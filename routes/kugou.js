@@ -50,6 +50,12 @@ module.exports = {
             data
         });
     },
+    '/charts': async ( req, res ) => {
+        const data = await Kugou.getCharts();
+        res.send({
+            data
+        });
+    },
     '/report': async ( req, res ) => {
         try {
             const[ overview, honors ] = await Promise.all( [
