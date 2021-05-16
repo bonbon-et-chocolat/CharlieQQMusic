@@ -102,5 +102,9 @@ module.exports = {
         } catch( err ) {
             res.status( 500 ).send( err );
         }
+    },
+    '/test': async ( req, res ) => {
+        const data = {};//await Kugou.getSingerInfo();
+        res.send( data );
     }
 };

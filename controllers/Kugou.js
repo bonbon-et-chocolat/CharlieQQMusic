@@ -102,6 +102,31 @@ async function _getFans(){
     return data.info[0].extra;
 }
 
+async function _getSingerRank() {
+    const url = 'http://mobilecdnbj.kugou.com/api/v5/singer/list';
+    const query = {
+        version: 9108,
+        showtype: 1,
+        plat: 0,
+        sextype: 0,
+        sort: 1,
+        pagesize: 50,
+        type: 0,
+        page: 1,
+        musician: 0
+    };
+    const{ data } = await request({
+        url,
+        method: 'get',
+        data: query
+    });
+    const singers = data.info;
+    const index = singers.findIndex( x=>x.singername==='周深' );
+    const{ heatoffset, heat } = singers[ index ];
+    return{
+        heatoffset, heat, heatrank: index+1
+    };
+}
 // song meta
 async function _getSongs(){
     const url = 'http://mobilecdnbj.kugou.com/api/v3/singer/song';
@@ -158,9 +183,10 @@ async function getSingerInfo() {
     }, {
         singer_energy_rank,
         singer_fans_count
-    } ] = await Promise.all( [
+    }, { heatoffset, heat, heatrank } ] = await Promise.all( [
         _getSingerInfo(),
-        _getFans()
+        _getFans(),
+        _getSingerRank()
     ] );
 
     return{
@@ -168,6 +194,7 @@ async function getSingerInfo() {
             year_listener,
             singer_energy_rank,
             singer_fans_count,
+            heatoffset, heat, heatrank,
             updatedAt: moment().tz( 'Asia/Shanghai' ).format()
         }
     };
