@@ -209,59 +209,53 @@ async function _getHonorWall() {
         data: query
     });
 }
+async function _getHonors( result, hashMap, page ) {
+    const url = 'https://h5activity.kugou.com/v1/query_singer_honour_detail';
+    const ts = Date.now();
+    const HASH = 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt';
+    const original = `${HASH}clienttime=${ts}clientver=20000dfid=-mid=${ts}page=${page}singer_id=169967srcappid=2919uuid=${ts}${HASH}`;
+    let query = {
+        singer_id,
+        srcappid: '2919',
+        clientver: '20000',
+        page,
+        clienttime: ts,
+        mid: ts,
+        uuid: ts,
+        dfid: '-',
+        signature: md5( original ).toUpperCase()
+    };
+
+    const records = await request({
+        url,
+        method: 'get',
+        data: query
+    });
+
+    const hasMore = records.data.info_list.length === 20;
+    let cur = [];
+    if( typeof records.data.info_list.map === 'function' ) {
+        cur = records.data.info_list.map( ({ src_type, highest_ranking, hash, audio_name, accumulated_days, album_id, album_audio_id }) => {
+            return{ src_type, highest_ranking, hash, audio_name, accumulated_days, album_id, album_audio_id };
+        }).filter( ({ hash }) => {
+            let isNewEntry = hashMap[hash] !== true;
+            hashMap[hash] = true;
+            return isNewEntry;
+        });
+    }
+    result = result.concat( cur );
+    if( hasMore ) {
+        return _getHonors( result, hashMap, page+1 );
+    } else {
+        return result;
+    }
+}
 async function getHonors() {
     // meta
     const meta = await _getHonorWall();
-    const total = meta.data.honour_num;
-    // details
-    let pageMax = Math.ceil( total/20 );
-    let curPage = 1;
-    let pages = [ curPage ];
-    while( curPage < pageMax ) {
-        pages.push( curPage+1 );
-        curPage++;
-    }
     const overview = meta.data.top500[0];
-    const records = await Promise.all( pages.map( async ( page ) => {
-        const url = 'https://h5activity.kugou.com/v1/query_singer_honour_detail';
-        const ts = Date.now();
-        const HASH = 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt';
-        const original = `${HASH}clienttime=${ts}clientver=20000dfid=-mid=${ts}page=${page}singer_id=169967srcappid=2919uuid=${ts}${HASH}`;
-        let query = {
-            singer_id,
-            srcappid: '2919',
-            clientver: '20000',
-            page,
-            clienttime: ts,
-            mid: ts,
-            uuid: ts,
-            dfid: '-',
-            signature: md5( original ).toUpperCase()
-        };
-
-        return request({
-            url,
-            method: 'get',
-            data: query
-        });
-    }) );
-
-    let result = [];
-    let hashMap = {};
-    records.forEach( ( details ) => {
-        let cur = [];
-        if( typeof details.data.info_list.map === 'function' ) {
-            cur = details.data.info_list.map( ({ src_type, highest_ranking, hash, audio_name, accumulated_days, album_id, album_audio_id }) => {
-                return{ src_type, highest_ranking, hash, audio_name, accumulated_days, album_id, album_audio_id };
-            }).filter( ({ hash }) => {
-                let isNewEntry = hashMap[hash] !== true;
-                hashMap[hash] = true;
-                return isNewEntry;
-            });
-        }
-        result = result.concat( cur );
-    });
-
+    // details
+    const result = await _getHonors( [], {}, 1 );
     const updatedAt = moment().tz( 'Asia/Shanghai' ).format();
     return{
         data: {

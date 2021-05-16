@@ -1,6 +1,11 @@
 'use strict';
 const Kugou = require( '../controllers/Kugou' );
+const db = require( '../util/db' );
+const moment = require( 'moment-timezone' );
 
+function _getToday() {
+    return moment().tz( 'Asia/Shanghai' ).format().substring( 0, 10 );
+}
 function expired( data ) {
     if( !data ) {
         return true;
@@ -18,7 +23,7 @@ const _getMeta = async ( req ) => {
         data = global.kugouMeta;
     }
     if( !data ) {
-        data = await Kugou.getSingerInfo();
+        data = await db.findKugouMetaByDate( global.client, _getToday() );
         if( bToday ) {
             if( !data ) {
                 data = await Kugou.updateMeta();
@@ -36,7 +41,7 @@ const _getHonors = async ( req ) => {
         data = global.kugouHonors;
     }
     if( !data ) {
-        data = await Kugou.getHonors();
+        data = await db.findKugouHonors( global.client );
         if( bToday ) {
             if( !data ) {
                 data = await Kugou.updateHonors();
