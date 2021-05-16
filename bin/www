@@ -13,6 +13,7 @@ const cron = require( 'node-cron' );
 const Songs = require( '../controllers/Songs' );
 const Ranks = require( '../controllers/Ranks' );
 const Netease = require( '../controllers/Netease' );
+const Kugou = require( '../controllers/Kugou' );
 const Bili = require( '../controllers/Bili' );
 const Bot = require( '../controllers/Bot' );
 const db = require( '../util/db' );
@@ -107,6 +108,8 @@ function onListening() {
     // start cron job for fetching live data
     cron.schedule( '1 0-23 * * *', async () => {
         Songs.updateReportData();
+        Kugou.updateMeta();
+        Kugou.updateHonors();
     }, {
         timezone: 'Asia/Shanghai'
     }).start();

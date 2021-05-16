@@ -8,7 +8,8 @@ const DB = {
     qq: 'qq',
     bili: 'bilibili',
     netease: 'netease',
-    bot: 'bot'
+    bot: 'bot',
+    kugou: 'kugou'
 };
 const COLLECTION = {
     songs: 'songs',
@@ -20,7 +21,9 @@ const COLLECTION = {
     lastUpdate: 'lastUpdate',
     playlist: 'playlist',
     comments: 'commentsV2',
-    categories: 'categories'
+    categories: 'categories',
+    honors: 'honors',
+    meta: 'meta'
 };
 
 //generic
@@ -169,6 +172,23 @@ async function findAllBotCategories( client ) {
     .find({}).toArray();
     return result[0].list;
 }
+
+async function updateKugouHonors( client, data ) {
+    return upsertOne( client, { tag: 'honors' }, data, DB.kugou, COLLECTION.honors );
+}
+
+async function findKugouHonors( client ) {
+    return _find( client, { tag: 'honors' }, DB.kugou, COLLECTION.honors );
+}
+
+async function findKugouMetaByDate( client, sDate ) {
+    return findByDate( client, sDate, DB.kugou, COLLECTION.meta );
+}
+
+async function updateKugouMeta( client, sDate, data ) {
+    return upsertOneByDate( client, sDate, data, DB.kugou, COLLECTION.meta );
+}
+
 module.exports = {
     connect,
     findAll,
@@ -197,5 +217,9 @@ module.exports = {
     findAllBotComments,
     addBotComments,
     findAllBotCategories,
-    deleteBotComment
+    deleteBotComment,
+    updateKugouMeta,
+    updateKugouHonors,
+    findKugouMetaByDate,
+    findKugouHonors
 };
