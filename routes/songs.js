@@ -92,40 +92,42 @@ module.exports = {
     },
     '/fav/report': async ( req, res ) => {
         try {
-            const start = '2021-03-01';
-            const end = '2021-03-31';
+            const start = '2021-05-01';
+            const end = '2021-05-31';
+            const month = 'may';
             const client = global.client;
             const lastMonth = await db.findSummary( client );
             let data1 = await Songs.getExistingData( client,  { date: start });
             let data2 = await Songs.getExistingData( client,  { date: end });
 
-            let dict = {};
+            let existing = {};
+            let minMap = {};
             data1.details.forEach( x=> {
-                dict[x.mid] = {
-                    favCount: x.favCount
-                };
+                minMap[x.mid] = x.favCount;
             });
             lastMonth.data.forEach( x=> {
-                dict[x.mid].favCountFeb = x.diff;
+                existing[x.mid] = x;
             });
-            const data = data2.details.map( ({ mid, title, timePublic, favCount }) => {
-                let formatted = {
-                    mid,
-                    title,
-                    timePublic,
-                    favCount
-                };
-                formatted.favCountMin = dict[mid] ? dict[mid].favCount : 0;
-                formatted.favCountFeb = dict[mid] ? dict[mid].favCountFeb : 0;
-                if( mid === '004AkQIa1JTR6p' ) {
-                    formatted.favCountMin = 1800000;
-                } else if( timePublic<start && formatted.favCountMin === 0 ) {
-                    formatted.favCountMin = formatted.favCount;
+            data2.details.forEach( x=> {
+                if( !existing[x.mid] ) {
+                    existing[x.mid] = {
+                        mid: x.mid,
+                        title: x.title,
+                        timePublic: x.timePublic
+                    };
                 }
-                formatted.diff = formatted.favCount - formatted.favCountMin;
-                return formatted;
-            }).sort( ({ diff: diff1 }, { diff: diff2 }) => {
-                if( diff1 > diff2 ) return-1;
+                const song = existing[x.mid];
+                song.favCount = x.favCount;
+                song.favCountMin = minMap[x.mid] ? minMap[x.mid] : 0;
+                if( song.favCountMin === 0 && song.timePublic < start ) {
+                    song.favCountMin = song.favCount;
+                }
+                song[month] = song.favCount-song.favCountMin;
+                delete song.diff;
+            });
+
+            const data = Object.values( existing ).sort( ( song1, song2 ) => {
+                if( song1[month] > song2[month] ) return-1;
                 else return 1;
             });
             db.updateSummary( client, {
