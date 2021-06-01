@@ -85,7 +85,7 @@ async function _getHitSongs({ mid=MID }) {
 
                 return song.songInfo.title.indexOf( '伴奏' )===-1
                 // eslint-disable-next-line max-len
-                && ( song.songInfo.fnote===4001 || song.songInfo.fnote===4009 || song.songInfo.mid === LVREN || song.songInfo.id === JINGYU || song.songInfo.mid === PIAOYANG )
+                && ( song.songInfo.fnote===0 || song.songInfo.fnote===4001 || song.songInfo.fnote===4009 || song.songInfo.mid === LVREN || song.songInfo.id === JINGYU || song.songInfo.mid === PIAOYANG )
                 && song.songInfo.action
                 && song.songInfo.action.msgdown!==3
                 && song.songInfo.album.time_public
