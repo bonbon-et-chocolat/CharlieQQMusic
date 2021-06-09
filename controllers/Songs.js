@@ -246,7 +246,7 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
         }
         if( formatted.mid === '000OFqqx2HKZ19' && !score ) {
             formatted.score = 431900;
-            listenCnt = '30w+';
+            listenCnt = '20w+';
             formatted.record = [];
         }
         if( listenCnt ) {
