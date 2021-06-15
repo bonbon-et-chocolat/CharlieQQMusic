@@ -7,7 +7,8 @@
     "build:docker": "docker build -t qqmusic-data-for-charlie:1.0 .",
     "rm:docker": "docker container rm qqmusic-data-for-charlie -f",
     "start:docker": "docker build -t qqmusic-data-for-charlie:1.0 . && docker run --name qqmusic-data-for-charlie -p 8888:80 -d qqmusic-data-for-charlie:1.0",
-    "eslint": "eslint"
+    "eslint": "eslint",
+    "build": "cd react-ui/ && npm install && npm run build"
   },
   "engines": {
     "node": "~12.x",
@@ -16,7 +17,7 @@
   "dependencies": {
     "NeteaseCloudMusicApi": "^4.0.9",
     "axios": "^0.21.1",
-    "cheerio": "^1.0.0-rc.3",
+    "cheerio": "^1.0.0-rc.10",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
@@ -27,15 +28,24 @@
     "md5": "^2.3.0",
     "moment-timezone": "^0.5.32",
     "mongodb": "^3.6.3",
+    "mongodb-client-encryption": "^1.2.5",
     "morgan": "~1.9.1",
     "node-cron": "^2.0.3",
     "useragent": "^2.3.0",
     "xml2js": "^0.4.22"
   },
   "devDependencies": {
-    "eslint": "^7.23.0",
+    "eslint": "^7.11.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-html": "^6.1.2",
+    "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-json": "^2.1.2",
-    "eslint-plugin-mocha": "^8.1.0"
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-mocha": "^8.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "prettier": "^2.3.1",
+    "style-loader": "^2.0.0"
   }
 }

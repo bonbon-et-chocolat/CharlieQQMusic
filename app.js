@@ -19,7 +19,7 @@ app.use( express.json() );
 app.use( express.urlencoded({ extended: false }) );
 app.use( express.static( path.join( __dirname, 'public' ) ) );
 // Priority serve any static files.
-//app.use( express.static(path.resolve(__dirname, './react-ui/build')) );
+app.use( express.static(path.resolve(__dirname, './react-ui/build')) );
 
 const corsMap = {
     '/user/setCookie': true
@@ -85,9 +85,9 @@ app.use( function( err, req, res ) {
     res.render( 'error' );
 });
 
-// // All remaining requests return the React app, so it can handle routing.
-// app.get('*', function(request, response) {
-//     response.sendFile(path.resolve(__dirname, './react-ui/build', 'index.html'));
-// });
+// All remaining requests return the React app, so it can handle routing.
+app.get('*', function(request, response) {
+    response.sendFile(path.resolve(__dirname, './react-ui/build', 'index.html'));
+});
 
 module.exports = app;
