@@ -10,11 +10,10 @@
     "eslint": "eslint"
   },
   "engines": {
-    "node": "~12.x",
-    "npm": "6.14.4"
+    "node": "~15.x",
+    "npm": "7.7.6"
   },
   "dependencies": {
-    "NeteaseCloudMusicApi": "^4.0.9",
     "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
     "cookie-parser": "~1.4.4",
@@ -28,6 +27,7 @@
     "moment-timezone": "^0.5.32",
     "mongodb": "^3.6.3",
     "morgan": "~1.9.1",
+    "NeteaseCloudMusicApi": "^4.0.9",
     "node-cron": "^2.0.3",
     "useragent": "^2.3.0",
     "xml2js": "^0.4.22"
