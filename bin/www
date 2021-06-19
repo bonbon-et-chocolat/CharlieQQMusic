@@ -101,41 +101,41 @@ function onListening() {
     debug( 'Listening on ' + bind );
     console.log( `Listening on \n http://localhost:${addr.port} \n http://127.0.0.1:${addr.port}` );
 
-    ( async function(){
-        global.client = await db.connect();
-    })();
+    // ( async function(){
+    //     global.client = await db.connect();
+    // })();
 
-    // start cron job for fetching live data
-    cron.schedule( '1,20,40 0-23 * * *', async () => {
-        Songs.updateReportData();
-        Kugou.updateMeta();
-        Kugou.updateHonors();
-    }, {
-        timezone: 'Asia/Shanghai'
-    }).start();
+    // // start cron job for fetching live data
+    // cron.schedule( '1,20,40 0-23 * * *', async () => {
+    //     Songs.updateReportData();
+    //     Kugou.updateMeta();
+    //     Kugou.updateHonors();
+    // }, {
+    //     timezone: 'Asia/Shanghai'
+    // }).start();
 
-    // start cron job for fetching live data
-    cron.schedule( '0 0,8-14 * * *', async () => {
-        Ranks.updateCharts();
-        Netease.updateCharts();
-    }, {
-        timezone: 'Asia/Shanghai'
-    }).start();
+    // // start cron job for fetching live data
+    // cron.schedule( '0 0,8-14 * * *', async () => {
+    //     Ranks.updateCharts();
+    //     Netease.updateCharts();
+    // }, {
+    //     timezone: 'Asia/Shanghai'
+    // }).start();
 
-    // start cron job for updating yesterday data
-    cron.schedule( '0 0 * * *', async () => {
-        Songs.updateYesterdayPlaylist();
-        Netease.updateYesterday();
-        Songs.updateYesterday();
-        Bili.updateYesterday();
-    }, {
-        timezone: 'Asia/Shanghai'
-    }).start();
+    // // start cron job for updating yesterday data
+    // cron.schedule( '0 0 * * *', async () => {
+    //     Songs.updateYesterdayPlaylist();
+    //     Netease.updateYesterday();
+    //     Songs.updateYesterday();
+    //     Bili.updateYesterday();
+    // }, {
+    //     timezone: 'Asia/Shanghai'
+    // }).start();
 
-    // start cron job for updating yesterday data
-    cron.schedule( '0 * * * *', async () => {
-        Bot.ping();
-    }, {
-        timezone: 'Asia/Shanghai'
-    }).start();
+    // // start cron job for updating yesterday data
+    // cron.schedule( '0 * * * *', async () => {
+    //     Bot.ping();
+    // }, {
+    //     timezone: 'Asia/Shanghai'
+    // }).start();
 }
