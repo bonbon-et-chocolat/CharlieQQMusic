@@ -186,7 +186,11 @@ async function getVideoStat( bvid, cid ) {
         cid = await getVideoID( bvid );
     }
     const result = await _get( `https://api.bilibili.com/x/web-interface/view?cid=${cid}&bvid=${bvid}` );
-    return result.data.stat;
+    const stat = result.data.stat;
+    const prev = global[bvid];
+    stat.increase = stat.view - prev;
+    global[bvid] = stat.view;
+    return stat;
 }
 
 async function getStats() {
