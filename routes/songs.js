@@ -9,6 +9,15 @@ function formatNumberWithCommas( x ) {
         return'-';
     }
 }
+function expired( data ) {
+    if( !data ) {
+        return true;
+    }
+    const lastUpdate = data.timestamp;
+    const now = Date.now();
+    const bExpired = ( now - lastUpdate ) > 60*60*20;
+    return bExpired;
+}
 
 async function _getData( req ) {
     let bToday = !req.query.date;
@@ -16,7 +25,7 @@ async function _getData( req ) {
     if( bToday ) {
         data = global.reportData;
     }
-    if( !data ) {
+    if( !data || expired( data ) ) {
         const client = global.client;
         data = await Songs.getExistingData( client, req.query, true  );
         if( bToday ) {
