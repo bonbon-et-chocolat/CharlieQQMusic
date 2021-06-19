@@ -145,5 +145,5 @@ function onListening() {
         timezone: 'Asia/Shanghai'
     }).start();
 
-    //startCronJobs();
+    startCronJobs();
 }
