@@ -93,23 +93,7 @@ function onError( error ) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
-    let addr = server.address();
-    let bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-    debug( 'Listening on ' + bind );
-    console.log( `Listening on \n http://localhost:${addr.port} \n http://127.0.0.1:${addr.port}` );
-
-    ( async function(){
-        global.client = await db.connect();
-    })();
-
-    cron.schedule( '*/5 * * * *', async () => {
-        Bili.getStats();
-    }, {
-        timezone: 'Asia/Shanghai'
-    }).start();
+function startCronJobs() {
     //start cron job for fetching live data
     cron.schedule( '1,20,40 0-23 * * *', async () => {
         Songs.updateReportData();
@@ -136,11 +120,30 @@ function onListening() {
     }, {
         timezone: 'Asia/Shanghai'
     }).start();
+}
+function onListening() {
+    let addr = server.address();
+    let bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug( 'Listening on ' + bind );
+    console.log( `Listening on \n http://localhost:${addr.port} \n http://127.0.0.1:${addr.port}` );
 
-    // start cron job for updating yesterday data
+    ( async function(){
+        global.client = await db.connect();
+    })();
+
+    cron.schedule( '*/5 * * * *', async () => {
+        Bili.getStats();
+    }, {
+        timezone: 'Asia/Shanghai'
+    }).start();
+
     cron.schedule( '0 * * * *', async () => {
         Bot.ping();
     }, {
         timezone: 'Asia/Shanghai'
     }).start();
+
+    //startCronJobs();
 }
