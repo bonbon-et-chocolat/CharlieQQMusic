@@ -296,7 +296,10 @@ async function getYesterday( client, date=_getToday(), bReadCache=true ) {
     if( bReadCache ) {
         global[ cachekey ] = result.data;
     }
-    return result.data;
+    if( !result.data ) {
+        await updateYesterday();
+    }
+    return global[ cachekey ];
 }
 
 async function updateYesterday() {
