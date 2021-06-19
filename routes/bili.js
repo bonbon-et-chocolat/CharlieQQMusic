@@ -39,5 +39,16 @@ module.exports = {
                 error: err
             });
         }
+    },
+    '/grad': async ( req, res ) => {
+        try {
+            const data = await Bili.getStats();
+            res.send( data );
+        } catch( err ) {
+            res.render( 'error', {
+                message: '找不到数据',
+                error: err
+            });
+        }
     }
 };

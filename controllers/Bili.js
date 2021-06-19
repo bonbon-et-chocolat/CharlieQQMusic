@@ -175,8 +175,34 @@ async function updateYesterday() {
     }
 }
 
+async function getVideoID( bvid ) {
+    const cidResp = await _get( `https://api.bilibili.com/x/player/pagelist?bvid=${bvid}` );
+    const cid = cidResp.data[0].cid;
+    return cid;
+}
+
+async function getVideoStat( bvid, cid ) {
+    if( !cid ) {
+        cid = await getVideoID( bvid );
+    }
+    const result = await _get( `https://api.bilibili.com/x/web-interface/view?cid=${cid}&bvid=${bvid}` );
+    return result.data.stat;
+}
+
+async function getStats() {
+    const wy = await getVideoStat( 'BV1C44y1B7Sb', '356293048' );
+    await db.updateWYStats( global.client, wy );
+    const zs = await getVideoStat( 'BV1EK4y197wF', '355999502' );
+    await db.updateZSStats( global.client, zs );
+    return{
+        wy,
+        zs
+    };
+}
 module.exports = {
     getReportData,
     updateYesterday,
-    getOldViewCounts
+    getOldViewCounts,
+    getVideoStat,
+    getStats
 };
