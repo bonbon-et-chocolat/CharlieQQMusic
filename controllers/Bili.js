@@ -194,10 +194,11 @@ async function getVideoStat( bvid, cid ) {
 }
 
 async function getStats() {
+    const ts = Date.now();
     const wy = await getVideoStat( 'BV1C44y1B7Sb', '356293048' );
-    await db.updateWYStats( global.client, wy );
+    await db.updateWYStats( global.client, wy, ts );
     const zs = await getVideoStat( 'BV1EK4y197wF', '355999502' );
-    await db.updateZSStats( global.client, zs );
+    await db.updateZSStats( global.client, zs, ts );
     return{
         wy,
         zs

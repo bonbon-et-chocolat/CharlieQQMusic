@@ -132,12 +132,12 @@ async function updateBiliHistoryData( client, sDate, data ) {
     return upsertOneByDate( client, sDate, data, DB.bili, COLLECTION.history );
 }
 
-async function updateZSStats( client, data ) {
-    return upsertOne( client, { updatedAt: Date.now() }, data, DB.bili, 'zs' );
+async function updateZSStats( client, data, ts ) {
+    return upsertOne( client, { updatedAt: ts }, data, DB.bili, 'zs' );
 }
 
-async function updateWYStats( client, data ) {
-    return upsertOne( client, { updatedAt: Date.now() }, data, DB.bili, 'wy' );
+async function updateWYStats( client, data, ts ) {
+    return upsertOne( client, { updatedAt: ts }, data, DB.bili, 'wy' );
 }
 async function getNeteaseRanksByDate( client, sDate ) {
     return findByDate( client, sDate, DB.netease, COLLECTION.ranks );
