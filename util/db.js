@@ -139,6 +139,14 @@ async function updateZSStats( client, data, ts ) {
 async function updateWYStats( client, data, ts ) {
     return upsertOne( client, { updatedAt: ts }, data, DB.bili, 'wy' );
 }
+
+async function updateLiuxingStats( client, data, ts ) {
+    return upsertOne( client, { updatedAt: ts }, data, DB.bili, 'liuxing' );
+}
+async function updateYujianStats( client, data, ts ) {
+    return upsertOne( client, { updatedAt: ts }, data, DB.bili, 'yujian' );
+}
+
 async function getNeteaseRanksByDate( client, sDate ) {
     return findByDate( client, sDate, DB.netease, COLLECTION.ranks );
 }
@@ -242,5 +250,7 @@ module.exports = {
     updateKugouCharts,
     updateZSStats,
     updateWYStats,
-    findLastAddedDocument
+    findLastAddedDocument,
+    updateLiuxingStats,
+    updateYujianStats
 };

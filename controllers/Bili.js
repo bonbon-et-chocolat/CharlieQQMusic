@@ -242,24 +242,24 @@ async function getWatchCount( bvid ) {
 }
 
 async function getStats() {
-    if( !global['BV1C44y1B7Sb'] ) {
-        const last = await db.findLastAddedDocument( 'bilibili', 'wy' );
-        global['BV1C44y1B7Sb'] = last[0].view;
+    if( !global['BV1A64y197dD'] ) {
+        const last = await db.findLastAddedDocument( 'bilibili', 'liuxing' );
+        global['BV1A64y197dD'] = last[0]? last[0].view: 0;
     }
     if( !global['BV1EK4y197wF'] ) {
-        const last = await db.findLastAddedDocument( 'bilibili', 'zs' );
-        global['BV1EK4y197wF'] = last[0].view;
+        const last = await db.findLastAddedDocument( 'bilibili', 'yujian' );
+        global['BV1ng411g7aL'] = last[0]? last[0].view: 0;
     }
     const ts = Date.now();
-    const[ wy, zs ] = await Promise.all( [
-        getVideoStat( 'BV1C44y1B7Sb', '356293048' ),
-        getVideoStat( 'BV1EK4y197wF', '355999502' )
+    const[ liuxing, yujian ] = await Promise.all( [
+        getVideoStat( 'BV1A64y197dD', '357128474' ),
+        getVideoStat( 'BV1ng411g7aL', '357051826' )
     ] );
-    await db.updateWYStats( global.client, wy, ts );
-    await db.updateZSStats( global.client, zs, ts );
+    await db.updateLiuxingStats( global.client, liuxing, ts );
+    await db.updateYujianStats( global.client, yujian, ts );
     return{
-        wy,
-        zs
+        liuxing,
+        yujian
     };
 }
 
