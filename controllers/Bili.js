@@ -259,12 +259,11 @@ async function getStats() {
         global['BV1Nv411W7us'] = last[0]? last[0].view: 0;
     }
     const ts = Date.now();
-    const[ wy, zs, xs, ps ] = await Promise.all( [
-        getVideoStat( 'BV1A64y197dD', '357128474' ),
-        getVideoStat( 'BV1ng411g7aL', '357051826' ),
-        getVideoStat( 'BV1zh411a7Du', '357126299' ),
-        getVideoStat( 'BV1Nv411W7us', '357130325' )
-    ] );
+    const wy = await getVideoStat( 'BV1A64y197dD', '357128474' );
+    const zs = await getVideoStat( 'BV1ng411g7aL', '357051826' );
+    const xs = await getVideoStat( 'BV1zh411a7Du', '357126299' );
+    const ps = await getVideoStat( 'BV1Nv411W7us', '357130325' );
+    
     await db.updateLiuxingStats( global.client, wy, ts );
     await db.updateYujianStats( global.client, zs, ts );
     await db.updateXsStats( global.client, xs, ts );
