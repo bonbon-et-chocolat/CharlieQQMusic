@@ -197,14 +197,15 @@ async function getVideoStat( bvid='BV1EK4y197wF', cid ) {
         const count = await getWatchCount( bvid );
         stat.watchers = count;
     } catch( e ) {
-        stat.watchers = 0;
+        console.log( e );
+        stat.watchers = -1;
     }
     return stat;
 }
 
 const findElement = async ( driver ) => {
-    const xpath = '//div/span[@class="bilibili-player-video-info-people-number" and text() != "1"]';
-    const element = driver.wait( until.elementLocated( By.xpath( xpath ) ), 20000 );
+    const xpath = '//div/span[@class="bilibili-player-video-info-people-number" and text() != "1" and text() != "0"]';
+    const element = driver.wait( until.elementLocated( By.xpath( xpath ) ), 30000 );
     const result = await element.getText();
     return Number( result );
 };
@@ -241,6 +242,14 @@ async function getWatchCount( bvid ) {
 }
 
 async function getStats() {
+    if( !global['BV1C44y1B7Sb'] ) {
+        const last = await db.findLastAddedDocument( 'bilibili', 'wy' );
+        global['BV1C44y1B7Sb'] = last[0].view;
+    }
+    if( !global['BV1EK4y197wF'] ) {
+        const last = await db.findLastAddedDocument( 'bilibili', 'zs' );
+        global['BV1EK4y197wF'] = last[0].view;
+    }
     const ts = Date.now();
     const[ wy, zs ] = await Promise.all( [
         getVideoStat( 'BV1C44y1B7Sb', '356293048' ),

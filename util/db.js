@@ -154,6 +154,14 @@ async function updateNeteasePlaylistData( client, sDate, data ) {
     return upsertOneByDate( client, sDate, data, DB.netease, COLLECTION.playlist );
 }
 
+async function findLastAddedDocument( db=DB.bili, collection='zs' ) {
+    const col = global.client.db( db ).collection( collection );
+    return col
+    .find()
+    .sort({ updatedAt: -1 })
+    .limit( 1 )
+    .toArray();
+}
 //bot
 async function findAllBotComments( client ) {
     return client.db( DB.bot )
@@ -233,5 +241,6 @@ module.exports = {
     findKugouHonors,
     updateKugouCharts,
     updateZSStats,
-    updateWYStats
+    updateWYStats,
+    findLastAddedDocument
 };
