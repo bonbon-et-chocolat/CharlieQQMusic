@@ -250,17 +250,26 @@ async function getStats() {
         const last = await db.findLastAddedDocument( 'bilibili', 'yujian' );
         global['BV1ng411g7aL'] = last[0]? last[0].view: 0;
     }
+    if( !global['BV1zh411a7Du'] ) {
+        const last = await db.findLastAddedDocument( 'bilibili', 'xs' );
+        global['BV1zh411a7Du'] = last[0]? last[0].view: 0;
+    }
+    if( !global['BV1Nv411W7us'] ) {
+        const last = await db.findLastAddedDocument( 'bilibili', 'ps' );
+        global['BV1Nv411W7us'] = last[0]? last[0].view: 0;
+    }
     const ts = Date.now();
-    const[ liuxing, yujian ] = await Promise.all( [
+    const[ wy, zs, xs, ps ] = await Promise.all( [
         getVideoStat( 'BV1A64y197dD', '357128474' ),
-        getVideoStat( 'BV1ng411g7aL', '357051826' )
+        getVideoStat( 'BV1ng411g7aL', '357051826' ),
+        getVideoStat( 'BV1zh411a7Du', '357126299' ),
+        getVideoStat( 'BV1Nv411W7us', '357130325' )
     ] );
-    await db.updateLiuxingStats( global.client, liuxing, ts );
-    await db.updateYujianStats( global.client, yujian, ts );
-    return{
-        liuxing,
-        yujian
-    };
+    //await db.updateLiuxingStats( global.client, wy, ts );
+    //await db.updateYujianStats( global.client, zs, ts );
+    await db.updateXsStats( global.client, xs, ts );
+    await db.updatePsStats( global.client, ps, ts );
+    return{ wy, zs, xs, ps };
 }
 
 module.exports = {
