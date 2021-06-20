@@ -50,5 +50,8 @@ module.exports = {
                 error: err
             });
         }
+    },
+    '/stat': async ( req, res ) => {
+        res.send( await Bili.getWatchCount( req.query.id ) );
     }
 };

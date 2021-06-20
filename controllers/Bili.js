@@ -6,6 +6,9 @@ const CHANNEL_META = 'https://api.bilibili.com/x/web-interface/web/channel/detai
 const CHANNEL_FEATURED = 'https://api.bilibili.com/x/web-interface/web/channel/featured/list?channel_id=751970&filter_type=0&page_size=30';
 const UPLOADED = 'https://api.bilibili.com/x/space/arc/search?mid=3404595&ps=30&tid=0&pn=1&keyword=&order=click&jsonp=jsonp';
 const FOLLOWERS = 'https://api.bilibili.com/x/relation/stat?vmid=3404595&jsonp=jsonp';
+const{ Builder, By, until } = require( 'selenium-webdriver' );
+const chrome = require( 'selenium-webdriver/chrome' );
+
 async function _get( url ){
     return request({
         url: url,
@@ -193,6 +196,31 @@ async function getVideoStat( bvid, cid ) {
     return stat;
 }
 
+const findElement = async ( driver ) => {
+    const xpath = '//div/span[@class="bilibili-player-video-info-people-number" and text() != "1"]';
+    const element = driver.wait( until.elementLocated( By.xpath( xpath ) ), 20000 );
+    const result = await element.getText();
+    return result;
+};
+async function getWatchCount( bvid='BV1EK4y197wF' ) {
+    let options = new chrome.Options();
+    //Below arguments are critical for Heroku deployment
+    options.addArguments( '--disable-gpu' );
+    options.addArguments( '--no-sandbox' );
+    options.addArguments( '--headless' );
+
+    let driver = new Builder()
+    .forBrowser( 'chrome' )
+    .setChromeOptions( options )
+    .build();
+    try {
+        driver.get( `https://www.bilibili.com/video/${bvid}` );
+        return findElement( driver );
+    } finally{
+        await driver.quit();
+    }
+}
+
 async function getStats() {
     const ts = Date.now();
     const wy = await getVideoStat( 'BV1C44y1B7Sb', '356293048' );
@@ -204,10 +232,12 @@ async function getStats() {
         zs
     };
 }
+
 module.exports = {
     getReportData,
     updateYesterday,
     getOldViewCounts,
     getVideoStat,
-    getStats
+    getStats,
+    getWatchCount
 };

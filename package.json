@@ -21,6 +21,7 @@
     "express": "~4.16.1",
     "fs": "0.0.1-security",
     "http-errors": "~1.6.3",
+    "install": "^0.13.0",
     "jade": "~1.11.0",
     "jsonfile": "^5.0.0",
     "md5": "^2.3.0",
@@ -29,10 +30,13 @@
     "morgan": "~1.9.1",
     "NeteaseCloudMusicApi": "^4.0.9",
     "node-cron": "^2.0.3",
+    "npm": "^7.18.1",
+    "selenium-webdriver": "^3.6.0",
     "useragent": "^2.3.0",
     "xml2js": "^0.4.22"
   },
   "devDependencies": {
+    "chromedriver": "^91.0.1",
     "eslint": "^7.23.0",
     "eslint-plugin-html": "^6.1.2",
     "eslint-plugin-json": "^2.1.2",
