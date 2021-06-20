@@ -265,8 +265,8 @@ async function getStats() {
         getVideoStat( 'BV1zh411a7Du', '357126299' ),
         getVideoStat( 'BV1Nv411W7us', '357130325' )
     ] );
-    //await db.updateLiuxingStats( global.client, wy, ts );
-    //await db.updateYujianStats( global.client, zs, ts );
+    await db.updateLiuxingStats( global.client, wy, ts );
+    await db.updateYujianStats( global.client, zs, ts );
     await db.updateXsStats( global.client, xs, ts );
     await db.updatePsStats( global.client, ps, ts );
     return{ wy, zs, xs, ps };
