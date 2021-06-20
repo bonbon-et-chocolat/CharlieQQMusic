@@ -208,16 +208,20 @@ async function getWatchCount( bvid='BV1EK4y197wF' ) {
     options.addArguments( '--disable-gpu' );
     options.addArguments( '--no-sandbox' );
     options.addArguments( '--headless' );
-
-    let driver = new Builder()
-    .forBrowser( 'chrome' )
-    .setChromeOptions( options )
-    .build();
+    let driver = null;
     try {
+        driver = new Builder()
+        .forBrowser( 'chrome' )
+        .setChromeOptions( options )
+        .build();
         driver.get( `https://www.bilibili.com/video/${bvid}` );
         return findElement( driver );
+    } catch( e ) {
+        return e;
     } finally{
-        await driver.quit();
+        if( driver ) {
+            await driver.quit();
+        }
     }
 }
 
