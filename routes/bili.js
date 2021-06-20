@@ -52,6 +52,6 @@ module.exports = {
         }
     },
     '/stat': async ( req, res ) => {
-        res.send( await Bili.getWatchCount( req.query.id ) );
+        res.send( await Bili.getVideoStat( req.query.id ) );
     }
 };

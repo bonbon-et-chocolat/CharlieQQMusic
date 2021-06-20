@@ -184,7 +184,7 @@ async function getVideoID( bvid ) {
     return cid;
 }
 
-async function getVideoStat( bvid, cid ) {
+async function getVideoStat( bvid='BV1EK4y197wF', cid ) {
     if( !cid ) {
         cid = await getVideoID( bvid );
     }
@@ -193,6 +193,12 @@ async function getVideoStat( bvid, cid ) {
     const prev = global[bvid];
     stat.increase = stat.view - prev;
     global[bvid] = stat.view;
+    try {
+        const count = await getWatchCount( bvid );
+        stat.watchers = count;
+    } catch( e ) {
+        stat.watchers = 0;
+    }
     return stat;
 }
 
@@ -200,36 +206,47 @@ const findElement = async ( driver ) => {
     const xpath = '//div/span[@class="bilibili-player-video-info-people-number" and text() != "1"]';
     const element = driver.wait( until.elementLocated( By.xpath( xpath ) ), 20000 );
     const result = await element.getText();
-    return result;
+    return Number( result );
 };
-async function getWatchCount( bvid='BV1EK4y197wF' ) {
-    let options = new chrome.Options();
-    //Below arguments are critical for Heroku deployment
-    options.addArguments( '--disable-gpu' );
-    options.addArguments( '--no-sandbox' );
-    options.addArguments( '--headless' );
-    let driver = null;
+function createChrome() {
     try {
-        driver = new Builder()
+
+        let options = new chrome.Options();
+        //Below arguments are critical for Heroku deployment
+        options.addArguments( '--disable-gpu' );
+        options.addArguments( '--no-sandbox' );
+        options.addArguments( '--headless' );
+        return new Builder()
         .forBrowser( 'chrome' )
         .setChromeOptions( options )
         .build();
+    } catch( e ) {
+        console.log( e );
+    }
+}
+async function getWatchCount( bvid ) {
+    let driver = createChrome();
+    if( !driver ) {
+        return 0;
+    }
+    try {
+        console.log( bvid );
         driver.get( `https://www.bilibili.com/video/${bvid}` );
         return findElement( driver );
     } catch( e ) {
         return e;
     } finally{
-        if( driver ) {
-            await driver.quit();
-        }
+        driver.quit();
     }
 }
 
 async function getStats() {
     const ts = Date.now();
-    const wy = await getVideoStat( 'BV1C44y1B7Sb', '356293048' );
+    const[ wy, zs ] = await Promise.all( [
+        getVideoStat( 'BV1C44y1B7Sb', '356293048' ),
+        getVideoStat( 'BV1EK4y197wF', '355999502' )
+    ] );
     await db.updateWYStats( global.client, wy, ts );
-    const zs = await getVideoStat( 'BV1EK4y197wF', '355999502' );
     await db.updateZSStats( global.client, zs, ts );
     return{
         wy,
