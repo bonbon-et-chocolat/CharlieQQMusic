@@ -95,7 +95,7 @@ function onError( error ) {
 
 function startCronJobs() {
     //start cron job for fetching live data
-    cron.schedule( '1,20,40 0-23 * * *', async () => {
+    cron.schedule( '1,10,20,30,40,50 0-23 * * *', async () => {
         Songs.updateReportData();
         Kugou.updateMeta();
         Kugou.updateHonors();

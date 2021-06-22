@@ -244,8 +244,13 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
             listenCnt = '1w+';
             formatted.record = [];
         }
-        if( formatted.mid === '000OFqqx2HKZ19' && !score ) {
-            formatted.score = 431900;
+        if( formatted.mid === '000kj4lV0HPCMz' && !score ) { //yishujia
+            formatted.score = 87359;
+            listenCnt = '10w+';
+            formatted.record = [];
+        }
+        if( formatted.mid === '001DhP7M1fhLVC' && !score ) {
+            formatted.score = 87359;
             listenCnt = '10w+';
             formatted.record = [];
         }
