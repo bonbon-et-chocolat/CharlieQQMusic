@@ -249,11 +249,6 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
             listenCnt = '10w+';
             formatted.record = [];
         }
-        if( formatted.mid === '001DhP7M1fhLVC' && !score ) {
-            formatted.score = 87359;
-            listenCnt = '10w+';
-            formatted.record = [];
-        }
         if( listenCnt ) {
             let[ count ] = listenCnt.match( /\d+/g );
             formatted.hitListenCount = parseInt( count );
