@@ -208,7 +208,7 @@ const findElement = async ( driver ) => {
     const element = driver.wait( until.elementLocated( By.xpath( xpath ) ), 30000 );
     const result = await element.getText();
     let[ watchers ] = result.match( /\d+/ );
-    return watchers;
+    return Number( watchers );
 };
 function createChrome() {
     try {
