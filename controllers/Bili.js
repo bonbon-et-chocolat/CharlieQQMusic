@@ -204,10 +204,11 @@ async function getVideoStat( bvid='BV1EK4y197wF', cid ) {
 }
 
 const findElement = async ( driver ) => {
-    const xpath = '//div/span[@class="bilibili-player-video-info-people-number" and text() != "1" and text() != "0"]';
+    const xpath = '//div[@class="bilibili-player-video-info-all" and text() != "(全站<10人在看)" ]';
     const element = driver.wait( until.elementLocated( By.xpath( xpath ) ), 30000 );
     const result = await element.getText();
-    return Number( result );
+    let[ watchers ] = result.match( /\d+/ );
+    return watchers;
 };
 function createChrome() {
     try {
