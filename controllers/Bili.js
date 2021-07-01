@@ -164,6 +164,9 @@ async function updateYesterday() {
     const date = _getToday();
     const cachekey = date+'bilihistory';
 
+    const yesterday = _getYesterday()+'bilihistory';
+    global[yesterday]=null;
+
     try {
         const[ history, current ] = await Promise.all( [
             getOldViewCounts( client, _getYesterday(), false ),

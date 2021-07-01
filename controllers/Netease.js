@@ -174,6 +174,9 @@ async function updateYesterday() {
     const date = _getToday();
     const cachekey = date+'neteasehistory';
 
+    const yesterday = _getYesterday()+'neteasehistory';
+    global[yesterday]=null;
+
     try {
         const[ history, current ] = await Promise.all( [
             getOldPlayCounts( client, _getYesterday(), false ),

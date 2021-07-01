@@ -314,6 +314,9 @@ async function updateYesterday() {
     const date = _getToday();
     const cachekey = date+'qqhistory';
 
+    const yesterday = _getYesterday()+'qqhistory';
+    global[yesterday]=null;
+
     try {
         const[ history, current ] = await Promise.all( [
             db.findQQHistoryData( client, _getYesterday() ),
@@ -391,6 +394,9 @@ async function updateYesterdayPlaylist() {
     let client = global.client;
     const date = _getToday();
     const cachekey = date+'qqlisthistory';
+
+    const yesterday = _getYesterday()+'qqlisthistory';
+    global[yesterday]=null;
 
     try {
         const[ history, current ] = await Promise.all( [
