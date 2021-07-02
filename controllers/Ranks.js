@@ -75,6 +75,8 @@ const dayCharts = [
 const weekCharts = [
     // 周四更新，300首
     ChartConfig.HOT_CHART,
+    ChartConfig.DY_CHART,
+    ChartConfig.KS_CHART,
     // 周四更新，100首
     ChartConfig.AREA_MAINLAND_CHART,
     // ChartConfig.AREA_HK_CHART,

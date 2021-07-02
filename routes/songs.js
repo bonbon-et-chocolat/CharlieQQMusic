@@ -101,9 +101,9 @@ module.exports = {
     },
     '/fav/report': async ( req, res ) => {
         try {
-            const start = '2021-05-01';
-            const end = '2021-05-31';
-            const month = 'may';
+            const start = '2021-06-01';
+            const end = '2021-06-30';
+            const month = 'june';
             const client = global.client;
             const lastMonth = await db.findSummary( client );
             let data1 = await Songs.getExistingData( client,  { date: start });
