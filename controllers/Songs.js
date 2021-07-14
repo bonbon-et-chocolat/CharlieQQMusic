@@ -251,11 +251,6 @@ function _getLiveData({ hitSongs, hitInfo, favInfo, weeklyListenCountInfo, updat
             listenCnt = '1w+';
             formatted.record = [];
         }
-        if( formatted.mid === '000kj4lV0HPCMz' && !score ) { //yishujia
-            formatted.score = 87359;
-            listenCnt = '1w+';
-            formatted.record = [];
-        }
         if( listenCnt ) {
             let[ count ] = listenCnt.match( /\d+/g );
             formatted.hitListenCount = parseInt( count );
